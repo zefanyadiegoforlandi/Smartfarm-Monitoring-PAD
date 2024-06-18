@@ -20,7 +20,7 @@
             $token = session('jwt');
         
             if (!$token) {
-                return redirect('/')->withErrors('Token tidak ditemukan. Silakan login terlebih dahulu.');
+                return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
             }
         
             $response = Http::withToken($token)->get("http://localhost/smartfarm_jwt/");
@@ -60,7 +60,7 @@
                 $token = session('jwt');
         
                 if (!$token) {
-                    return redirect('/')->withErrors('Token tidak ditemukan. Silakan login terlebih dahulu.');
+                    return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
                 }
         
                 $response = Http::withToken($token)->get("http://localhost/smartfarm_jwt/");
@@ -99,64 +99,53 @@
 
 
 
-        public function store_sensor(Request $request)
+                public function store_sensor(Request $request)
         {
             try {
                 $token = session('jwt');
-
                 if (!$token) {
-                    return redirect('/')->withErrors('Token tidak ditemukan. Silakan login terlebih dahulu.');
+                    return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
                 }
-
-                $responseUsers = Http::withToken($token)->get("http://localhost/smartfarm_jwt/");
-                $apiData = $responseUsers->json();
 
                 $request->validate([
                     'id_lahan' => 'required',
                     'tanggal_aktivasi' => 'required',
+                    'nama_sensor' => 'required',
                 ], [
-                    'id_lahan' => 'Lahan wajib di isi',  
-                    'tanggal_aktivasi' => 'Tanggal aktivasi harus diisi.',
+                    'id_lahan.required' => 'Lahan wajib di isi',  
+                    'tanggal_aktivasi.required' => 'Tanggal aktivasi harus diisi.',
+                    'nama_sensor.required' => 'Nama sensor harus diisi.',
                 ]);
 
                 $url = "http://localhost/smartfarm_jwt/sensor/";
                 $responseSensor = Http::withToken($token)->get($url);
-                $sensorData = $responseSensor-json();
+                $sensorData = $responseSensor->json();
 
-
-                $sensorResponse = $client->get($url);
-                $sensorData = json_decode($sensorResponse->getBody()->getContents(), true);
-                $lastIdFromAPI = null;
-                if (!empty($sensorData)) {
-                    $lastIdFromAPI = end($sensorData)['id_sensor'];
-                }
+                $lastIdFromAPI = !empty($sensorData) ? end($sensorData)['id_sensor'] : null;
 
                 // Menghitung ID berikutnya
-                $nextNumber = ($lastIdFromAPI) ? intval(substr($lastIdFromAPI, 1)) + 1 : 1;
+                $nextNumber = $lastIdFromAPI ? intval(substr($lastIdFromAPI, 1)) + 1 : 1;
                 $nextNumber = min($nextNumber, 1001);
                 $formattedNumber = str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
                 $newIdSensor = 'S' . $formattedNumber;
 
-
-                $response = Http::withToken($token)->asFrom()->post($url, [
-                    'form_params' => [
-                        'id_sensor' => $newIdSensor,
-                        'id_lahan' => $request->id_lahan,
-                        'tanggal_aktivasi' => $request->tanggal_aktivasi,
-                    ]
+                $response = Http::withToken($token)->asForm()->post($url, [
+                    'id_sensor' => $newIdSensor,
+                    'nama_sensor' => $request->nama_sensor,
+                    'id_lahan' => $request->id_lahan,
+                    'tanggal_aktivasi' => $request->tanggal_aktivasi,
                 ]);
 
                 if ($response->failed()) {
-                    return redirect()->back()->with('error', 'Gagal menyimpan data sensor:' . $response->body());
+                    return redirect()->back()->with('error', 'Gagal menyimpan data sensor: ' . $response->body());
                 }
-
-                $content = $response->body();
 
                 return redirect('/pages/add/daftar-sensor')->with('tambah', 'Sensor berhasil ditambahkan');
             } catch (\Exception $e) {
                 return redirect()->back()->with('error', 'Gagal menyimpan data sensor: ' . $e->getMessage());
             }
         }
+
 
         
         public function read_sensor_edit($id_sensor)
@@ -165,7 +154,7 @@
                 $token = session('jwt');
         
                 if (!$token) {
-                    return redirect('/')->withErrors('Token tidak ditemukan. Silakan login terlebih dahulu.');
+                    return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
                 }
         
                 $response = Http::withToken($token)->get("http://localhost/smartfarm_jwt/");
@@ -196,7 +185,7 @@
                 $token = session('jwt');
         
                 if (!$token) {
-                    return redirect('/')->withErrors('Token tidak ditemukan. Silakan login terlebih dahulu.');
+                    return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
                 }
         
                 $response = Http::withToken($token)->get("http://localhost/smartfarm_jwt/");
@@ -221,43 +210,41 @@
             }
         }
         
-        public function form_sensor_update(Request $request, $id_sensor)
+                public function form_sensor_update(Request $request, $id_sensor)
         {
             try {
                 $token = session('jwt');
-        
                 if (!$token) {
-                    return redirect('/')->withErrors('Token tidak ditemukan. Silakan login terlebih dahulu.');
+                    return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
                 }
-        
-                $responseUsers = Http::withToken($token)->get("http://localhost/smartfarm_jwt/");
-                $apiData = $responseUsers->json();
-        
-                $users = collect(json_decode(json_encode($apiData['users']), false));
-                $lahan = collect(json_decode(json_encode($apiData['lahan']), false));
+
+                // Tidak perlu request data user dan lahan secara khusus kecuali dibutuhkan di view
                 $request->validate([
                     'id_lahan' => 'required',
+                    'nama_sensor' => 'required',
                     'tanggal_aktivasi' => 'required',
                 ], [
-                    'id_lahan' => 'Lahan wajib di isi',
-                    'tanggal_aktivasi' => 'Tanggal aktivasi harus diisi.',
+                    'id_lahan.required' => 'Lahan wajib di isi',
+                    'nama_sensor.required' => 'Nama sensor wajib di isi',
+                    'tanggal_aktivasi.required' => 'Tanggal aktivasi harus diisi.',
                 ]);
-        
-                $client = new Client();
-                $url = "http://localhost/smartfarm_jwt/sensor/$id_sensor";
-        
-                // Lanjutkan dengan menyimpan data
-                $response = $client->post($url, [
-                    'form_params' => [
-                        'id_lahan' => $request->id_lahan,
-                        'tanggal_aktivasi' => $request->tanggal_aktivasi,
-                    ]
+
+                $url = "http://localhost/smartfarm_jwt/sensor/{$id_sensor}";
+
+                // Menggunakan Http facade untuk konsistensi dan kejelasan
+                $response = Http::withToken($token)->asForm()->post($url, [
+                    'id_lahan' => $request->id_lahan,
+                    'nama_sensor' => $request->nama_sensor,
+                    'tanggal_aktivasi' => $request->tanggal_aktivasi,
                 ]);
-        
-                $content = $response->getBody()->getContents();
-                return redirect('/pages/add/daftar-sensor')->with('tambah', 'Sensor berhasil diupdate');
+
+                if ($response->failed()) {
+                    return redirect()->back()->with('error', 'Gagal memperbarui data sensor: ' . $response->body());
+                }
+
+                return redirect('/pages/add/daftar-sensor')->with('tambah', 'Sensor berhasil diperbarui');
             } catch (\Exception $e) {
-                return redirect()->back()->with('error', 'Gagal menyimpan data sensor: ' . $e->getMessage());
+                return redirect()->back()->with('error', 'Gagal memperbarui data sensor: ' . $e->getMessage());
             }
         }
 

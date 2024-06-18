@@ -58,29 +58,33 @@
                         </tr>
                     </thead>
 
-                    @foreach($users as $u)
-                    @if($u->level == 'user') 
-                        <tr>
-                            <td class="py-2 px-4 border-b">
-                                <form action="{{ route('read-farmer.edit', $u->id) }}">
-                                    @csrf
-                                    <button class="submit">
-                                        <div class="flex items-center justify-start ms-5">
-                                            <div>
+                    <tbody>
+                        @php $foundUser = false; @endphp
+                        @foreach($users as $u)
+                            @if($u->level == 'user')
+                                @php $foundUser = true; @endphp
+                                <tr>
+                                    <td class="py-2 px-4 border-b">
+                                        <form action="{{ route('read-farmer.edit', $u->id) }}">
+                                            @csrf
+                                            <button class="submit" style="all: unset; display: flex; align-items: center;">
                                                 <img src="{{ asset('images/user_besar_icon.svg') }}" alt="User Image" style="width: 30px; height: 30px; object-fit: cover;" class="mx-2">
-                                            </div>
-                                            <p class="ms-3">{{ $u->name}}</p>
-                                        </div>
-                                    </button>
-                                </form>
-                            </td>
-                            <td class="py-2 px-4 border-b text-center">{{ $u->email}}</td>
-                            <td class="py-2 px-4 border-b text-center">{{ $u->alamat_user }}</td>
-                            <td class="py-2 px-4 border-b text-center">
-                            </td>
-                        </tr>
-                    @endif
-                    @endforeach
+                                                <span class="ms-3">{{ $u->name }}</span>
+                                            </button>
+                                        </form>
+                                    </td>
+                                    <td class="py-2 px-4 border-b text-center">{{ $u->email }}</td>
+                                    <td class="py-2 px-4 border-b text-center">{{ $u->alamat_user }}</td>
+                                    <td class="py-2 px-4 border-b text-center">{{ $u->sensors_count ?? '0' }}</td>
+                                </tr>
+                            @endif
+                        @endforeach
+                        @if(!$foundUser)
+                            <tr>
+                                <td colspan="4" class="py-3 px-4 border-b text-center text-green-600 font-semibold bg-green-100">Data yang dicari tidak ditemukan</td>
+                            </tr>
+                        @endif
+                    </tbody>
                 </table>
             </div>
 
@@ -110,17 +114,14 @@
                         <label for="email" class="block text-gray-700 font-bold">Email</label>
                         <input type="text" name="email" id="email" class="border border-gray-300 rounded px-3 py-2 w-full">
                     </div>
-                    
                     <div class="mb-4">
                         <label for="password" class="block text-gray-700 font-bold">Password</label>
                         <input type="text" name="password" id="password" class="border border-gray-300 rounded px-3 py-2 w-full">
                     </div>
-
                     <div class="mb-4">
                         <label for="alamat_user" class="block text-gray-700 font-bold">Alamat lahan</label>
                         <input type="text" name="alamat_user" id="alamat_user" class="border border-gray-300 rounded px-3 py-2 w-full">
                     </div>
-
                     <div class="flex justify-end mt-4">
                         <button class="btn bg-red-500 text-white mr-4" onclick="closeModal()" type="button">Cancel</button>
                         <button type="submit" class="btn bg-green-500 text-white" onclick="closeModal()">OK</button>
@@ -128,8 +129,6 @@
                 </form>
 
             </div>
-            <!-- Modal footer -->
-
 
         </div>
 

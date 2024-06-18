@@ -20,7 +20,7 @@ class DaftarFarmerController extends Controller
         $token = session('jwt');
 
         if (!$token) {
-            return redirect('/')->withErrors('Token tidak ditemukan. Silakan login terlebih dahulu.');
+            return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
         }
 
         $response = Http::withToken($token)->get("http://localhost/smartfarm_jwt/");
@@ -58,7 +58,7 @@ class DaftarFarmerController extends Controller
         $token = session('jwt');
 
         if (!$token) {
-            return redirect('/')->withErrors('Token tidak ditemukan. Silakan login terlebih dahulu.');
+            return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
         }
 
         $response = Http::withToken($token)->get("http://localhost/smartfarm_jwt/");
@@ -107,7 +107,7 @@ class DaftarFarmerController extends Controller
     {
         $token = session('jwt');
         if (!$token) {
-            return redirect('/')->withErrors('Token tidak ditemukan. Silakan login terlebih dahulu.');
+            return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
         }
     
         // Validasi input dasar tanpa keunikan email
@@ -172,7 +172,7 @@ class DaftarFarmerController extends Controller
     public function read_farmer_edit($id) {
         $token = session('jwt');
         if (!$token) {
-            return redirect('/')->withErrors('Token tidak ditemukan. Silakan login terlebih dahulu.');
+            return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
         }
     
         $response = Http::withToken($token)->get("http://localhost/smartfarm_jwt/");
@@ -214,7 +214,7 @@ class DaftarFarmerController extends Controller
     public function form_farmer_edit(string $id) {
         $token = session('jwt');
         if (!$token) {
-            return redirect('/')->withErrors('Token tidak ditemukan. Silakan login terlebih dahulu.');
+            return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
         }
     
         $response = Http::withToken($token)->get("http://localhost/smartfarm_jwt/");
@@ -240,7 +240,7 @@ class DaftarFarmerController extends Controller
     public function form_farmer_update(Request $request, $id) {
         $token = session('jwt');
         if (!$token) {
-            return redirect('/')->withErrors('Token tidak ditemukan. Silakan login terlebih dahulu.');
+            return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
         }
     
         // Ambil data pengguna dari API
@@ -338,7 +338,7 @@ class DaftarFarmerController extends Controller
     public function read_farmer_destroy($id) {
         $token = session('jwt');
         if (!$token) {
-            return redirect('/')->withErrors('Token tidak ditemukan. Silakan login terlebih dahulu.');
+            return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
         }
     
         $response = Http::withToken($token)->delete("http://localhost/smartfarm_jwt/users/$id");

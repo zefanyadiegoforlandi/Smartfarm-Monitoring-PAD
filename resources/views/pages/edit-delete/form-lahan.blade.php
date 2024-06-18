@@ -23,15 +23,20 @@
                             @endforeach    
                         </select>
                     </div>
-                    
                     <div class="mb-4">
-                        <label for="alamat_lahan" class="block text-gray-700 font-bold">Alamat Lahan</label>
-                        <input type="text" name="alamat_lahan" id="alamat_lahan" value="{{ $lahan->alamat_lahan}}" class="border border-gray-300 rounded px-3 py-2 w-full">
+                        <label for="nama_lahan" class="block text-gray-700 font-bold">NAMA LAHAN</label>
+                        <input type="text" name="nama_lahan" id="nama_lahan" value="{{ $lahan->nama_lahan}}" class="border border-gray-300 rounded px-3 py-2 w-full">
 
                     </div>
+                    
                     <div class="mb-4">
-                        <label for="luas_lahan" class="block text-gray-700 font-bold">Luas Lahan</label>
-                        <textarea name="luas_lahan" id="luas_lahan" class="border border-gray-300 rounded px-3 py-4 w-full max-w-full h-20 resize-y">{{$lahan->luas_lahan }}</textarea>
+                        <label for="alamat_lahan" class="block text-gray-700 font-bold">ALAMAT LAHAN</label>
+                        <input type="text" name="alamat_lahan" id="alamat_lahan" value="{{ $lahan->alamat_lahan}}" class="border border-gray-300 rounded px-3 py-2 w-full">
+                    </div>
+                    <div class="mb-4">
+                        <label for="luas_lahan" class="block text-gray-700 font-bold">LUAS LAHAN</label>
+                        <input type="text" name="luas_lahan" id="luas_lahan" value="{{ $lahan->luas_lahan}}" class="border border-gray-300 rounded px-3 py-2 w-full">
+
                     </div>
 
                     <div class="flex justify-end space-x-4 mt-4">

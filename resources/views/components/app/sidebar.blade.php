@@ -85,16 +85,20 @@
         <div class="mt-3">
           <form action="">
             @csrf
-            <button class="submit">
-                <div class="flex items-center justify-start ms-4">
-                  <div class=" info flex item-center">
-                    <img src="{{ asset('images/user_button_icon.svg') }}" alt="User Image" style="width: 21px; height: 21px; object-fit: cover;" class="mx-2">
+            <button class="flex items-center justify-start ml-4" 
+                    style="background-color: transparent; border: none;"
+                    onclick="this.style.backgroundColor='#b2f2bb'; setTimeout(function() { window.location.href='{{ route('read-auth.edit') }}'; }, 10);">
+                <div class="info flex items-center">
+                    <img src="{{ asset('images/user_button_icon.svg') }}" alt="Gambar Pengguna" 
+                        style="width: 21px; height: 21px; object-fit: cover;" class="mx-2">
                     <div class="mx-2" style="font-size: 16px;">
-                     </div>
-                  </div>
+                        {{ session('user_name') }}
+                    </div>
                 </div>
             </button>
-        </form>
+
+
+          </form>
           <div class="logout flex items-center mx-4 mt-4">
             <img src="{{ asset('images/logout_icon.svg') }}" alt="Logout Icon" style="width: 21px; height: 21px; object-fit: cover;" class="mx-2">
             <form method="POST" action="{{ route('logout') }}">
@@ -103,19 +107,21 @@
             </form>
           </div>
         </div>
-      </div>
+    </div>
+    
 
-      <button id="showRectangle" style="width: 247px; height: 84px; border-radius: 24px; padding: 8px; margin-bottom: 10px; background-color:#416D14;" class="border-none rounded-2xl p-8 flex flex-col justify-center items-start text-white font-sans text-left">
-        <div class="flex items-center mt-2 ml-4">
-          <div class="img w-14 h-14 overflow-hidden rounded-full mb-4 align-top">
-            <img src="{{ asset('images/user_besar_icon.svg') }}" alt="User Image" style="width: 100%; height: 100%; object-fit:cover;">
-          </div>
-          <div class="text ml-4 mb-5">
-            <div class="text-xl mb-2"></div>
-            <div class="text-sm">Admin</div>
-          </div>
-        </div>
-      </button>
+      <button id="showRectangle" style="width: 247px; height: 84px; border-radius: 24px; padding: 8px; margin-bottom: 10px; background-color:#416D14;" class="border-none rounded-2xl p-8 flex items-center text-white font-sans text-left" href="{{ route('daftar-lahan') }}">
+        <div class="flex items-center ml-4">
+            <div class="img w-14 h-14 overflow-hidden rounded-full">
+                <img src="{{ asset('images/user_besar_icon.svg') }}" alt="User Image" style="width: 100%; height: 100%; object-fit:cover;">
+            </div>
+            <div class="text ml-4">
+                <div class="text-xl">{{ session('user_level') }}</div> <!-- Menampilkan level pengguna dari sesi -->
+            </div>
+        </div>  
+    </button>
+    
+      
     </div>
 
     <script>

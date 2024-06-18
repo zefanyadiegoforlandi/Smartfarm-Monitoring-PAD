@@ -8,6 +8,8 @@ use App\Http\Controllers\DashboardUserController;
 use App\Http\Controllers\DaftarFarmerController;
 use App\Http\Controllers\DaftarLahanController;
 use App\Http\Controllers\DaftarSensorController;
+use App\Http\Controllers\DaftarAuthController;
+
 use App\Http\Controllers\FarmerController;
 use App\Http\Controllers\DataRainDropController;
 use App\Http\Controllers\UserController;
@@ -30,8 +32,12 @@ Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/', [LoginController::class, 'login']);
 
 Route::middleware('jwt.auth')->group(function () {
-    Route::get('/pages/dashboard/admin-dashboard', [DashboardController::class, 'index'])->name('admin-dashboard');
-    Route::get('/pages/dashboard/user-dashboard', [DashboardUserController::class, 'index'])->name('user-dashboard');
+    Route::get('/pages/dashboard/admin-dashboard', [DashboardController::class, 'index'])
+        ->middleware('ensure_admin') // Tambahkan middleware ini untuk mengecek role admin
+        ->name('admin-dashboard');
+
+    Route::get('/pages/dashboard/user-dashboard', [DashboardUserController::class, 'index'])
+        ->name('user-dashboard');
 });
 
 Route::get('/components/table-daftar-lahan', [DashboardController::class, 'table_daftar_lahan'])->name('table-daftar-lahan');
@@ -71,9 +77,9 @@ Route::delete('/pages/edit-delete/read-sensor/{id}', [DaftarSensorController::cl
 Route::post('/pages/edit-delete/form-sensor/{id}', [DaftarSensorController::class, 'form_sensor_update'])->name('form-sensor.update');
 
 //Edit-Delete Auth//
-Route::get('/pages/edit-delete/read-auth/{id}', [DashboardController::class, 'read_auth_edit'])->name('read-auth.edit');
-Route::get('/pages/edit-delete/form-auth/{id}', [DashboardController::class, 'form_auth_edit'])->name('form-auth.edit');
-Route::post('/pages/edit-delete/form-auth/{id}', [UserController::class, 'form_auth_update'])->name('form-auth.update');
+Route::get('/pages/edit-delete/read-auth/', [DaftarAuthController::class, 'read_auth_edit'])->name('read-auth.edit');
+Route::get('/pages/edit-delete/form-auth/', [DaftarAuthController::class, 'form_auth_edit'])->name('form-auth.edit');
+Route::post('/pages/edit-delete/form-auth/{id}', [DaftarAuthController::class, 'form_auth_update'])->name('form-auth.update');
 
 Route::get('redirects', [UserController::class, 'index']);
 
@@ -81,6 +87,8 @@ Route::get('/user/user-dashboard', [FarmerController::class, 'lihat_dashboard'])
 Route::get('/user/pertinjau', [FarmerController::class, 'lihat_pertinjau'])->name('pertinjau.lihat');
 
 Route::get('/user/download', [FarmerController::class, 'download_data'])->name('download.data');
+Route::post('/save-filter-session', [DashboardUserController::class, 'saveFilterSession'])->name('save-filter-session');
+
 
 Route::get('/user/akun', [FarmerController::class, 'lihat_akun'])->name('akun.lihat');
 

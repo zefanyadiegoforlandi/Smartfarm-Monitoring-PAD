@@ -20,13 +20,21 @@ class DashboardController extends Controller
         if (!$token) {
             return redirect('/')->withErrors('Token tidak ditemukan. Silakan login terlebih dahulu.');
         }
-    
+
         $response = Http::withToken($token)->get("http://localhost/smartfarm_jwt/");
         if ($response->successful()) {
             $apiData = $response->json();
             $users = collect(json_decode(json_encode($apiData['users']), false))
                 ->where('level', 'user')
                 ->sortByDesc('id'); 
+            $totalUsers = $users->count();  // Menghitung total user
+
+            $lahan = collect(json_decode(json_encode($apiData['lahan']), false));
+            $totalLahan = $lahan->count();  // Menghitung total lahan
+
+            $sensor = collect(json_decode(json_encode($apiData['sensor']), false));
+            $totalSensors = $sensor->count();  // Menghitung total sensor
+
             $perPage = 5; 
             $currentPage = request()->input('page', 1); 
             $paginator = new LengthAwarePaginator(
@@ -36,18 +44,22 @@ class DashboardController extends Controller
                 $currentPage 
             );
             $paginator->setPath(request()->url());
-            $lahan = collect(json_decode(json_encode($apiData['lahan']), false));
-            $sensor = collect(json_decode(json_encode($apiData['sensor']), false));
 
             foreach ($users as $user) {
-                $userLahanIds = collect($lahan)->where('id_user', $user->id)->pluck('id_lahan');
-                $totalUniqueSensors = collect($sensor)->whereIn('id_lahan', $userLahanIds)->unique('id_sensor')->count();
+                $userLahanIds = $lahan->where('id_user', $user->id)->pluck('id_lahan');
+                $totalUniqueSensors = $sensor->whereIn('id_lahan', $userLahanIds)->unique('id_sensor')->count();
                 $user->totalUniqueSensors = $totalUniqueSensors;
             }
 
-            return view('pages/dashboard/admin-dashboard', compact('paginator', 'sensor'));
+            return view('pages/dashboard/admin-dashboard', [
+                'paginator' => $paginator, 
+                'totalUsers' => $totalUsers, 
+                'totalLahan' => $totalLahan, 
+                'totalSensors' => $totalSensors
+            ]);
         }
     }
+
 
     public function daftar_farmer()
     {

@@ -1,6 +1,5 @@
 <x-app-layout>
     <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-4">
-        <!-- Welcome banner -->
 
         <!-- Welcome banner -->
         <div class="welcome-css">
@@ -15,8 +14,8 @@
                             class="text-slate-500 hover:text-slate-600 lg:hidden"
                             @click.stop="sidebarOpen = !sidebarOpen"
                             aria-controls="sidebar"
-                            :aria-expanded="sidebarOpen"
-                        >
+                            :aria-expanded="sidebarOpen">
+                            
                             <span class="sr-only">Open sidebar</span>
                             <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <rect x="4" y="5" width="16" height="2" />
@@ -41,7 +40,7 @@
             
                     <div class="flex relative flex items-center justify-between">
                         <div>
-                            <h1 class="text-3xl md:text-3xl font-bold mb-3" style="color:#416D14;">Hai</h1>
+                            <h1 class="text-3xl md:text-3xl font-bold mb-3" style="color:#416D14;">Hai, {{ session('user_name') }}</h1>
                             <p class="dark:text-indigo-200">Berikut adalah laporan hari ini!</p>
                         </div>
                 
@@ -51,54 +50,56 @@
             </div>
         </div>
 
-        <div class="farmers-list flex flex-col sm:flex-row mx-auto gap-8 ml-20">
-            <div class="custom-frame-3 flex justify-center items-center bg-green-200 p-4 rounded-xl" 
-                style=" max-width: 290px; height: 117px; border-radius: 27px; background-color: #C8E0AF;">
+        <div class="farmers-list flex flex-col sm:flex-row mx-auto gap-4 sm:gap-8 ml-2 sm:ml-20">
+            <!-- Blok Petani -->
+            <div class="custom-frame-3 flex justify-center items-center bg-green-200 p-3 sm:p-4 rounded-xl" 
+                style="width: 100%; max-width: 290px; min-height: 117px; border-radius: 27px; background-color: #C8E0AF;">
                 <div class="teks-frame">
-                    <div class="text-frame-1 text-center" style="font-size: 24px">
-                        <p class="text-dark font-medium text-league-spartan ml-3"> Petani</p>
+                    <div class="text-frame-1 text-center" style="font-size: 20px; sm:font-size: 24px">
+                        <p class="text-dark font-medium text-league-spartan ml-3">Farmer ({{ $totalUsers }})</p>
                     </div>
-                    <div class="text-frame-2 ml-1" style="font-size: 14px ">
+                    <div class="text-frame-2 ml-1" style="font-size: 12px; sm:font-size: 14px">
                         <p class="text-dark font-regular text-league-spartan mb-0">telah terdaftar pada sistem</p>
                     </div>
                 </div>
                 <div class="img-frame-1 ml-2 mt-2">
-                    <img src="{{ asset('images/petani_icon.svg') }}" class="w-75 h-75">
+                    <img src="{{ asset('images/petani_icon.svg') }}" class="w-12 sm:w-16 h-12 sm:h-16">
                 </div>
             </div>
         
-            <div class="custom-frame-3 flex justify-center items-center bg-green-200 p-4 rounded-xl" 
-                style="width: 100%; max-width: 290px; height: 116px; border-radius: 27px; background-color: #C6D2B9;">
+            <!-- Blok Sensor -->
+            <div class="custom-frame-3 flex justify-center items-center bg-green-200 p-3 sm:p-4 rounded-xl" 
+                style="width: 100%; max-width: 290px; min-height: 116px; border-radius: 27px; background-color: #C6D2B9;">
                 <div class="teks-frame ml-3 text-center">
-                    <div class="text-frame-1" style="font-size: 24px">
-                        <p class="text-dark font-medium text-league-spartan mb-0">  Sensor</p>
+                    <div class="text-frame-1" style="font-size: 20px; sm:font-size: 24px">
+                        <p class="text-dark font-medium text-league-spartan mb-0">Sensor ({{ $totalSensors }})</p>
                     </div>
-                    <div class="text-frame-2" style="font-size: 14px ">
+                    <div class="text-frame-2" style="font-size: 12px; sm:font-size: 14px">
                         <p class="text-dark font-regular text-league-spartan mb-0">diaktifkan</p>
                     </div>
                 </div>
                 <div class="img-frame-1 ml-2 mt-2">
-                    <img src="{{ asset('images/sensor_besar_icon.svg') }}"  class="w-23 h-23 ml-2">
+                    <img src="{{ asset('images/sensor_besar_icon.svg') }}"  class="w-12 sm:w-16 h-12 sm:h-16 ml-2">
                 </div>
             </div>
         
-            <div class="custom-frame-3 flex justify-center items-center bg-green-200 p-4 rounded-xl" 
-                style="width: 100%; max-width: 290px; height: 116px; border-radius: 27px; background-color: #CAE8AC;">
-
+            <!-- Blok Lokasi Lahan -->
+            <div class="custom-frame-3 flex justify-center items-center bg-green-200 p-3 sm:p-4 rounded-xl" 
+                style="width: 100%; max-width: 290px; min-height: 116px; border-radius: 27px; background-color: #CAE8AC;">
                 <div class="teks-frame  ml-3 text-center">
-                    <div class="text-frame-1" style="font-size: 24px">
-                        <p class="text-dark font-medium text-league-spartan mb-0"> Lokasi</p>
+                    <div class="text-frame-1" style="font-size: 20px; sm:font-size: 24px">
+                        <p class="text-dark font-medium text-league-spartan mb-0">Lokasi ({{ $totalLahan }})</p>
                     </div>
-                    <div class="text-frame-2" style="font-size: 14px ">
+                    <div class="text-frame-2" style="font-size: 12px; sm:font-size: 14px">
                         <p class="text-dark font-regular text-league-spartan mb-0">lahan pertanian</p>
                     </div>
                 </div>
                 <div class="img-frame-1 ml-2 mt-2">
-                    <img src="{{ asset('images/lokasi_icon.svg') }}" class="w-85 h-85 ml-2">
+                    <img src="{{ asset('images/lokasi_icon.svg') }}" class="w-16 h-16 ml-2">
                 </div>
             </div>
-        
         </div>
+        
         <!-- Dashboard actions -->
         
         <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
@@ -444,9 +445,6 @@
                     });
                 </script>
                 @endif
-            
-            
-            
             
                 </div>
     

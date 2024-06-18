@@ -84,7 +84,6 @@
                                 </form>
                             </td>
                             <td class="py-2 px-4 border-b text-center">{{ $lahan->nama_lahan}}</td>
-
                             <td class="py-2 px-4 border-b text-center">{{ $lahan->user_name}}</td>
                             <td class="py-2 px-4 border-b text-center">{{ $lahan->alamat_lahan }}</td>
                             <td class="py-2 px-4 border-b text-center">{{ $lahan->luas_lahan }}</td>

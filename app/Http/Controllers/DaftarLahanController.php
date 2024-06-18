@@ -22,7 +22,7 @@
                 $token = session('jwt');
         
                 if (!$token) {
-                    return redirect('/')->withErrors('Token tidak ditemukan. Silakan login terlebih dahulu.');
+                    return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
                 }
         
                 $response = Http::withToken($token)->get("http://localhost/smartfarm_jwt/");
@@ -64,7 +64,7 @@
                 $token = session('jwt');
         
                 if (!$token) {
-                    return redirect('/')->withErrors('Token tidak ditemukan. Silakan login terlebih dahulu.');
+                    return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
                 }
         
                 $response = Http::withToken($token)->get("http://localhost/smartfarm_jwt/");
@@ -106,7 +106,7 @@
             try {
                 $token = session('jwt');
                 if (!$token) {
-                    return redirect('/')->withErrors('Token tidak ditemukan. Silakan login terlebih dahulu.');
+                    return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
                 }
         
                 $responseUsers = Http::withToken($token)->get("http://localhost/smartfarm_jwt/");
@@ -192,7 +192,7 @@
         $token = Session::get('jwt');
     
         if (!$token) {
-            return redirect('/login')->withErrors('Anda perlu login untuk mengakses data ini.');
+            return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
         }
     
         $response = Http::withToken($token)->get("http://localhost/smartfarm_jwt/");
@@ -220,53 +220,46 @@
     }
   
 
-    public function form_lahan_update(Request $request, $id_lahan)
+        public function form_lahan_update(Request $request, $id_lahan)
     {
         $token = session('jwt');
         if (!$token) {
             return redirect('/login')->withErrors('Anda perlu login untuk mengakses halaman ini.');
         }
 
-        $responseUsers = Http::withToken($token)->get("http://localhost/smartfarm_jwt/");
-        $apiData = $responseUsers->json();
-
-        $users = collect(json_decode(json_encode($apiData['users']), false));
-        $lahan = collect(json_decode(json_encode($apiData['lahan']), false));
-
-        $validated = $request->validate([
+        $request->validate([
             'id_user' => 'required',
+            'nama_lahan' => 'required',
             'alamat_lahan' => 'required',
             'luas_lahan' => 'required|numeric|min:0',
         ]);
 
-        $client = new Client();
-        $url = "http://localhost/smartfarm_jwt/lahan/$id_lahan";
+        $url = "http://localhost/smartfarm_jwt/lahan/{$id_lahan}";
 
         try {
-            $response = $client->post($url, [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $token,
-                ],
-                'form_params' => [
-                    'id_lahan' => $id_lahan,
-                    'nama_lahan' => $request->nama_lahan,
-                    'id_user' => $request->id_user,
-                    'alamat_lahan' => $request->alamat_lahan,
-                    'luas_lahan' => $request->luas_lahan,
-                ]
+            $response = Http::withToken($token)->asForm()->post($url, [
+                'id_user' => $request->id_user,
+                'nama_lahan' => $request->nama_lahan,
+                'alamat_lahan' => $request->alamat_lahan,
+                'luas_lahan' => $request->luas_lahan,
             ]);
 
-            return redirect('/pages/add/daftar-lahan')->with('tambah', 'Lahan berhasil diupdate');
+            if ($response->failed()) {
+                return redirect()->back()->with('error', 'Gagal memperbarui data lahan: ' . $response->body());
+            }
+
+            return redirect('/pages/add/daftar-lahan')->with('success', 'Lahan berhasil diupdate');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal menyimpan data lahan: ' . $e->getMessage());
         }
     }
 
+
     public function read_lahan_destroy($id_lahan)
     {
         $token = session('jwt');
         if (!$token) {
-            return redirect('/login')->withErrors('Anda perlu login untuk mengakses halaman ini.');
+            return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
         }
 
         $response = Http::withToken($token)->delete("http://localhost/smartfarm_jwt/lahan/$id_lahan");

@@ -62,6 +62,7 @@
                     <thead style="height: 53px; background-color:#ECF0E8; color:#416D14">
                         <tr>
                             <th class="py-2 px-4 border-b">ID SENSOR</th>
+                            <th class="py-2 px-4 border-b">NAMA LAHAN</th>
                             <th class="py-2 px-4 border-b">ID LAHAN</th>
                             <th class="py-2 px-4 border-b">LETAK SENSOR</th>
                             <th class="py-2 px-4 border-b">TANGGAL AKTIVASI</th>
@@ -77,6 +78,7 @@
                                     <button type="submit" style="color: #416D14">{{ $sensor->id_sensor }}</button>
                                 </form>
                             </td>
+                            <td class="py-2 px-4 border-b text-center">{{ $sensor->nama_sensor }}</td>
                             <td class="py-2 px-4 border-b text-center">{{ $sensor->id_lahan }}</td>
                             <td class="py-2 px-4 border-b text-center">{{ $sensor->alamat_lahan }}</td>
                             <td class="py-2 px-4 border-b text-center">{{ $sensor->tanggal_aktivasi }}</td>
@@ -106,7 +108,6 @@
                             </li>
                         @endif
             
-                    
                         {{-- Tautan Halaman --}}
                         @foreach ($paginator->getUrlRange(1, $paginator->lastPage()) as $page => $url)
                             @if ($page == 1 || $page == $paginator->lastPage() || 
@@ -167,8 +168,7 @@
                         @endif
                     </ul>
                 </nav>
-            
-                                                 
+                                         
             </div>
         </div>
         
@@ -188,7 +188,6 @@
                </button>
            </div>
                <!-- Modal body -->
-
                <form action="{{ route('sensor-store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-4">
@@ -199,6 +198,10 @@
                             <option value="{{ $l->id_lahan }}">{{ $l->id_lahan }}</option>
                         @endforeach
                     </select>
+                </div>
+                <div class="mb-4">
+                    <label for="nama_sensor" class="block text-gray-700 font-bold">NAMA SENSOR</label>
+                    <input type="text" name="nama_sensor" id="nama_sensor" class="border border-gray-300 rounded px-3 py-2 w-full">
                 </div>
                 <div class="mb-4">
                     <label for="tanggal_aktivasi" class="block text-gray-700 font-bold">TANGGAL AKTIVASI</label>

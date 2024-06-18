@@ -22,6 +22,11 @@
                         </select>
                     </div>
                     <div class="mb-4">
+                        <label for="nama_sensor" class="block text-gray-700 font-bold">NAMA SENSOR</label>
+                        <input type="text" name="nama_sensor" id="nama_sensor" value="{{ $sensor->nama_sensor }}" class="border border-gray-300 rounded px-3 py-2 w-full">
+                    </div>
+                    
+                    <div class="mb-4">
                         <label for="tanggal_aktivasi" class="block text-gray-700 font-bold">TANGGAL AKTIVASI</label>
                         <input type="text" name="tanggal_aktivasi" id="tanggal_aktivasi" class="border border-gray-300 rounded px-3 py-2 w-full">
                     </div>

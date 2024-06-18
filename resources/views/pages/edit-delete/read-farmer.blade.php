@@ -74,13 +74,15 @@
                                 <tr>
                                     <td class="py-2 px-4 border-b text-center">{{ $s->id_lahan }}</td>
                                     <td class="py-2 px-4 border-b text-center">
-                                        @if($s->id_sensor->isEmpty())
+                                        @if(empty($s->id_sensor))
+                                            No Sensor
                                         @else
                                             {{ $s->id_sensor }}
                                         @endif
                                     </td>
                                 </tr>
                             @endforeach
+
 
 
                         </tbody>
