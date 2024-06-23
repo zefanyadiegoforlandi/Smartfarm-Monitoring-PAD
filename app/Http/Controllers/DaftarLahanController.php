@@ -1,21 +1,19 @@
 <?php
 namespace App\Http\Controllers;
 
-namespace App\Http\Controllers;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
-use Illuminate\Contracts\Validation\Rule;
+use GuzzleHttp\Client;
 use App\Rules\MaxWordsRule;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DaftarLahanController extends Controller
 {
-    public function daftar_lahan()
+    public function daftar_lahan(Request $request)
     {
         try {
             $token = session('jwt');
@@ -38,66 +36,39 @@ class DaftarLahanController extends Controller
                     return $item;
                 });
 
+                // Ambil parameter pencarian dari request
+                $search = $request->input('search');
+
+                // Filter lahan berdasarkan kriteria pencarian
+                if (!empty($search)) {
+                    $lahan = $lahan->filter(function ($lahan) use ($search) {
+                        return stripos($lahan->id_lahan, $search) !== false || 
+                            stripos($lahan->nama_lahan, $search) !== false ||
+                            stripos($lahan->user_name, $search) !== false ||
+                            stripos($lahan->alamat_lahan, $search) !== false;
+                    });
+                }
+
                 $perPage = 5;
-                $currentPage = request()->input('page', 1);
+                $currentPage = $request->input('page', 1);
                 $paginator = new LengthAwarePaginator(
                     $lahan->forPage($currentPage, $perPage),
                     $lahan->count(),
                     $perPage,
                     $currentPage
                 );
-                $paginator->setPath(request()->url());
 
-                return view('pages.add.daftar-lahan', compact('paginator', 'users'));
+                $paginator->setPath($request->url());
+
+                return view('pages/add/daftar-lahan', compact('paginator', 'users', 'search'));
             } else {
-                throw new \Exception('Gagal mengambil data lahan dari server.');
+                return redirect()->back()->withErrors('Gagal mengambil data lahan dari server.');
             }
         } catch (\Exception $e) {
-            abort(404);
-        }
+                abort(404);
+            }
     }
 
-    public function search_lahan(Request $request) {
-        try {
-            $token = session('jwt');
-
-            if (!$token) {
-                return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
-            }
-
-            $response = Http::withToken($token)->get("http://localhost/smartfarm_jwt/");
-
-            if ($response->successful()) {
-                $apiData = $response->json();
-                $users = collect(json_decode(json_encode($apiData['users']), false));
-                $lahans = collect(json_decode(json_encode($apiData['lahan']), false))
-                    ->sortByDesc('id_lahan');
-
-                $lahan = $lahans->map(function ($item) use ($users) {
-                    $user = $users->where('id', $item->id_user)->first();
-                    $item->user_name = $user ? $user->name : '';
-                    return $item;
-                });
-
-                $search = $request->search;
-
-                // Filter lahan based on search criteria
-                if (!empty($search)) {
-                    $lahan = $lahan->filter(function ($lahan) use ($search) {
-                        return stripos($lahan->id_lahan, $search) !== false || 
-                               stripos($lahan->user_name, $search) !== false ||
-                               stripos($lahan->alamat_lahan, $search) !== false;
-                    });
-                }
-            } else {
-                throw new \Exception('Gagal mengambil data lahan dari server.');
-            }
-
-            return view('pages.search.search-lahan', compact('search', 'lahan'));
-        } catch (\Exception $e) {
-            abort(404);
-        }
-    }
 
     public function store_lahan(Request $request)
     {
