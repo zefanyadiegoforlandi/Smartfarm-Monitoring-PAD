@@ -3,7 +3,7 @@
         <div class="max-w-2xl m-auto mt-16">
             <div class="text-center px-4">
                 <div class="inline-flex mb-8">
-                    <img src="{{ asset('images/404-illustration.svg') }}" width="176" height="176" alt="404 illustration" />
+                    <img src="{{ asset('images/404-image.jpg') }}" class="w-64 h-64 md:w-128 md:h-128" alt="New illustration" />
                 </div>
                 <div class="mb-6">Hmm...this page doesn’t exist. Try searching for something else!</div>
             </div>
