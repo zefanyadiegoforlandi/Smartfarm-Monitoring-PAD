@@ -43,29 +43,29 @@ class LoginController extends Controller
                 if ($userInfoResponse->successful()) {
                     $userData = $userInfoResponse->json();
 
-                    // Debugging point: Tampilkan data pengguna
-
                     // Mencari pengguna sesuai ID di dalam tabel users
                     $user = collect($userData['users'])->firstWhere('id', $id);
                     $lahan = collect($userData['lahan'])->where('id_user', $id)->sortBy('created_at')->first();
-
 
                     if (!$user) {
                         throw new \Exception("User not found.");
                     }
 
                     $name = $user['name']; // Misalkan setiap pengguna memiliki 'name'
-                    
+
                     // Menyimpan data yang diperlukan di sesi
-                    session([
+                    $sessionData = [
                         'jwt' => $token,
                         'user_level' => $level,
                         'user_id' => $id,
                         'user_name' => $name,
-                        'id_lahan' => $lahan['id_lahan'],
-                    ]);
+                    ];
 
-                    // Debugging point: Tampilkan data session setelah disimpan
+                    if ($level !== 'admin' && $lahan) {
+                        $sessionData['id_lahan'] = $lahan['id_lahan'];
+                    }
+
+                    session($sessionData);
 
                     if ($level === 'admin') {
                         return redirect()->intended(route('admin-dashboard'));
@@ -77,7 +77,7 @@ class LoginController extends Controller
                 }
 
             } catch (\Exception $e) {
-                return back()->withInput()->withErrors(['login' => 'Login failed or invalid token.']);
+                return back()->withInput()->withErrors(['login' => 'Lahan and Sensor not found(invalid session).']);
             }
         } else {
             return back()->withInput()->withErrors(['login' => 'Login failed, check email and password.']);

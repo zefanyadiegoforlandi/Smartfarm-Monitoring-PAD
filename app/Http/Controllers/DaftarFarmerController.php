@@ -15,23 +15,36 @@ class DaftarFarmerController extends Controller
 {
     
     //DAFTAR TABLE
-    public function daftar_farmer()
+    public function daftar_farmer(Request $request)
     {
         $token = session('jwt');
-
+    
         if (!$token) {
             return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
         }
-
+    
         $response = Http::withToken($token)->get("http://localhost/smartfarm_jwt/");
-
+    
         if ($response->successful()) {
             $apiData = $response->json();
             $users = collect(json_decode(json_encode($apiData['users']), false))
                 ->where('level', 'user')
                 ->sortByDesc('id');
+            
+            // Ambil parameter pencarian dari request
+            $search = $request->input('search');
+            
+            // Filter users based on search criteria
+            if (!empty($search)) {
+                $users = $users->filter(function ($user) use ($search) {
+                    return stripos($user->id, $search) !== false || 
+                           stripos($user->name, $search) !== false || 
+                           stripos($user->email, $search) !== false;
+                });
+            }
+    
             $perPage = 5;
-            $currentPage = request()->input('page', 1);
+            $currentPage = $request->input('page', 1);
             $paginator = new LengthAwarePaginator(
                 $users->forPage($currentPage, $perPage),
                 $users->count(),
@@ -41,18 +54,19 @@ class DaftarFarmerController extends Controller
             $paginator->setPath(request()->url());
             $lahan = collect(json_decode(json_encode($apiData['lahan']), false));
             $sensor = collect(json_decode(json_encode($apiData['sensor']), false));
-
+    
             foreach ($users as $user) {
                 $userLahanIds = collect($lahan)->where('id_user', $user->id)->pluck('id_lahan');
                 $totalUniqueSensors = collect($sensor)->whereIn('id_lahan', $userLahanIds)->unique('id_sensor')->count();
                 $user->totalUniqueSensors = $totalUniqueSensors;
             }
-
-            return view('pages/add/daftar-farmer', compact('paginator', 'sensor'));
+    
+            return view('pages/add/daftar-farmer', compact('paginator', 'sensor', 'search'));
         }
-
+    
         return redirect('/')->withErrors('Gagal mengambil data dari API.');
     }
+    
 
     public function search_farmer(Request $request) {
         $token = session('jwt');
@@ -100,7 +114,7 @@ class DaftarFarmerController extends Controller
                 });
             }
         }
-        return view('pages/search/search-farmer', compact('search', 'users', 'paginator'));
+        return view('pages/add/daftar-farmer', compact('search', 'users', 'paginator'));
     }
 
     public function store_farmer(Request $request)

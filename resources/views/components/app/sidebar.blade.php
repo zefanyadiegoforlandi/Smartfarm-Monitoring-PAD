@@ -107,7 +107,7 @@
             </form>
           </div>
         </div>
-    </div>
+      </div>
     
 
       <button id="showRectangle" style="width: 247px; height: 84px; border-radius: 24px; padding: 8px; margin-bottom: 10px; background-color:#416D14;" class="border-none rounded-2xl p-8 flex items-center text-white font-sans text-left" href="{{ route('daftar-lahan') }}">
@@ -119,7 +119,7 @@
                 <div class="text-xl">{{ session('user_level') }}</div> <!-- Menampilkan level pengguna dari sesi -->
             </div>
         </div>  
-    </button>
+      </button>
     
       
     </div>
