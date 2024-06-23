@@ -53,7 +53,6 @@ class LoginController extends Controller
 
                     $name = $user['name']; // Misalkan setiap pengguna memiliki 'name'
 
-                    // Menyimpan data yang diperlukan di sesi
                     $sessionData = [
                         'jwt' => $token,
                         'user_level' => $level,
@@ -63,10 +62,16 @@ class LoginController extends Controller
 
                     if ($level !== 'admin' && $lahan) {
                         $sessionData['id_lahan'] = $lahan['id_lahan'];
+
+                        // Mendapatkan id_sensor yang dimiliki id_lahan dengan urutan pertama
+                        $sensor = collect($userData['sensor'])->where('id_lahan', $lahan['id_lahan'])->sortBy('created_at')->first();
+                        if ($sensor) {
+                            $sessionData['id_sensor'] = $sensor['id_sensor'];
+                        }
                     }
+                    dd(session()->all());
 
                     session($sessionData);
-
                     if ($level === 'admin') {
                         return redirect()->intended(route('admin-dashboard'));
                     } else {
@@ -84,3 +89,4 @@ class LoginController extends Controller
         }
     }
 }
+

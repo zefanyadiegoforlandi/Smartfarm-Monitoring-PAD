@@ -57,6 +57,7 @@ class DashboardUserController extends Controller
             } else {
                 throw new \Exception('Gagal mengambil data dari API.');
             }
+
         } catch (\Exception $e) {
             Log::error('Error in DashboardUserController@index: ' . $e->getMessage());
             return redirect('/')->withErrors('Terjadi kesalahan. Silakan coba lagi.');

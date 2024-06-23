@@ -96,6 +96,8 @@ Route::get('/user/pertinjau', [FarmerController::class, 'lihat_pertinjau'])->nam
 
 Route::get('/user/download', [FarmerController::class, 'download_data'])->name('download.data');
 Route::post('/set-lahan', [SessionController::class, 'setLahan'])->name('set-lahan');
+Route::post('/set-sensor', [SessionController::class, 'setSensor'])->name('set-sensor');
+
 
 
 Route::get('/user/akun', [FarmerController::class, 'lihat_akun'])->name('akun.lihat');

@@ -6,13 +6,14 @@
         <div class="flex items-center justify-start">
             <p class="font-semibold text-3xl md:text-4xl text-[#416D14]">Curah Hujan</p>
         </div>
-        <div class="flex items-center justify-end mt-3 md:mt-0"> <!-- Sesuaikan margin top untuk ukuran layar tertentu -->
-            <div class="relative md:w-[124px] h-[27px]">
-                <select id="filter" name="filter" class="block appearance-none w-full bg-[#416D14] border border-gray-300 text-white py-1 px-1 rounded-lg leading-tight focus:outline-none focus:border-blue-500 text-center text-xs font-semibold">
-                    <option value="L001">L001</option>
-                    <option value="L002">L002</option>
-                    <option value="L003">L003</option>
-                    <option value="L004">L004</option>
+        <div class="flex items-center justify-end">
+            <div class="relative w-[124px] h-[25px] lg:w-[160px] lg:h-[30px]">
+                <select id="filter" name="filter" onchange="saveAndSelectFilter(this.value)" class="block appearance-none w-full bg-[#416D14] border border-gray-300 text-white py-1 px-1 rounded-lg leading-tight text-center text-xs lg:text-sm font-semibold">
+                    @foreach ($sensors as $item)
+                        <option value="{{ $item['id_sensor'] }}" {{ session('id_sensor') == $item['id_sensor'] ? 'selected' : '' }}>
+                            {{ $item['nama_sensor'] }}
+                        </option>
+                    @endforeach
                 </select>
                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-white">
                     <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -21,6 +22,32 @@
                 </div>
             </div>
         </div>
+        
+        <script>
+            function saveAndSelectFilter(id_sensor) {
+                fetch('{{ route('set-sensor') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ id_sensor: id_sensor }) // Menggunakan id_sensor
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Failed to update session.');
+                    }
+                })
+                .then(data => {
+                    console.log('Success:', data);
+                    location.reload(); // Refresh halaman jika sukses
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        </script>
+        
     </div>
 
     <div class="mt-5">
