@@ -37,7 +37,6 @@
                             </button>
                         </form>
                     </div>
-
                 </div>
             </div>
 
@@ -57,13 +56,13 @@
                     $userCount = 0;
                     @endphp
                 
-                    @foreach($paginator->items() as $key => $user)
+                    @forelse($paginator->items() as $user)
                         @if($user->level == 'user') 
                             @php
                                 $userCount++;
                             @endphp
                             <tr class="{{ $userCount % 2 == 0 ? 'bg-[#ecf0e82e] ' : 'bg-white' }}">
-                                <td class="py-2 px-4 border-b text-center">{{ $user->id}}</td>
+                                <td class="py-2 px-4 border-b text-center">{{ $user->id }}</td>
                                 <td class="py-2 px-4 border-b">
                                     <form action="{{ route('read-farmer.edit', $user->id) }}">
                                         @csrf
@@ -73,19 +72,24 @@
                                                     <img src="{{ asset('images/user_besar_icon.svg') }}" alt="User Image" 
                                                         style="width: 30px; height: 30px; object-fit: cover;" class="mx-2">
                                                 </div>
-                                                <p class="ms-3" style="color:#416D14;">{{ $user->name}}</p>
+                                                <p class="ms-3" style="color:#416D14;">{{ $user->name }}</p>
                                             </div>
                                         </button>
                                     </form>
                                 </td>
-                                <td class="py-2 px-4 border-b text-center">{{ $user->email}}</td>
+                                <td class="py-2 px-4 border-b text-center">{{ $user->email }}</td>
                                 <td class="py-2 px-4 border-b text-center">{{ $user->alamat_user }}</td>
-                                <td class="py-2 px-4 border-b text-center">
-                                    {{ $user->totalUniqueSensors}}
-                                </td>
+                                <td class="py-2 px-4 border-b text-center">{{ $user->totalUniqueSensors }}</td>
                             </tr>
                         @endif
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="5" class="py-4 px-4 border-b text-center">
+                                Tidak ada data yang ditemukan untuk pencarian '{{ request()->input('search') }}'
+                            </td>
+                        </tr>
+                    
+                    @endforelse
                 </table>
 
                 <nav class="w-full flex justify-center mt-5" aria-label="Page navigation example">
