@@ -175,35 +175,54 @@
                     </div>
                 </div>
 
-                <!-- User Info and Logout -->
-                <div class="mt-10 w-[252.8px] grow">
-                    <div id="animatedRectangle" class="user-info bg-white shadow-xl mx-5 px-2 py-3 mb-2 rounded-md " style="display: none;">
-                        <a href="{{ route('akun.lihat') }}" class="info flex items-center mx-4">
-                            <img src="{{ asset('images/user_button_icon.svg') }}" class="w-6 h-6" alt="User Image">
-                            <div class="ml-2 font-semibold text-slate-400"></div>
-                        </a>
-                        <div class="logout flex items-center mx-4 mt-2">
-                            <img src="{{ asset('images/logout_icon.svg') }}" class="w-6 h-6" alt="Logout Icon">
-                            <form method="POST" action="{{ route('logout') }}">
+                <div style="display: flex; flex-direction: column; align-items: center; height: 100vh; margin-top: 10px;">
+                    <!-- Animated Rectangle -->
+                    <div id="animatedRectangle" style="width: 206px; height: 86px; background-color: #ffffff; display: none; margin-bottom: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); border-radius: 5px;">
+                        <div class="mt-3">
+                            <!-- User Info -->
+                            <form action="">
                                 @csrf
-                                <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();" class="ml-2 font-semibold text-slate-400">Log Out</a>
+                                <button class="flex items-center justify-start ml-4" style="background-color: transparent; border: none;" onclick="this.style.backgroundColor='#b2f2bb'; setTimeout(function() { window.location.href='{{ route('read-user.information') }}'; }, 10);">
+                                    <div class="info flex items-center">
+                                        <img src="{{ asset('images/user_button_icon.svg') }}" alt="Gambar Pengguna" style="width: 21px; height: 21px; object-fit: cover;" class="mx-2">
+                                        <!-- Menggunakan span untuk menampilkan user_name -->
+                                        <span class="mx-2" style="font-size: 16px; color: #818280;">{{ session('user_name') }}</span>
+                                    </div>
+                                </button>
                             </form>
+                            <!-- Logout Button -->
+                            <div class="logout flex items-center mx-4 mt-4">
+                                <img src="{{ asset('images/logout_icon.svg') }}" alt="Logout Icon" style="width: 21px; height: 21px; object-fit: cover;" class="mx-2">
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <a href="{{ route('logout') }}" class="mx-2" style="font-size: 16px; color: #818280;" onclick="event.preventDefault(); this.closest('form').submit();">Log Out</a>
+                                </form>
+                            </div>
                         </div>
                     </div>
-
+                
                     <!-- Show Rectangle Button -->
-                    <button id="showRectangle" class="show-rectangle-btn bg-[#416D14] py-3 px-4 rounded-3xl w-full">
-                        <div class="flex items-center">
+                    <button id="showRectangle" style="width: 247px; height: 84px; border-radius: 24px; padding: 8px; margin-bottom: 10px; background-color:#416D14;" class="border-none rounded-2xl p-8 flex items-center text-white font-sans text-left" href="{{ route('daftar-lahan') }}">
+                        <div class="flex items-center ml-4">
                             <div class="img w-14 h-14 overflow-hidden rounded-full">
-                                <img src="{{ asset('images/user_besar_icon.svg') }}" class="w-full h-full object-cover" alt="User Image">
+                                <img src="{{ asset('images/user_besar_icon.svg') }}" alt="User Image" style="width: 100%; height: 100%; object-fit:cover;">
                             </div>
-                            <div class=" ml-4">
-                                <div class="text-xl font-semibold"></div>
-                                <div class="text-sm"> </div>
+                            <div class="text ml-4">
+                                <div class="text-xl">{{ session('user_level') }}</div>
+                                <!-- Menampilkan level pengguna dari sesi -->
                             </div>
-                        </div>
+                        </div>  
                     </button>
                 </div>
+                
+                <script>
+                    // Script untuk menampilkan/menyembunyikan animatedRectangle saat tombol showRectangle diklik
+                    document.getElementById('showRectangle').addEventListener('click', function() {
+                        var container = document.getElementById('animatedRectangle');
+                        container.style.display = (container.style.display === 'none') ? 'block' : 'none';
+                    });
+                </script>
+                
             </nav>
 
 
@@ -237,12 +256,7 @@
         });
 
         // JavaScript to show the rectangle on button click
-        document.getElementById('showRectangle').addEventListener('click', function() {
-            var container = document.getElementById('animatedRectangle');
-
-            // Toggle class to initiate animation
-            container.style.display = (container.style.display === 'none') ? 'block' : 'none';
-        });
+        
 
         document.getElementById('sensorLink').addEventListener('click', function(event) {
             event.preventDefault();
@@ -255,7 +269,7 @@
         function changeColor(element, linkId) {
     const allLinks = document.querySelectorAll('.menu-text');
     const allSelectedIcons = document.querySelectorAll('img[id="selected"]');
-    const allNonSelectedIcons = document.querySelectorAll('img[id="non-selected"]');
+    const allNonSelectedIcons = document.queryAll('img[id="non-selected"]');
 
     // Reset semua tautan ke warna default dan ikon ke non-selected
     allLinks.forEach(link => {

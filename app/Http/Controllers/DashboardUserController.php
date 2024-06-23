@@ -21,16 +21,19 @@ class DashboardUserController extends Controller
             $response = Http::withToken($token)->get("http://localhost/smartfarm_jwt/");
             if ($response->successful()) {
                 $apiData = $response->json();
+
+                // Ambil data pengguna (users)
                 $users = collect(json_decode(json_encode($apiData['users']), false))
                     ->where('level', 'user')
-                    ->sortByDesc('id'); 
-                $perPage = 5; 
-                $currentPage = request()->input('page', 1); 
+                    ->sortByDesc('id');
+
+                $perPage = 5;
+                $currentPage = request()->input('page', 1);
                 $paginator = new LengthAwarePaginator(
-                    $users->forPage($currentPage, $perPage), 
-                    $users->count(), 
-                    $perPage, 
-                    $currentPage 
+                    $users->forPage($currentPage, $perPage),
+                    $users->count(),
+                    $perPage,
+                    $currentPage
                 );
                 $paginator->setPath(request()->url());
 
@@ -38,8 +41,9 @@ class DashboardUserController extends Controller
                 $lahan = collect(json_decode(json_encode($apiData['lahan']), false))
                     ->where('id_user', $user_id);
 
-                // Debugging: Log the lahan data
                 Log::info('Filtered Lahan:', $lahan->toArray());
+
+                $nama_lahan = $lahan->where('id_lahan', session('id_lahan'))->first()->nama_lahan ?? '';
 
                 $sensor = collect(json_decode(json_encode($apiData['sensor']), false));
 
@@ -49,37 +53,14 @@ class DashboardUserController extends Controller
                     $user->totalUniqueSensors = $totalUniqueSensors;
                 }
 
-                return view('/pages/dashboard/user-dashboard', compact('paginator', 'lahan', 'sensor'));
+                return view('/pages/dashboard/user-dashboard', compact('paginator', 'nama_lahan', 'lahan', 'sensor'));
             } else {
-                throw new \Exception('Failed to fetch data from API.');
+                throw new \Exception('Gagal mengambil data dari API.');
             }
         } catch (\Exception $e) {
             Log::error('Error in DashboardUserController@index: ' . $e->getMessage());
             return redirect('/')->withErrors('Terjadi kesalahan. Silakan coba lagi.');
         }
     }
-
-
-    public function saveFilterSession(Request $request)
-    {
-        dd($request->all());  // Debug request data
-
-        try {
-            $request->validate([
-                'id_lahan' => 'required',
-            ]);
-
-            Session::put('id_lahan', $request->id_lahan);
-
-            dd(Session::get('id_lahan'));  // Debug session data
-
-            return response()->json(['message' => 'Session updated successfully'], 200);
-        } catch (\Exception $e) {
-            Log::error('Gagal menyimpan session: ' . $e->getMessage());
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
-    }
-
-    
-
 }
+

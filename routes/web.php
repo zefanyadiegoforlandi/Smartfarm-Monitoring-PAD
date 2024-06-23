@@ -13,7 +13,12 @@ use App\Http\Controllers\DaftarAuthController;
 use App\Http\Controllers\FarmerController;
 use App\Http\Controllers\DataRainDropController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\InformationUserController;
+
 use App\Http\Controllers\LoginController;
+
+use App\Http\Controllers\SessionController;
+
 use Illuminate\Support\Facades\Http;
 
 
@@ -81,13 +86,16 @@ Route::get('/pages/edit-delete/read-auth/', [DaftarAuthController::class, 'read_
 Route::get('/pages/edit-delete/form-auth/', [DaftarAuthController::class, 'form_auth_edit'])->name('form-auth.edit');
 Route::post('/pages/edit-delete/form-auth/{id}', [DaftarAuthController::class, 'form_auth_update'])->name('form-auth.update');
 
+Route::get('/pages/edit-delete/read-user/', [InformationUserController::class, 'read_user_information'])->name('read-user.information');
+
+
 Route::get('redirects', [UserController::class, 'index']);
 
 Route::get('/user/user-dashboard', [FarmerController::class, 'lihat_dashboard'])->name('dashboard.lihat');
 Route::get('/user/pertinjau', [FarmerController::class, 'lihat_pertinjau'])->name('pertinjau.lihat');
 
 Route::get('/user/download', [FarmerController::class, 'download_data'])->name('download.data');
-Route::post('/save-filter-session', [DashboardUserController::class, 'saveFilterSession'])->name('save-filter-session');
+Route::post('/set-lahan', [SessionController::class, 'setLahan'])->name('set-lahan');
 
 
 Route::get('/user/akun', [FarmerController::class, 'lihat_akun'])->name('akun.lihat');

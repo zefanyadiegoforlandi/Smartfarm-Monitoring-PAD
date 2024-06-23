@@ -9,19 +9,22 @@
                     <img src="{{ asset('images/tonggle_sidebar.svg') }}">
                 </span>
                 <div class="flex items-center justify-start hidden xl:flex">
-                    <h1 class="font-semibold text-3xl">Hai, {{ session('user_name') }}</h1>
+                    <h1 class="font-semibold text-3xl" style="color: #416D14">Hai, {{ session('user_name') }}</h1>
                 </div>
                 <div class="flex items-center justify-end">
                     <p class="font-medium text-[13px] md:text-base me-2"><?php echo date('d F Y'); ?></p>
                     <img src="{{ asset('images/farmer-s/ic_tanggal.svg') }}" />
                 </div>
             </div>
+            
             <div class="flex items-center justify-between mb-5">
                 <div class="hidden xl:flex">
                     <p class="text-center text-base">
-                        Pantau kondisi Lahan {{ session('id_lahan') }} di sekitar perkebunanmu sekarang!
+                        Pantau kondisi di sekitar <span style="font-weight: bold; color: #416D14;">{{ $nama_lahan }}({{ session('id_lahan') }})</span> sekarang!
                     </p>
                 </div>
+                
+                
                 <div class="flex">
                     <a href="{{ route('download.data') }}" class="flex">
                         <button class="rounded-full bg-[#416D14] mr-4">
@@ -30,62 +33,49 @@
                     </a>
                     <!-- Dalam view, akses variabel 'lahan' yang dikirimkan dari kontroler -->
                     <!-- Dropdown untuk filter -->
-<div class="flex items-center justify-end">
-    <div class="relative w-[124px] h-[25px] lg:w-[160px] lg:h-[30px]">
-        <select id="filter" name="filter" onchange="saveAndSelectFilter(this.value)" class="block appearance-none w-full bg-[#416D14] border border-gray-300 text-white py-1 px-1 rounded-lg leading-tight text-center text-xs lg:text-sm font-semibold">
-            @foreach ($lahan as $item)
-                <option value="{{ $item->id_lahan }}">{{ $item->nama_lahan }}</option>
-            @endforeach
-        </select>
-        
-        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-white">
-            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                <path d="M5 8l5 5 5-5z" />
-            </svg>
-        </div>
-    </div>
-</div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
-
-<script>
-    function saveAndSelectFilter(id_lahan) {
-        $.ajax({
-            url: "{{ route('save-filter-session') }}",
-            type: 'POST',
-            data: {
-                id_lahan: id_lahan,
-                _token: '{{ csrf_token() }}'
-            },
-            success: function(response) {
-                console.log('Data filter disimpan ke session');
-                // Setelah menyimpan ke session, pilih kembali opsi yang dipilih
-                $('#filter').val(id_lahan);
-            },
-            error: function(error) {
-                console.error('Gagal menyimpan data filter ke session:', error);
-                // Handle error
-            }
-        });
-    }
-
-    // Memilih kembali opsi yang disimpan dari session saat halaman dimuat
-    $(document).ready(function() {
-        var selectedLahan = '{{ session('selected_lahan') }}'; // Ambil pilihan yang disimpan dari session
-
-        if (selectedLahan) {
-            $('#filter').val(selectedLahan); // Pilih kembali opsi yang disimpan
-        }
-    });
-</script>
-
-
-                   
+                    <div class="flex items-center justify-end">
+                        <div class="relative w-[124px] h-[25px] lg:w-[160px] lg:h-[30px]">
+                            <select id="filter" name="filter" onchange="saveAndSelectFilter(this.value)" class="block appearance-none w-full bg-[#416D14] border border-gray-300 text-white py-1 px-1 rounded-lg leading-tight text-center text-xs lg:text-sm font-semibold">
+                                @foreach ($lahan as $item)
+                                    <option value="{{ $item->id_lahan }}" {{ session('id_lahan') == $item->id_lahan ? 'selected' : '' }}>
+                                        {{ $item->nama_lahan }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-white">
+                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <path d="M5 8l5 5 5-5z" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <script>
+                        function saveAndSelectFilter(id_lahan) {
+                            fetch('{{ route('set-lahan') }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                },
+                                body: JSON.stringify({ id_lahan: id_lahan })
+                            })
+                            .then(response => {
+                                if (response.ok) {
+                                    return response.json();
+                                } else {
+                                    throw new Error('Failed to update session.');
+                                }
+                            })
+                            .then(data => {
+                                console.log('Success:', data);
+                                location.reload(); // Refresh halaman jika sukses
+                            })
+                            .catch(error => console.error('Error:', error));
+                        }
+                    </script>
                     
                     
-                    
-                                       
-
                     
                 </div>
             </div>
@@ -194,7 +184,7 @@
                         <path d="M18.125 3.625H24.4688V5.4375H18.125V3.625ZM18.125 9.0625H27.1875V10.875H18.125V9.0625ZM18.125 14.5H24.4688V16.3125H18.125V14.5ZM10.875 20.8438C10.875 21.5648 10.5886 22.2563 10.0787 22.7662C9.56883 23.2761 8.87731 23.5625 8.15625 23.5625C7.43519 23.5625 6.74367 23.2761 6.2338 22.7662C5.72394 22.2563 5.4375 21.5648 5.4375 20.8438H10.875Z" fill="#416D14" />
                         <path d="M27.1875 19.9375H14.4275C14.2348 18.608 13.6257 17.3738 12.6875 16.4122V6.34375C12.6875 5.14199 12.2101 3.98945 11.3603 3.13967C10.5106 2.2899 9.35803 1.8125 8.15626 1.8125C6.9545 1.8125 5.80196 2.2899 4.95219 3.13967C4.10241 3.98945 3.62501 5.14199 3.62501 6.34375V16.4122C2.924 17.1275 2.40246 17.9988 2.10314 18.9546C1.80381 19.9104 1.73521 20.9235 1.90297 21.9109C2.07073 22.8983 2.47006 23.8319 3.06825 24.6352C3.66644 25.4385 4.44646 26.0887 5.34438 26.5324C6.24231 26.9761 7.23259 27.2007 8.23407 27.1878C9.23555 27.1749 10.2197 26.925 11.106 26.4584C11.9922 25.9917 12.7553 25.3218 13.3326 24.5034C13.91 23.685 14.2852 22.7414 14.4275 21.75H27.1875V19.9375ZM8.15626 25.375C7.2389 25.3763 6.34281 25.0988 5.58679 24.5792C4.83077 24.0596 4.25054 23.3224 3.92304 22.4655C3.59553 21.6086 3.53621 20.6724 3.75295 19.781C3.96969 18.8896 4.45225 18.0852 5.13664 17.4743L5.43751 17.2033V6.34375C5.43751 5.62269 5.72395 4.93117 6.23382 4.4213C6.74368 3.91144 7.43521 3.625 8.15626 3.625C8.87732 3.625 9.56885 3.91144 10.0787 4.4213C10.5886 4.93117 10.875 5.62269 10.875 6.34375V17.2033L11.1759 17.4743C11.8603 18.0852 12.3428 18.8896 12.5596 19.781C12.7763 20.6724 12.717 21.6086 12.3895 22.4655C12.062 23.3224 11.4818 24.0596 10.7257 24.5792C9.96972 25.0988 9.07362 25.3763 8.15626 25.375Z" fill="#416D14" />
                     </svg>
-                    
+
                     <div class="ms-4 py-2">
                         <p class="text-xs">suhu</p>
                         <p class="text-lg font-semibold">27</p>
