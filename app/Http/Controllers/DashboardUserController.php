@@ -63,5 +63,10 @@ class DashboardUserController extends Controller
             return redirect('/')->withErrors('Terjadi kesalahan. Silakan coba lagi.');
         }
     }
+
+    public function download_data()
+    {
+        return view('/user/download-data');
+    }
 }
 

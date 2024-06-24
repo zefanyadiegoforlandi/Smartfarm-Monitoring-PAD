@@ -69,7 +69,6 @@ class LoginController extends Controller
                             $sessionData['id_sensor'] = $sensor['id_sensor'];
                         }
                     }
-
                     session($sessionData);
                     if ($level === 'admin') {
                         return redirect()->intended(route('admin-dashboard'));

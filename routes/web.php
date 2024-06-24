@@ -10,7 +10,7 @@ use App\Http\Controllers\DaftarLahanController;
 use App\Http\Controllers\DaftarSensorController;
 use App\Http\Controllers\DaftarAuthController;
 
-use App\Http\Controllers\FarmerController;
+use App\Http\Controllers\DataPertinjauController;
 use App\Http\Controllers\DataRainDropController;
 use App\Http\Controllers\DataAirQualityController;
 use App\Http\Controllers\DataTemperatureController;
@@ -100,23 +100,16 @@ Route::get('/pages/edit-delete/read-user/', [InformationUserController::class, '
 Route::get('redirects', [UserController::class, 'index']);
 
 Route::get('/user/user-dashboard', [FarmerController::class, 'lihat_dashboard'])->name('dashboard.lihat');
-Route::get('/user/pertinjau', [FarmerController::class, 'lihat_pertinjau'])->name('pertinjau.lihat');
+Route::get('/user/pertinjau', [DataPertinjauController::class, 'showPreview'])->name('pertinjau.lihat');
 
-Route::get('/user/download', [FarmerController::class, 'download_data'])->name('download.data');
+Route::get('/update-data-pertinjau', [DataPertinjauController::class, 'getData'])->name('update-data-pertinjau');
+
+Route::get('/user/download', [DashboardUserController::class, 'download_data'])->name('download.data');
 Route::post('/set-lahan', [SessionController::class, 'setLahan'])->name('set-lahan');
 Route::post('/set-sensor', [SessionController::class, 'setSensor'])->name('set-sensor');
 
-
-
 Route::get('/user/akun', [FarmerController::class, 'lihat_akun'])->name('akun.lihat');
 
-Route::get('/user/suhu', [FarmerController::class, 'lihat_suhu'])->name('suhu.lihat');
-Route::get('/user/intensitas-cahaya', [FarmerController::class, 'lihat_cahaya'])->name('cahaya.lihat');
-Route::get('/user/kelembapan-tanah', [FarmerController::class, 'lihat_ktanah'])->name('ktanah.lihat');
-Route::get('/user/kelembapan', [FarmerController::class, 'lihat_kelembapan'])->name('kelembapan.lihat');
-Route::get('/user/ketinggian', [FarmerController::class, 'lihat_ketinggian'])->name('ketinggian.lihat');
-Route::get('/user/kualitas-udara', [FarmerController::class, 'lihat_kudara'])->name('kudara.lihat');
-Route::get('/user/tekanan-udara', [FarmerController::class, 'lihat_tudara'])->name('tudara.lihat');
 
 //Data-Sensor
 Route::get('/pages/data-sensor/raindrop', [DataRainDropController::class, 'getData_RainDrop'])->name('raindrop');
@@ -152,7 +145,7 @@ Route::get('/pages/data-sensor/humidity', [DataHumidityController::class, 'getDa
 Route::get('/update-data-grafik-Humidity', [DataHumidityController::class, 'updateDataGrafik_Humidity'])->name('update-data-grafik.Humidity');
 Route::get('/update-data-table-Humidity', [DataHumidityController::class, 'updateDataTable_Humidity'])->name('update-data-table.Humidity');
 
-Route::get('/sensors/{id_lahan}', [FarmerController::class, 'getSensorsByLahan']);
+Route::get('/sensor-data', [DataPertinjauController::class, 'getSensorData']);
 
 
 
