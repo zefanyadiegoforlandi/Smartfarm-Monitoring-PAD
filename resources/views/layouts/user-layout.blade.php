@@ -118,7 +118,7 @@
 
                             <!-- Kelembapan -->
                             <li>
-                                <a href="{{ route('kelembapan.lihat') }}" class="flex group" onclick="changeColor(this, 'pertinjau')">
+                                <a href="{{ route('humidity') }}" class="flex group" onclick="changeColor(this, 'pertinjau')">
                                     <img src="{{ asset('images/farmer-s/kelembapan.svg') }}" class="w-6 h-6" alt="">
                                     <span class="menu-text ms-6 text-[#818280] focus:text-[#416D14]" id="kelembapan">Kelembapan</span>
                                 </a>
@@ -150,7 +150,7 @@
                     
                             <!-- Kelembapan Tanah -->
                             <li>
-                                <a href="{{ route('ktanah.lihat') }}" class="flex group">
+                                <a href="{{ route('persentasekelembapantanah') }}" class="flex group">
                                     <img src="{{ asset('images/farmer-s/tanah.svg') }}" class="w-6 h-6" alt="">
                                     <span class="menu-text ms-6 text-[#818280] focus:text-[#416D14]" id="kelembapan-tanah">Kelembapan Tanah</span>
                                 </a>
@@ -158,7 +158,7 @@
 
                             <!-- Ketinggian -->
                             <li>
-                                <a href="{{ route('ketinggian.lihat') }}" class="flex group">
+                                <a href="{{ route('approxaltitude') }}" class="flex group">
                                     <img src="{{ asset('images/farmer-s/ketinggian.svg') }}" class="w-6 h-6" alt="">
                                     <span class="menu-text ms-6 text-[#818280] focus:text-[#416D14]" id="ketinggian">Ketinggian</span>
                                 </a>

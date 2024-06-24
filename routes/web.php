@@ -20,9 +20,6 @@ use App\Http\Controllers\DataHumidityController;
 use App\Http\Controllers\DataPressureController;
 use App\Http\Controllers\DataApproxAltitudeController;
 
-
-
-
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\InformationUserController;
 
@@ -143,6 +140,17 @@ Route::get('/pages/data-sensor/pressure', [DataPressureController::class, 'getDa
 Route::get('/update-data-grafik-Pressure', [DataPressureController::class, 'updateDataGrafik_Pressure'])->name('update-data-grafik.Pressure');
 Route::get('/update-data-table-Pressure', [DataPressureController::class, 'updateDataTable_Pressure'])->name('update-data-table.Pressure');
 
+Route::get('/pages/data-sensor/approxaltitude', [DataApproxAltitudeController::class, 'getData_ApproxAltitude'])->name('approxaltitude');
+Route::get('/update-data-grafik-ApproxAltitude', [DataApproxAltitudeController::class, 'updateDataGrafik_ApproxAltitude'])->name('update-data-grafik.ApproxAltitude');
+Route::get('/update-data-table-ApproxAltitude', [DataApproxAltitudeController::class, 'updateDataTable_ApproxAltitude'])->name('update-data-table.ApproxAltitude');
+
+Route::get('/pages/data-sensor/persentasekelembapantanah', [DataPersentaseKelembapanTanahController::class, 'getData_PersentaseKelembapanTanah'])->name('persentasekelembapantanah');
+Route::get('/update-data-grafik-PersentaseKelembapanTanah', [DataPersentaseKelembapanTanahController::class, 'updateDataGrafik_PersentaseKelembapanTanah'])->name('update-data-grafik.PersentaseKelembapanTanah');
+Route::get('/update-data-table-PersentaseKelembapanTanah', [DataPersentaseKelembapanTanahController::class, 'updateDataTable_PersentaseKelembapanTanah'])->name('update-data-table.PersentaseKelembapanTanah');
+
+Route::get('/pages/data-sensor/humidity', [DataHumidityController::class, 'getData_Humidity'])->name('humidity');
+Route::get('/update-data-grafik-Humidity', [DataHumidityController::class, 'updateDataGrafik_Humidity'])->name('update-data-grafik.Humidity');
+Route::get('/update-data-table-Humidity', [DataHumidityController::class, 'updateDataTable_Humidity'])->name('update-data-table.Humidity');
 
 Route::get('/sensors/{id_lahan}', [FarmerController::class, 'getSensorsByLahan']);
 

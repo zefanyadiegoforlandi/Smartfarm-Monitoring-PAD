@@ -7,9 +7,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Collection;
 
-class DataPressureController extends Controller
+class DataApproxAltitudeController extends Controller
 {
-    public function getData_Pressure()
+    public function getData_ApproxAltitude()
     {
         try {
             $id_sensor = session('id_sensor');
@@ -50,7 +50,7 @@ class DataPressureController extends Controller
                 $sortedData = collect($dataSensors)->slice(-20)->values();
                 $dataSensor = $sortedData->map(function ($item) {
                     return [
-                        'Pressure' => $item['Pressure'],
+                        'ApproxAltitude' => $item['ApproxAltitude'],
                         'TimeAdded' => $item['TimeAdded'],
                         'id_sensor' => $item['id_sensor']
                     ];
@@ -58,7 +58,7 @@ class DataPressureController extends Controller
 
                 $dataTabel = $sortedData->slice(-10)->values()->reverse()->map(function ($item) {
                     return [
-                        'Pressure' => $item['Pressure'],
+                        'ApproxAltitude' => $item['ApproxAltitude'],
                         'TimeAdded' => $item['TimeAdded'],
                         'id_sensor' => $item['id_sensor']
                     ];
@@ -77,7 +77,7 @@ class DataPressureController extends Controller
                 $lengthAwarePaginator->setPath(request()->url());
                 $paginator = $lengthAwarePaginator->toArray();
 
-                return view('/pages/data-sensor/pressure', compact('paginator', 'dataSensor', 'dataTabel', 'sensors'));
+                return view('/pages/data-sensor/approxaltitude', compact('paginator', 'dataSensor', 'dataTabel', 'sensors'));
             } else {
                 return response()->json(['error' => 'Failed to retrieve data sensors'], $response->status());
             }
@@ -86,7 +86,7 @@ class DataPressureController extends Controller
         }
     }
 
-    public function updateDataGrafik_Pressure()
+    public function updateDataGrafik_ApproxAltitude()
     {
         try {
             $id_sensor = session('id_sensor');
@@ -102,10 +102,10 @@ class DataPressureController extends Controller
 
                 $sortedData = collect($dataSensors)->slice(-20)->values();
 
-                $Pressure = $sortedData->pluck('Pressure')->toArray();
+                $ApproxAltitude = $sortedData->pluck('ApproxAltitude')->toArray();
                 $TimeAdded = $sortedData->pluck('TimeAdded')->toArray();
 
-                return response()->json(['Pressure' => $Pressure, 'TimeAdded' => $TimeAdded]);
+                return response()->json(['ApproxAltitude' => $ApproxAltitude, 'TimeAdded' => $TimeAdded]);
             } else {
                 return response()->json(['error' => 'Failed to retrieve data sensors'], $response->status());
             }
@@ -114,7 +114,7 @@ class DataPressureController extends Controller
         }
     }
 
-    public function updateDataTable_Pressure()
+    public function updateDataTable_ApproxAltitude()
     {
         try {
             $id_sensor = session('id_sensor');
@@ -132,7 +132,7 @@ class DataPressureController extends Controller
 
                 $dataTabel = $sortedData->map(function ($item) {
                     return [
-                        'Pressure' => $item['Pressure'],
+                        'ApproxAltitude' => $item['ApproxAltitude'],
                         'TimeAdded' => $item['TimeAdded'],
                         'id_sensor' => $item['id_sensor']
                     ];

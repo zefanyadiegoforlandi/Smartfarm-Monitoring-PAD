@@ -7,7 +7,7 @@
             <span class="toggle-button text-white text-4xl top-5 left-4 cursor-pointer xl:hidden">
                 <img src="{{ asset('images/tonggle_sidebar.svg') }}">
             </span>
-            <p class="font-semibold text-3xl md:text-4xl text-[#416D14]">Persentase Kelembapan Tanah</p>
+            <p class="font-semibold text-3xl md:text-4xl text-[#416D14]">Approx Altitude</p>
         </div>
         <div class="flex items-center justify-end">
             <div class="relative w-[124px] h-[25px] lg:w-[160px] lg:h-[30px]">
@@ -32,18 +32,18 @@
             <div class="bg-[#ECF0E8] rounded-tl-lg rounded-tr-lg">
                 <h2 class="text-lg text-[#416D14] font-semibold p-2">Grafik</h2>
             </div>
-            <canvas id="kelembapanTanahChart" class="w-full"></canvas>
+            <canvas id="approxAltitudeChart" class="w-full"></canvas>
         </div>
     </div>
 
     <div class="overflow-x-auto mt-5">
-        <table id="kelembapanTanah-table" class="w-full">
+        <table id="approxAltitude-table" class="w-full">
             <thead class="bg-[#ECF0E8]">
                 <tr>
                     <th class="p-2 text-[#416D14] uppercase">Time</th>
                     <th class="p-2 text-[#416D14] uppercase">Date</th>
                     <th class="p-2 text-[#416D14] uppercase">ID Sensor</th>
-                    <th class="p-2 text-[#416D14] uppercase">Persentase Kelembapan Tanah</th>
+                    <th class="p-2 text-[#416D14] uppercase">Approx Altitude</th>
                 </tr>
             </thead>
             
@@ -53,7 +53,7 @@
                         <td class="py-2 px-4 border-b text-center">{{ date('H:i:s', strtotime($ds['TimeAdded'])) }}</td>
                         <td class="py-2 px-4 border-b text-center">{{ date('Y-m-d', strtotime($ds['TimeAdded'])) }}</td>
                         <td class="py-2 px-4 border-b text-center">{{ $ds['id_sensor'] }}</td>
-                        <td class="py-2 px-4 border-b text-center">{{ $ds['PersentaseKelembapanTanah'] }}</td>
+                        <td class="py-2 px-4 border-b text-center">{{ $ds['ApproxAltitude'] }}</td>
                     </tr>
                 @endforeach
             </tbody>
@@ -87,7 +87,7 @@
     }
 
     function reloadData() {
-        $.get('/update-data-table-PersentaseKelembapanTanah', function(response) {
+        $.get('/update-data-table-ApproxAltitude', function(response) {
             console.log(response);
             let newDataHtml = '';
             for (let i = response.dataSensor.length - 1; i >= 0; i--) {
@@ -103,7 +103,7 @@
                         <td class="py-2 px-4 border-b text-center">${time}</td>
                         <td class="py-2 px-4 border-b text-center">${date}</td>
                         <td class="py-2 px-4 border-b text-center">${ds['id_sensor']}</td>
-                        <td class="py-2 px-4 border-b text-center">${ds['PersentaseKelembapanTanah']}</td>
+                        <td class="py-2 px-4 border-b text-center">${ds['ApproxAltitude']}</td>
                     </tr>
                 `;
             }
@@ -115,16 +115,16 @@
 
     var tableData = {!! json_encode($dataSensor) !!};
     var labels = tableData.map(entry => entry.TimeAdded);
-    var kelembapanTanah = tableData.map(entry => entry.PersentaseKelembapanTanah);
+    var approxAltitude = tableData.map(entry => entry.ApproxAltitude);
 
-    var ctx = document.getElementById('kelembapanTanahChart').getContext('2d');
+    var ctx = document.getElementById('approxAltitudeChart').getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: labels,
             datasets: [{
-                label: 'Persentase Kelembapan Tanah',
-                data: kelembapanTanah,
+                label: 'Approx Altitude',
+                data: approxAltitude,
                 borderColor: '#416D14',
                 borderWidth: 1,
                 pointBackgroundColor: '#416D14',
@@ -143,7 +143,7 @@
                 y: {
                     title: {
                         display: true,
-                        text: 'Percentage',
+                        text: 'Altitude',
                         font: {
                             size: 14 
                         },
@@ -187,10 +187,10 @@
     });
 
     function fetchDataAndUpdateChart() {
-        fetch('/update-data-grafik-PersentaseKelembapanTanah')
+        fetch('/update-data-grafik-ApproxAltitude')
             .then(response => response.json())
             .then(data => {
-                var newData = data.PersentaseKelembapanTanah;
+                var newData = data.ApproxAltitude;
                 var newLabels = data.TimeAdded;
 
                 myChart.data.datasets[0].data = newData;
