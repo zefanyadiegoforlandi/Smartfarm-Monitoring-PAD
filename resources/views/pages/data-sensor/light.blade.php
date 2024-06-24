@@ -7,7 +7,7 @@
             <span class="toggle-button text-white text-4xl top-5 left-4 cursor-pointer xl:hidden">
                 <img src="{{ asset('images/tonggle_sidebar.svg') }}">
             </span>
-            <p class="font-semibold text-3xl md:text-4xl text-[#416D14]">RainDrop</p>
+            <p class="font-semibold text-3xl md:text-4xl text-[#416D14]">Light</p>
         </div>
         <div class="flex items-center justify-end">
             <div class="relative w-[124px] h-[25px] lg:w-[160px] lg:h-[30px]">
@@ -32,18 +32,18 @@
             <div class="bg-[#ECF0E8] rounded-tl-lg rounded-tr-lg">
                 <h2 class="text-lg text-[#416D14] font-semibold p-2">Grafik</h2>
             </div>
-            <canvas id="raindropChart" class="w-full"></canvas>
+            <canvas id="lightChart" class="w-full"></canvas>
         </div>
     </div>
 
     <div class="overflow-x-auto mt-5">
-        <table id="raindrop-table" class="w-full">
+        <table id="light-table" class="w-full">
             <thead class="bg-[#ECF0E8]">
                 <tr>
                     <th class="p-2 text-[#416D14] uppercase">Time</th>
                     <th class="p-2 text-[#416D14] uppercase">Date</th>
                     <th class="p-2 text-[#416D14] uppercase">ID Sensor</th>
-                    <th class="p-2 text-[#416D14] uppercase">RainDrop</th>
+                    <th class="p-2 text-[#416D14] uppercase">Light</th>
                 </tr>
             </thead>
             
@@ -53,7 +53,7 @@
                         <td class="py-2 px-4 border-b text-center">{{ date('H:i:s', strtotime($ds['TimeAdded'])) }}</td>
                         <td class="py-2 px-4 border-b text-center">{{ date('Y-m-d', strtotime($ds['TimeAdded'])) }}</td>
                         <td class="py-2 px-4 border-b text-center">{{ $ds['id_sensor'] }}</td>
-                        <td class="py-2 px-4 border-b text-center">{{ $ds['RainDrop'] }}</td>
+                        <td class="py-2 px-4 border-b text-center">{{ $ds['Light'] }}</td>
                     </tr>
                 @endforeach
             </tbody>
@@ -87,7 +87,7 @@
     }
 
     function reloadData() {
-        $.get('/update-data-table-RainDrop', function(response) {
+        $.get('/update-data-table-Light', function(response) {
             console.log(response);
             let newDataHtml = '';
             for (let i = response.dataSensor.length - 1; i >= 0; i--) {
@@ -103,7 +103,7 @@
                         <td class="py-2 px-4 border-b text-center">${time}</td>
                         <td class="py-2 px-4 border-b text-center">${date}</td>
                         <td class="py-2 px-4 border-b text-center">${ds['id_sensor']}</td>
-                        <td class="py-2 px-4 border-b text-center">${ds['RainDrop']}</td>
+                        <td class="py-2 px-4 border-b text-center">${ds['Light']}</td>
                     </tr>
                 `;
             }
@@ -115,16 +115,16 @@
 
     var tableData = {!! json_encode($dataSensor) !!};
     var labels = tableData.map(entry => entry.TimeAdded);
-    var raindrop = tableData.map(entry => entry.RainDrop);
+    var light = tableData.map(entry => entry.Light);
 
-    var ctx = document.getElementById('raindropChart').getContext('2d');
+    var ctx = document.getElementById('lightChart').getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: labels,
             datasets: [{
-                label: 'Raindrop Intensity',
-                data: raindrop,
+                label: 'Light Intensity',
+                data: light,
                 borderColor: '#416D14',
                 borderWidth: 1,
                 pointBackgroundColor: '#416D14',
@@ -187,10 +187,10 @@
     });
 
     function fetchDataAndUpdateChart() {
-        fetch('/update-data-grafik-RainDrop')
+        fetch('/update-data-grafik-Light')
             .then(response => response.json())
             .then(data => {
-                var newData = data.RainDrop;
+                var newData = data.Light;
                 var newLabels = data.TimeAdded;
 
                 myChart.data.datasets[0].data = newData;
@@ -205,7 +205,6 @@
         console.log('Filter changed');
     }
 
-    
     document.addEventListener('DOMContentLoaded', filterChanged);
 </script>
 @endsection

@@ -4,7 +4,10 @@
 <div class="container mx-auto px-4 md:px-8 lg:px-16 xl:px-20">
     <div class="mt-5 flex flex-col md:flex-row md:items-center justify-between">
         <div class="flex items-center justify-start">
-            <p class="font-semibold text-3xl md:text-4xl text-[#416D14]">Kualitas Udara</p>
+            <span class="toggle-button text-white text-4xl top-5 left-4 cursor-pointer xl:hidden">
+                <img src="{{ asset('images/tonggle_sidebar.svg') }}">
+            </span>
+            <p class="font-semibold text-3xl md:text-4xl text-[#416D14]">Air Quality</p>
         </div>
         <div class="flex items-center justify-end">
             <div class="relative w-[124px] h-[25px] lg:w-[160px] lg:h-[30px]">
@@ -39,12 +42,13 @@
                 <tr>
                     <th class="p-2 text-[#416D14] uppercase">Time</th>
                     <th class="p-2 text-[#416D14] uppercase">Date</th>
-                    <th class="hidden md:table-cell p-2 text-[#416D14] uppercase">Sensor ID</th>
-                    <th class="hidden md:table-cell p-2 text-[#416D14] uppercase">Kualitas Udara</th>
+                    <th class="p-2 text-[#416D14] uppercase">ID Sensor</th>
+                    <th class="p-2 text-[#416D14] uppercase">Air Quality</th>
                 </tr>
             </thead>
+            
             <tbody id="data-container">
-                @foreach (array_reverse($dataTabel) as $ds)
+                @foreach ($dataTabel as $ds)
                     <tr class="{{ $loop->iteration % 2 == 0 ? 'bg-[#ecf0e82e]' : 'bg-white' }}">
                         <td class="py-2 px-4 border-b text-center">{{ date('H:i:s', strtotime($ds['TimeAdded'])) }}</td>
                         <td class="py-2 px-4 border-b text-center">{{ date('Y-m-d', strtotime($ds['TimeAdded'])) }}</td>
@@ -52,7 +56,8 @@
                         <td class="py-2 px-4 border-b text-center">{{ $ds['AirQuality'] }}</td>
                     </tr>
                 @endforeach
-        </tbody>
+            </tbody>
+        </table>
     </div>
 </div>
 
@@ -88,16 +93,15 @@
             for (let i = response.dataSensor.length - 1; i >= 0; i--) {
                 const ds = response.dataSensor[i];
                 const rowClass = (response.dataSensor.length - i) % 2 === 0 ? 'bg-[#ecf0e82e]' : 'bg-white';
-                const date = new Date(ds['TimeAdded']);
-                
-                // Format waktu dan tanggal secara manual
-                const formattedTime = date.toTimeString().split(' ')[0]; // Mengambil HH:MM:SS
-                const formattedDate = date.toISOString().split('T')[0]; // Mengambil YYYY-MM-DD
-                
+
+                // Memisahkan waktu dan tanggal dari TimeAdded
+                const timeAdded = ds['TimeAdded'];
+                const [date, time] = timeAdded.split(' ');
+
                 newDataHtml += `
                     <tr class="${rowClass}">
-                        <td class="py-2 px-4 border-b text-center">${formattedTime}</td>
-                        <td class="py-2 px-4 border-b text-center">${formattedDate}</td>
+                        <td class="py-2 px-4 border-b text-center">${time}</td>
+                        <td class="py-2 px-4 border-b text-center">${date}</td>
                         <td class="py-2 px-4 border-b text-center">${ds['id_sensor']}</td>
                         <td class="py-2 px-4 border-b text-center">${ds['AirQuality']}</td>
                     </tr>
@@ -106,7 +110,6 @@
             $('#data-container').html(newDataHtml);
         });
     }
-
 
     setInterval(reloadData, 2000);
 
@@ -137,34 +140,44 @@
         },
         options: {
             scales: {
-                yAxes: [{
-                    scaleLabel: {
+                y: {
+                    title: {
                         display: true,
-                        labelString: 'Quality',
-                        fontSize: 14 
+                        text: 'Quality',
+                        font: {
+                            size: 14 
+                        },
+                        color: '#416D14'
                     },
                     ticks: {
-                        fontColor: '#416D14',
-                        fontSize: 12
+                        color: '#000000',
+                        font: {
+                            size: 12
+                        }
                     },
-                    gridLines: {
+                    grid: {
                         color: 'rgba(0, 0, 0, 0.05)'
                     }
-                }],
-                xAxes: [{
-                    scaleLabel: {
+                },
+                x: {
+                    title: {
                         display: true,
-                        labelString: 'Time',
-                        fontSize: 14 
+                        text: 'Time',
+                        font: {
+                            size: 14 
+                        },
+                        color: '#416D14'
                     },
                     ticks: {
-                        fontColor: '#416D14',
-                        fontSize: 10 
+                        color: '#000000',
+                        font: {
+                            size: 10 
+                        }
                     },
-                    gridLines: {
+                    grid: {
                         color: 'rgba(0, 0, 0, 0.05)'
                     }
-                }]
+                }
             },
             animation: {
                 duration: 1000,
@@ -187,5 +200,12 @@
             .catch(error => console.error('Error:', error));
     }
     setInterval(fetchDataAndUpdateChart, 2000);
+
+    function filterChanged() {
+        console.log('Filter changed');
+    }
+
+    
+    document.addEventListener('DOMContentLoaded', filterChanged);
 </script>
 @endsection

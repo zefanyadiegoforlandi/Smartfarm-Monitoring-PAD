@@ -7,9 +7,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Collection;
 
-class DataAirQualityController extends Controller
+class DataPressureController extends Controller
 {
-    public function getData_AirQuality()
+    public function getData_Pressure()
     {
         try {
             $id_sensor = session('id_sensor');
@@ -50,7 +50,7 @@ class DataAirQualityController extends Controller
                 $sortedData = collect($dataSensors)->slice(-20)->values();
                 $dataSensor = $sortedData->map(function ($item) {
                     return [
-                        'AirQuality' => $item['AirQuality'],
+                        'Pressure' => $item['Pressure'],
                         'TimeAdded' => $item['TimeAdded'],
                         'id_sensor' => $item['id_sensor']
                     ];
@@ -58,7 +58,7 @@ class DataAirQualityController extends Controller
 
                 $dataTabel = $sortedData->slice(-10)->values()->reverse()->map(function ($item) {
                     return [
-                        'AirQuality' => $item['AirQuality'],
+                        'Pressure' => $item['Pressure'],
                         'TimeAdded' => $item['TimeAdded'],
                         'id_sensor' => $item['id_sensor']
                     ];
@@ -77,7 +77,7 @@ class DataAirQualityController extends Controller
                 $lengthAwarePaginator->setPath(request()->url());
                 $paginator = $lengthAwarePaginator->toArray();
 
-                return view('/pages/data-sensor/airquality', compact('paginator', 'dataSensor', 'dataTabel', 'sensors'));
+                return view('/pages/data-sensor/pressure', compact('paginator', 'dataSensor', 'dataTabel', 'sensors'));
             } else {
                 return response()->json(['error' => 'Failed to retrieve data sensors'], $response->status());
             }
@@ -86,7 +86,7 @@ class DataAirQualityController extends Controller
         }
     }
 
-    public function updateDataGrafik_AirQuality()
+    public function updateDataGrafik_Pressure()
     {
         try {
             $id_sensor = session('id_sensor');
@@ -102,10 +102,10 @@ class DataAirQualityController extends Controller
 
                 $sortedData = collect($dataSensors)->slice(-20)->values();
 
-                $AirQuality = $sortedData->pluck('AirQuality')->toArray();
+                $Pressure = $sortedData->pluck('Pressure')->toArray();
                 $TimeAdded = $sortedData->pluck('TimeAdded')->toArray();
 
-                return response()->json(['AirQuality' => $AirQuality, 'TimeAdded' => $TimeAdded]);
+                return response()->json(['Pressure' => $Pressure, 'TimeAdded' => $TimeAdded]);
             } else {
                 return response()->json(['error' => 'Failed to retrieve data sensors'], $response->status());
             }
@@ -114,7 +114,7 @@ class DataAirQualityController extends Controller
         }
     }
 
-    public function updateDataTable_AirQuality()
+    public function updateDataTable_Pressure()
     {
         try {
             $id_sensor = session('id_sensor');
@@ -132,7 +132,7 @@ class DataAirQualityController extends Controller
 
                 $dataTabel = $sortedData->map(function ($item) {
                     return [
-                        'AirQuality' => $item['AirQuality'],
+                        'Pressure' => $item['Pressure'],
                         'TimeAdded' => $item['TimeAdded'],
                         'id_sensor' => $item['id_sensor']
                     ];

@@ -13,6 +13,15 @@ use App\Http\Controllers\DaftarAuthController;
 use App\Http\Controllers\FarmerController;
 use App\Http\Controllers\DataRainDropController;
 use App\Http\Controllers\DataAirQualityController;
+use App\Http\Controllers\DataTemperatureController;
+use App\Http\Controllers\DataLightController;
+use App\Http\Controllers\DataPersentaseKelembapanTanahController;
+use App\Http\Controllers\DataHumidityController;
+use App\Http\Controllers\DataPressureController;
+use App\Http\Controllers\DataApproxAltitudeController;
+
+
+
 
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\InformationUserController;
@@ -114,12 +123,26 @@ Route::get('/user/tekanan-udara', [FarmerController::class, 'lihat_tudara'])->na
 
 //Data-Sensor
 Route::get('/pages/data-sensor/raindrop', [DataRainDropController::class, 'getData_RainDrop'])->name('raindrop');
-Route::get('/pages/data-sensor/airquality', [DataAirQualityController::class, 'getData_AirQuality'])->name('airquality');
-
 Route::get('/update-data-grafik-RainDrop', [DataRainDropController::class, 'updateDataGrafik_RainDrop'])->name('update-data-grafik.Raindrop');
 Route::get('/update-data-table-RainDrop', [DataRainDropController::class, 'updateDataTable_RainDrop'])->name('update-data-grafik.Raindrop');
+
+Route::get('/pages/data-sensor/airquality', [DataAirQualityController::class, 'getData_AirQuality'])->name('airquality');
 Route::get('/update-data-grafik-AirQuality', [DataAirQualityController::class, 'updateDataGrafik_AirQuality'])->name('update-data-table.AirQuality');
 Route::get('/update-data-table-AirQuality', [DataAirQualityController::class, 'updateDataTable_AirQuality'])->name('update-data-table.AirQuality');
+
+Route::get('/pages/data-sensor/temperature', [DataTemperatureController::class, 'getData_Temperature'])->name('temperature');
+Route::get('/update-data-grafik-Temperature', [DataTemperatureController::class, 'updateDataGrafik_Temperature'])->name('update-data-grafik.Temperature');
+Route::get('/update-data-table-Temperature', [DataTemperatureController::class, 'updateDataTable_Temperature'])->name('update-data-grafik.Temperature');
+
+
+Route::get('/pages/data-sensor/light', [DataLightController::class, 'getData_Light'])->name('light');
+Route::get('/update-data-grafik-Light', [DataLightController::class, 'updateDataGrafik_Light'])->name('update-data-grafik.Light');
+Route::get('/update-data-table-Light', [DataLightController::class, 'updateDataTable_Light'])->name('update-data-table.Light');
+
+Route::get('/pages/data-sensor/pressure', [DataPressureController::class, 'getData_Pressure'])->name('pressure');
+Route::get('/update-data-grafik-Pressure', [DataPressureController::class, 'updateDataGrafik_Pressure'])->name('update-data-grafik.Pressure');
+Route::get('/update-data-table-Pressure', [DataPressureController::class, 'updateDataTable_Pressure'])->name('update-data-table.Pressure');
+
 
 Route::get('/sensors/{id_lahan}', [FarmerController::class, 'getSensorsByLahan']);
 

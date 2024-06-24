@@ -110,7 +110,7 @@
                         <ul class="space-y-2 text-lg">
                             <!-- Suhu -->
                             <li>
-                                <a href="{{ route('suhu.lihat') }}" class="flex group" onclick="changeColor(this, 'suhu')">
+                                <a href="{{ route('temperature') }}" class="flex group" onclick="changeColor(this, 'suhu')">
                                     <img src="{{ asset('images/farmer-s/suhu.svg') }}" class="w-6 h-6" alt="">
                                     <span class="menu-text ms-6 text-[#818280] focus:text-[#416D14]" id="suhu">Suhu</span>
                                 </a>
@@ -141,7 +141,7 @@
 
                             <!-- Intensitas Cahaya -->
                             <li>
-                                <a href="{{ route('cahaya.lihat') }}" class="flex group">
+                                <a href="{{ route('light') }}" class="flex group">
                                     <img src="{{ asset('images/farmer-s/intensitasC.svg') }}" class="w-6 h-6" alt="">
                                     <span class="menu-text ms-6 text-[#818280] focus:text-[#416D14]" id="intensitas-cahaya">Intensitas Cahaya</span>
                                 </a>
@@ -166,7 +166,7 @@
 
                             <!-- Tekanan Udara -->
                             <li>
-                                <a href="{{ route('tudara.lihat') }}" class="flex group">
+                                <a href="{{ route('pressure') }}" class="flex group">
                                     <img src="{{ asset('images/farmer-s/tekanan-udara.svg') }}" class="w-6 h-6" alt="">
                                     <span class="menu-text ms-6 text-[#818280] focus:text-[#416D14]" id="tekanan-udara">Tekanan Udara</span>
                                 </a>
@@ -269,7 +269,7 @@
         function changeColor(element, linkId) {
     const allLinks = document.querySelectorAll('.menu-text');
     const allSelectedIcons = document.querySelectorAll('img[id="selected"]');
-    const allNonSelectedIcons = document.queryAll('img[id="non-selected"]');
+    const allNonSelectedIcons = document.querySelectorAll('img[id="non-selected"]');
 
     // Reset semua tautan ke warna default dan ikon ke non-selected
     allLinks.forEach(link => {
@@ -312,6 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
         nonSelectedImg.style.display = 'none';
     }
 });
+
 
     </script>
 
