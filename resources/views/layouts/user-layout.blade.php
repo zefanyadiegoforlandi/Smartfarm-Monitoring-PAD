@@ -124,6 +124,13 @@
                                 </a>
                             </li>
 
+                            <li>
+                                <a href="{{ route('airquality') }}" class="flex group">
+                                    <img src="{{ asset('images/farmer-s/angin.svg') }}" class="w-6 h-6" alt="">
+                                    <span class="menu-text ms-6 text-[#818280] focus:text-[#416D14]" id="kualitas-udara">Kualitas Udara</span>
+                                </a>
+                            </li>
+
                             <!-- Curah Hujan -->
                             <li>
                                 <a href="{{ route('raindrop') }}" class="flex group">
@@ -140,14 +147,7 @@
                                 </a>
                             </li>
 
-                            <!-- Kualitas Udara -->
-                            <li>
-                                <a href="{{ route('kudara.lihat') }}" class="flex group">
-                                    <img src="{{ asset('images/farmer-s/angin.svg') }}" class="w-6 h-6" alt="">
-                                    <span class="menu-text ms-6 text-[#818280] focus:text-[#416D14]" id="kualitas-udara">Kualitas Udara</span>
-                                </a>
-                            </li>
-
+                    
                             <!-- Kelembapan Tanah -->
                             <li>
                                 <a href="{{ route('ktanah.lihat') }}" class="flex group">

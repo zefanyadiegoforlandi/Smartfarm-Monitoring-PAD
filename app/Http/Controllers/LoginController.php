@@ -69,7 +69,6 @@ class LoginController extends Controller
                             $sessionData['id_sensor'] = $sensor['id_sensor'];
                         }
                     }
-                    dd(session()->all());
 
                     session($sessionData);
                     if ($level === 'admin') {

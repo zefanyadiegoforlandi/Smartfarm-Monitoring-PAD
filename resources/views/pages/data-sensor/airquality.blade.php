@@ -4,7 +4,7 @@
 <div class="container mx-auto px-4 md:px-8 lg:px-16 xl:px-20">
     <div class="mt-5 flex flex-col md:flex-row md:items-center justify-between">
         <div class="flex items-center justify-start">
-            <p class="font-semibold text-3xl md:text-4xl text-[#416D14]">Curah Hujan</p>
+            <p class="font-semibold text-3xl md:text-4xl text-[#416D14]">Kualitas Udara</p>
         </div>
         <div class="flex items-center justify-end">
             <div class="relative w-[124px] h-[25px] lg:w-[160px] lg:h-[30px]">
@@ -29,31 +29,30 @@
             <div class="bg-[#ECF0E8] rounded-tl-lg rounded-tr-lg">
                 <h2 class="text-lg text-[#416D14] font-semibold p-2">Grafik</h2>
             </div>
-            <canvas id="raindropChart" class="w-full"></canvas>
+            <canvas id="airQualityChart" class="w-full"></canvas>
         </div>
     </div>
 
     <div class="overflow-x-auto mt-5">
-        <table id="raindrop-table" class="w-full">
+        <table id="airQuality-table" class="w-full">
             <thead class="bg-[#ECF0E8]">
                 <tr>
                     <th class="p-2 text-[#416D14] uppercase">Time</th>
                     <th class="p-2 text-[#416D14] uppercase">Date</th>
                     <th class="hidden md:table-cell p-2 text-[#416D14] uppercase">Sensor ID</th>
-                    <th class="hidden md:table-cell p-2 text-[#416D14] uppercase">Curah Hujan</th>
+                    <th class="hidden md:table-cell p-2 text-[#416D14] uppercase">Kualitas Udara</th>
                 </tr>
             </thead>
             <tbody id="data-container">
-                @foreach ($dataTabel as $ds)
+                @foreach (array_reverse($dataTabel) as $ds)
                     <tr class="{{ $loop->iteration % 2 == 0 ? 'bg-[#ecf0e82e]' : 'bg-white' }}">
                         <td class="py-2 px-4 border-b text-center">{{ date('H:i:s', strtotime($ds['TimeAdded'])) }}</td>
                         <td class="py-2 px-4 border-b text-center">{{ date('Y-m-d', strtotime($ds['TimeAdded'])) }}</td>
                         <td class="py-2 px-4 border-b text-center">{{ $ds['id_sensor'] }}</td>
-                        <td class="py-2 px-4 border-b text-center">{{ $ds['RainDrop'] }}</td>
+                        <td class="py-2 px-4 border-b text-center">{{ $ds['AirQuality'] }}</td>
                     </tr>
                 @endforeach
-            </tbody>
-        </table>
+        </tbody>
     </div>
 </div>
 
@@ -83,45 +82,46 @@
     }
 
     function reloadData() {
-    $.get('/update-data-table-RainDrop', function(response) {
-        console.log(response);
-        let newDataHtml = '';
-        for (let i = response.dataSensor.length - 1; i >= 0; i--) {
-            const ds = response.dataSensor[i];
-            const rowClass = (response.dataSensor.length - i) % 2 === 0 ? 'bg-[#ecf0e82e]' : 'bg-white';
-
-            // Memisahkan waktu dan tanggal dari TimeAdded
-            const timeAdded = ds['TimeAdded'];
-            const [date, time] = timeAdded.split(' ');
-
-            newDataHtml += `
-                <tr class="${rowClass}">
-                    <td class="py-2 px-4 border-b text-center">${time}</td>
-                    <td class="py-2 px-4 border-b text-center">${date}</td>
-                    <td class="py-2 px-4 border-b text-center">${ds['id_sensor']}</td>
-                    <td class="py-2 px-4 border-b text-center">${ds['RainDrop']}</td>
-                </tr>
-            `;
-        }
-        $('#data-container').html(newDataHtml);
-    });
-}
+        $.get('/update-data-table-AirQuality', function(response) {
+            console.log(response);
+            let newDataHtml = '';
+            for (let i = response.dataSensor.length - 1; i >= 0; i--) {
+                const ds = response.dataSensor[i];
+                const rowClass = (response.dataSensor.length - i) % 2 === 0 ? 'bg-[#ecf0e82e]' : 'bg-white';
+                const date = new Date(ds['TimeAdded']);
+                
+                // Format waktu dan tanggal secara manual
+                const formattedTime = date.toTimeString().split(' ')[0]; // Mengambil HH:MM:SS
+                const formattedDate = date.toISOString().split('T')[0]; // Mengambil YYYY-MM-DD
+                
+                newDataHtml += `
+                    <tr class="${rowClass}">
+                        <td class="py-2 px-4 border-b text-center">${formattedTime}</td>
+                        <td class="py-2 px-4 border-b text-center">${formattedDate}</td>
+                        <td class="py-2 px-4 border-b text-center">${ds['id_sensor']}</td>
+                        <td class="py-2 px-4 border-b text-center">${ds['AirQuality']}</td>
+                    </tr>
+                `;
+            }
+            $('#data-container').html(newDataHtml);
+        });
+    }
 
 
     setInterval(reloadData, 2000);
 
     var tableData = {!! json_encode($dataSensor) !!};
     var labels = tableData.map(entry => entry.TimeAdded);
-    var raindrop = tableData.map(entry => entry.RainDrop);
+    var airQuality = tableData.map(entry => entry.AirQuality);
 
-    var ctx = document.getElementById('raindropChart').getContext('2d');
+    var ctx = document.getElementById('airQualityChart').getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: labels,
             datasets: [{
-                label: 'Raindrop Intensity',
-                data: raindrop,
+                label: 'Air Quality',
+                data: airQuality,
                 borderColor: '#416D14',
                 borderWidth: 1,
                 pointBackgroundColor: '#416D14',
@@ -140,7 +140,7 @@
                 yAxes: [{
                     scaleLabel: {
                         display: true,
-                        labelString: 'Intensity',
+                        labelString: 'Quality',
                         fontSize: 14 
                     },
                     ticks: {
@@ -174,10 +174,10 @@
     });
 
     function fetchDataAndUpdateChart() {
-        fetch('/update-data-grafik-RainDrop')
+        fetch('/update-data-grafik-AirQuality')
             .then(response => response.json())
             .then(data => {
-                var newData = data.RainDrop;
+                var newData = data.AirQuality;
                 var newLabels = data.TimeAdded;
 
                 myChart.data.datasets[0].data = newData;

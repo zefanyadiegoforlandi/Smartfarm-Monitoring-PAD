@@ -12,6 +12,8 @@ use App\Http\Controllers\DaftarAuthController;
 
 use App\Http\Controllers\FarmerController;
 use App\Http\Controllers\DataRainDropController;
+use App\Http\Controllers\DataAirQualityController;
+
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\InformationUserController;
 
@@ -110,9 +112,14 @@ Route::get('/user/ketinggian', [FarmerController::class, 'lihat_ketinggian'])->n
 Route::get('/user/kualitas-udara', [FarmerController::class, 'lihat_kudara'])->name('kudara.lihat');
 Route::get('/user/tekanan-udara', [FarmerController::class, 'lihat_tudara'])->name('tudara.lihat');
 
+//Data-Sensor
 Route::get('/pages/data-sensor/raindrop', [DataRainDropController::class, 'getData_RainDrop'])->name('raindrop');
-Route::get('/update-data-grafik', [DataRainDropController::class, 'updateDataGrafik_RainDrop']);
-Route::get('/update-data-table', [DataRainDropController::class, 'updateDataTable_RainDrop'])->name('update-data-table');
+Route::get('/pages/data-sensor/airquality', [DataAirQualityController::class, 'getData_AirQuality'])->name('airquality');
+
+Route::get('/update-data-grafik-RainDrop', [DataRainDropController::class, 'updateDataGrafik_RainDrop'])->name('update-data-grafik.Raindrop');
+Route::get('/update-data-table-RainDrop', [DataRainDropController::class, 'updateDataTable_RainDrop'])->name('update-data-grafik.Raindrop');
+Route::get('/update-data-grafik-AirQuality', [DataAirQualityController::class, 'updateDataGrafik_AirQuality'])->name('update-data-table.AirQuality');
+Route::get('/update-data-table-AirQuality', [DataAirQualityController::class, 'updateDataTable_AirQuality'])->name('update-data-table.AirQuality');
 
 Route::get('/sensors/{id_lahan}', [FarmerController::class, 'getSensorsByLahan']);
 

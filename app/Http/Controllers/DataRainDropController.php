@@ -48,22 +48,24 @@ class DataRainDropController extends Controller
                 $dataSensors = $response->json();
 
                 $sortedData = collect($dataSensors)->slice(-20)->values();
-
                 $dataSensor = $sortedData->map(function ($item) {
                     return [
                         'RainDrop' => $item['RainDrop'],
-                        'waktu_perekaman' => $item['waktu_perekaman'],
+                        'TimeAdded' => $item['TimeAdded'],
                         'id_sensor' => $item['id_sensor']
                     ];
                 })->toArray();
 
-                $dataTabel = $sortedData->slice(-10)->values()->map(function ($item) {
+                $dataTabel = $sortedData->slice(-10)->values()->reverse()->map(function ($item) {
                     return [
                         'RainDrop' => $item['RainDrop'],
-                        'waktu_perekaman' => $item['waktu_perekaman'],
+                        'TimeAdded' => $item['TimeAdded'],
                         'id_sensor' => $item['id_sensor']
                     ];
                 })->toArray();
+                
+
+                
 
                 $perPage = 5; 
                 $currentPage = request()->input('page', 1); 
@@ -104,9 +106,9 @@ class DataRainDropController extends Controller
                 $sortedData = collect($dataSensors)->slice(-20)->values();
 
                 $RainDrop = $sortedData->pluck('RainDrop')->toArray();
-                $waktu_perekaman = $sortedData->pluck('waktu_perekaman')->toArray();
+                $TimeAdded = $sortedData->pluck('TimeAdded')->toArray();
 
-                return response()->json(['RainDrop' => $RainDrop, 'waktu_perekaman' => $waktu_perekaman]);
+                return response()->json(['RainDrop' => $RainDrop, 'TimeAdded' => $TimeAdded]);
             } else {
                 return response()->json(['error' => 'Failed to retrieve data sensors'], $response->status());
             }
@@ -134,10 +136,11 @@ class DataRainDropController extends Controller
                 $dataTabel = $sortedData->map(function ($item) {
                     return [
                         'RainDrop' => $item['RainDrop'],
-                        'waktu_perekaman' => $item['waktu_perekaman'],
+                        'TimeAdded' => $item['TimeAdded'],
                         'id_sensor' => $item['id_sensor']
                     ];
                 })->toArray();
+                
 
                 return response()->json(['dataSensor' => $dataTabel]);
             } else {
