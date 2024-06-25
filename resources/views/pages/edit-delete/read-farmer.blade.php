@@ -46,7 +46,7 @@
                             <td class=" py-4">{{ $user->email}}</td>
                         </tr>
                         <tr>
-                            <th class="text-start pe-9">Farmer ID</th>
+                            <th class="text-start pe-9">Id Farmer</th>
                             <td class=" py-4">{{ $user->id}}</td>
                         </tr>
                         <tr>

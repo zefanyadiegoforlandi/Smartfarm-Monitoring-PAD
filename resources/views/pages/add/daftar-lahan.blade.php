@@ -43,7 +43,7 @@
                 </div>
             </div>
 
-            <div class="table-responsive mt-5 overflow-x-auto">
+            <div class="table-responsive mt-5">
                 <table style="width: 100%;">
                     <thead style="height: 53px; background-color:#ECF0E8; color:#416D14">
                         <tr>
@@ -70,7 +70,8 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="py-4 px-4 border-b text-center">Tidak ada data yang ditemukan</td>
+                                <td colspan="5" class="py-4 px-4 border-b text-center">Tidak ada data yang ditemukan untuk pencarian '{{ request()->input('search') }}'
+                                </td>
                             </tr>
                         @endforelse
                     </tbody>

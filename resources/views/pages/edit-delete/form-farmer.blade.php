@@ -52,7 +52,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th class="text-start pe-9">Alamat</th>
+                                <th class="text-start pe-9">Alamat Farmer</th>
                                 <td class=" py-4">
                                     <input type="text" name="alamat_user" id="alamat_user" value="{{ $user->alamat_user }}" class="border border-gray-300 rounded px-3 py-2 w-3/4">
                                 </td>

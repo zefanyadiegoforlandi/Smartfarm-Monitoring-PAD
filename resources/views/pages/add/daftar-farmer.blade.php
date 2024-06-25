@@ -40,7 +40,7 @@
                 </div>
             </div>
 
-            <div class="table-responsive mt-5 overflow-x-auto">
+            <div class="table-responsive mt-5">
                 <table style="width: 100%;">
                     <thead style="height: 53px; background-color:#ECF0E8; color:#416D14">
                         <tr>

@@ -44,7 +44,10 @@
                             <p class="dark:text-indigo-200 font-semibold">Berikut adalah laporan hari ini!</p>
                         </div>
                 
-                        <div id="realTimeDate" class="flex items-center" style="font-size: 15px; font-family: Arial, sans-serif; color:#416D14;"></div>
+                        <div class="flex items-center justify-end">
+                            <p class="font-medium text-[13px] md:text-base me-2"><?php echo date('d F Y'); ?></p>
+                            <img src="{{ asset('images/farmer-s/ic_tanggal.svg') }}" />
+                        </div>                    
                     </div>
             
             </div>
@@ -117,7 +120,7 @@
                           
                         </div>
             
-                        <div class="table-responsive mt-5 overflow-x-auto">
+                        <div class="table-responsive mt-5 ">
                             <table style="width: 100%;">
                                 <thead style="height: 53px; background-color:#ECF0E8; color:#416D14">
                                     <tr>
@@ -401,29 +404,7 @@
                 </div>
     
             </div>
-         <script>
-            function updateRealTimeDate() {
-            const now = new Date();
-            const options = {
-                day: 'numeric',  // Tanggal (contoh: 01)
-                month: 'long',   // Nama bulan dalam bahasa Inggris (contoh: January)
-                year: 'numeric',   // Tahun empat digit (contoh: 2023)
-                
-            };
-            const formattedDate = now.toLocaleDateString('id-ID', options);
-        
-            document.getElementById('realTimeDate').textContent = formattedDate;
-            }
-        
-            // Initial update
-            updateRealTimeDate();
-        
-            // Update every second
-            setInterval(updateRealTimeDate, 1000);
-        </script>
 
-    
-    
         </div>
     </div>
 

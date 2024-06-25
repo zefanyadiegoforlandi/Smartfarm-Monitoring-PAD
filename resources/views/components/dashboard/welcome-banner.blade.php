@@ -33,15 +33,7 @@
 
     <!-- Content -->
 
-        <div class="flex relative flex items-center justify-between">
-            <div>
-                <h1 class="text-3xl md:text-3xl font-bold mb-3" style="color:#416D14;">Hai, {{ Auth::user()->name }}</h1>
-                <p class="dark:text-indigo-200">Berikut adalah laporan hari ini!</p>
-            </div>
-    
-            <div id="realTimeDate" class="flex items-center" style="font-size: 15px; font-family: Arial, sans-serif; color:#416D14;"></div>
-        </div>
-
+       
         <script>
             function updateRealTimeDate() {
             const now = new Date();

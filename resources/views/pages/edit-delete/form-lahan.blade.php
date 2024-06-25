@@ -12,7 +12,7 @@
                     @csrf
                     @method('POST')
                     <div class="mb-4">
-                        <label for="id_user" class="block text-gray-700 font-bold">ID FARMER</label>
+                        <label for="id_user" class="block text-gray-700 font-bold"> NAMA FARMER</label>
                         <select name="id_user" id="id_user" class="border border-gray-300 rounded px-3 py-2 w-full">
                             @foreach($users as $user)
                                 @if($user->level === 'user')

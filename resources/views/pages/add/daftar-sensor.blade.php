@@ -71,7 +71,8 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="py-4 px-4 border-b text-center">Tidak ada data yang ditemukan</td>
+                                <td colspan="5" class="py-4 px-4 border-b text-center">Tidak ada data yang ditemukan untuk pencarian '{{ request()->input('search') }}'
+                                </td>
                             </tr>
                         @endforelse
                     </tbody>
