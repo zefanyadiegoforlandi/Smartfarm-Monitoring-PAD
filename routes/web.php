@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DataFeedController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DashboardUserController;
+use App\Http\Controllers\DownloadDataController;
 
 use App\Http\Controllers\DaftarFarmerController;
 use App\Http\Controllers\DaftarLahanController;
@@ -104,7 +105,7 @@ Route::get('/user/pertinjau', [DataPertinjauController::class, 'showPreview'])->
 
 Route::get('/update-data-pertinjau', [DataPertinjauController::class, 'getData'])->name('update-data-pertinjau');
 
-Route::get('/user/download', [DashboardUserController::class, 'download_data'])->name('download.data');
+Route::get('/user/download', [DownloadDataController::class, 'index'])->name('download.data');
 Route::post('/set-lahan', [SessionController::class, 'setLahan'])->name('set-lahan');
 Route::post('/set-sensor', [SessionController::class, 'setSensor'])->name('set-sensor');
 
@@ -148,12 +149,6 @@ Route::get('/update-data-table-Humidity', [DataHumidityController::class, 'updat
 Route::get('/sensor-data', [DataPertinjauController::class, 'getSensorData']);
 
 
-
-
-Route::get('/smartfarm-api', function () {
-    $apiKey = config('services.smartfarm.api_key');
-    $response = Http::get("http://localhost/smartfarm/smartfarm_api.php?api_key=$apiKey");
-});
 
  
 

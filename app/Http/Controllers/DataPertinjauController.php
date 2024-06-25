@@ -29,6 +29,11 @@ class DataPertinjauController extends Controller
                 return view('pertinjau', ['sensorData' => []]);
             }
 
+            $user_id = session('user_id');
+            $lahan = collect(json_decode(json_encode($data['lahan']), false))
+                ->where('id_user', $user_id);
+
+
             // Mengambil semua id_sensor dari sensor yang ditemukan
             $id_sensors = $sensors->pluck('id_sensor');
 
@@ -58,7 +63,7 @@ class DataPertinjauController extends Controller
                 }
 
                 // Mengembalikan view dengan data
-                return view('/user/pertinjau', ['sensorData' => $results]);
+                return view('/user/pertinjau', ['sensorData' => $results, 'lahan' => $lahan ]);
             } else {
                 return response()->json(['error' => 'Gagal mengambil data dari server'], $response->status());
             }
@@ -67,39 +72,31 @@ class DataPertinjauController extends Controller
         }
     }
 
-    // Metode baru untuk menangani permintaan AJAX dan mengembalikan data sensor dalam format JSON
     public function getData()
     {
-        // Mendapatkan id_lahan dan token dari session
         $id_lahan = session('id_lahan');
         $token = session('jwt');
 
-        // Mendapatkan data dari endpoint http://localhost/smartfarm_jwt/
         $response = Http::withToken($token)->get('http://localhost/smartfarm_jwt/');
 
         if ($response->successful()) {
             $data = $response->json();
 
-            // Mendapatkan sensor yang memiliki id_lahan yang sama dengan id_lahan dari session
             $sensors = collect($data['sensor'])->filter(function ($sensor) use ($id_lahan) {
                 return $sensor['id_lahan'] == $id_lahan;
             });
 
-            // Jika tidak ada sensor yang ditemukan, kembalikan respons yang sesuai
             if ($sensors->isEmpty()) {
                 return response()->json(['sensorData' => []]);
             }
 
-            // Mengambil semua id_sensor dari sensor yang ditemukan
             $id_sensors = $sensors->pluck('id_sensor');
 
-            // Mengambil data_sensor dari endpoint http://localhost/smartfarm_jwt/data_sensor/
             $sensorDataResponse = Http::get('http://localhost/smartfarm_jwt/data_sensor/');
 
             if ($sensorDataResponse->successful()) {
                 $sensorData = $sensorDataResponse->json();
 
-                // Filter data berdasarkan id_sensor
                 $filteredData = collect($sensorData)->filter(function ($data) use ($id_sensors) {
                     return in_array($data['id_sensor'], $id_sensors->toArray());
                 })->toArray();
@@ -118,7 +115,6 @@ class DataPertinjauController extends Controller
                     ];
                 }
 
-                // Mengembalikan data dalam format JSON
                 return response()->json(['sensorData' => $results]);
             } else {
                 return response()->json(['sensorData' => []]);

@@ -13,11 +13,12 @@
         </div>
         <div class="flex items-center justify-end">
             <div class="relative w-[97px] md:w-[124px] h-[27px] ">
-                <select id="filter" name="filter" class="block appearance-none w-full bg-[#416D14] border border-gray-300 text-white py-1 px-1 rounded-lg leading-tight focus:outline-none focus:border-blue-500 text-center text-xs font-semibold">
-                    <option value="L001">L001</option>
-                    <option value="L002">L002</option>
-                    <option value="L003">L003</option>
-                    <option value="L004">L004</option>
+                <select id="filter" name="filter" onchange="saveAndSelectFilter(this.value)" class="block appearance-none w-full bg-[#416D14] border border-gray-300 text-white py-1 px-1 rounded-lg leading-tight text-center text-xs lg:text-sm font-semibold">
+                    @foreach ($lahan as $item)
+                        <option value="{{ $item->id_lahan }}" {{ session('id_lahan') == $item->id_lahan ? 'selected' : '' }}>
+                            {{ $item->nama_lahan }}
+                        </option>
+                    @endforeach
                 </select>
                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-white">
                     <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -27,6 +28,31 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function saveAndSelectFilter(id_lahan) {
+            fetch('{{ route('set-lahan') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ id_lahan: id_lahan })
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Failed to update session.');
+                }
+            })
+            .then(data => {
+                console.log('Success:', data);
+                location.reload(); // Refresh halaman jika sukses
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
 
     <!--suhu-->
     <div class="flex items-center bg-slate-200 ps-[13px] pe-[15px] py-6 rounded-[20px] mt-7 md:mt-7 md:flex">
