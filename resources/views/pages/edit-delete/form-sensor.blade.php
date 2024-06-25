@@ -30,11 +30,14 @@
                         <label for="tanggal_aktivasi" class="block text-gray-700 font-bold">TANGGAL AKTIVASI</label>
                         <input type="text" name="tanggal_aktivasi" id="tanggal_aktivasi" class="border border-gray-300 rounded px-3 py-2 w-full">
                     </div>
+                    <div class="flex justify-end space-x-4 mt-4">
+                        <a href="/pages/add/daftar-sensor" class="px-4 py-2 text-white rounded" style="background-color: #C63838;">Batal</a>
 
-                    <div class="mt-4">
-                        <button class="btn bg-red-500 text-white mr-4" onclick="closeModal()" type="button">Cancel</button>
-                        <button type="submit" class="btn bg-green-500 text-white" onclick="closeModal()">OK</button>
+                        <button type="submit"  class="px-4 py-2 text-white rounded" style="background-color: #416D14;" onclick="submitForm()">
+                            simpan
+                        </button>     
                     </div>
+
                 </form>
             </div>
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">

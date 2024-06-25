@@ -103,8 +103,6 @@ class DaftarAuthController extends Controller
             if ($request->input('alamat_user') !== $user['alamat_user']) {
                 $updateData['alamat_user'] = $request->input('alamat_user');
             }
-            
-            // Menambahkan level jika tidak ada di request
     
             if (empty($updateData)) {
                 return redirect()->back()->with('info', 'Tidak ada perubahan data.');
@@ -123,10 +121,15 @@ class DaftarAuthController extends Controller
                 ]);
     
                 if ($response->getStatusCode() == 200) {
+                    // Update session if name is updated
+                    if (isset($updateData['name'])) {
+                        session(['user_name' => $updateData['name']]);
+                    }
+    
                     // Cek hasil akhir yang disimpan
                     $updatedUserResponse = Http::withToken($token)->get("http://localhost/smartfarm_jwt/users/$id");
                     $updatedUser = $updatedUserResponse->json();
-        
+    
                     return redirect('/pages/add/daftar-farmer')->with('tambah', 'Data berhasil diupdate.');
                 } else {
                     return redirect()->back()->with('error', 'Gagal menyimpan data petani');
@@ -138,6 +141,7 @@ class DaftarAuthController extends Controller
             return redirect()->back()->with('error', 'Gagal memeriksa database eksternal.');
         }
     }
+    
        
 
        

@@ -41,7 +41,7 @@
                     <div class="flex relative flex items-center justify-between">
                         <div>
                             <h1 class="text-3xl md:text-3xl font-bold mb-3" style="color:#416D14;">Hai, {{ session('user_name') }}</h1>
-                            <p class="dark:text-indigo-200">Berikut adalah laporan hari ini!</p>
+                            <p class="dark:text-indigo-200 font-semibold">Berikut adalah laporan hari ini!</p>
                         </div>
                 
                         <div id="realTimeDate" class="flex items-center" style="font-size: 15px; font-family: Arial, sans-serif; color:#416D14;"></div>
@@ -50,7 +50,7 @@
             </div>
         </div>
 
-        <div class="farmers-list flex flex-col sm:flex-row mx-auto gap-4 sm:gap-8 ml-2 sm:ml-20">
+        <div class="farmers-list flex flex-col sm:flex-row mx-auto gap-4 sm:gap-20 ml-2 sm:mx-20">
             <!-- Blok Petani -->
             <div class="custom-frame-3 flex justify-center items-center bg-green-200 p-3 sm:p-4 rounded-xl" 
                 style="width: 100%; max-width: 290px; min-height: 117px; border-radius: 27px; background-color: #C8E0AF;">
@@ -102,37 +102,11 @@
         
         <!-- Dashboard actions -->
         
-        <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-            <div class="flex mx-3">
-    
-                <!-- Hamburger button -->
-                <button class="text-slate-500 hover:text-slate-600 lg:hidden" @click.stop="sidebarOpen = !sidebarOpen" aria-controls="sidebar" :aria-expanded="sidebarOpen">
-                    <span class="sr-only">Open sidebar</span>
-                    <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="4" y="5" width="16" height="2" />
-                        <rect x="4" y="11" width="16" height="2" />
-                        <rect x="4" y="17" width="16" height="2" />
-                    </svg>
-                </button>
-    
-            </div>
-    
+        <div class="px-4 sm:px-6 lg:px-8 w-full max-w-9xl mx-auto">
+            
             <!--Main Content-->
             <div class="FLEX flex-col mt-5 ml-4 mr-4">
                 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-                    <div class="flex mx-3">
-            
-                        <!-- Hamburger button -->
-                        <button class="text-slate-500 hover:text-slate-600 lg:hidden" @click.stop="sidebarOpen = !sidebarOpen" aria-controls="sidebar" :aria-expanded="sidebarOpen">
-                            <span class="sr-only">Open sidebar</span>
-                            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="4" y="5" width="16" height="2" />
-                                <rect x="4" y="11" width="16" height="2" />
-                                <rect x="4" y="17" width="16" height="2" />
-                            </svg>
-                        </button>
-            
-                    </div>
             
                     <!--Main Content-->
                     <div class="FLEX flex-col mt-5 ml-4 mr-4">
@@ -140,29 +114,7 @@
                             <div class="daftar-farmer text-3xl text-league-spartan mb-2 sm:mb-0" style="color:#416D14">
                                 Daftar Farmer
                             </div>
-                            <div class="flex items-center">
-            
-                                <button id="openModal" class="btn mx-5 bg-[#416D14]" style="color: white; transition: 
-                                    background-color 0.3s ease, color 0.3s ease; border: none; padding: 10px 20px; cursor: pointer;" onmouseover="this.style.backgroundColor='#274706'; this.style.color='white';" onmouseout="this.style.backgroundColor='#416D14'; this.style.color='white';">
-                                    <svg class="w-4 h-4 fill-current opacity-50 shrink-0" viewBox="0 0 16 16">
-                                        <path d="M15 7H9V1c0-.6-.4-1-1-1S7 .4 7 1v6H1c-.6 0-1 .4-1 1s.4 1 1 1h6v6c0 .6.4 1 1 1s1-.4 1-1V9h6c.6 0 1-.4 1-1s-.4-1-1-1z" />
-                                    </svg>
-                                    <span class="hidden xs:block ml-2">Tambah</span>
-                                </button>
-            
-                                <div class="search-frame flex items-center">
-                                    <form action="{{ route('search-farmer') }}" method="GET" class="relative flex items-center">
-                                        @csrf
-                                        <input type="text" name="search" class="cursor-pointer relative z-10 h-37 w-227 rounded-md bg-transparent pl-3 outline-none focus:w-full focus:cursor-text focus:pl-4 focus:pr-4 shadow-md" style="width: 227px; height: 37px; border: none; filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.8));" placeholder="Search">
-                                        <button type="submit">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-y-0 my-auto h-7 w-37 px-2.5 z-10 focus:outline-none focus:border-lime-300 focus:stroke-lime-500 right-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                            </svg>
-                                        </button>
-                                    </form>
-                                </div>
-            
-                            </div>
+                          
                         </div>
             
                         <div class="table-responsive mt-5 overflow-x-auto">
