@@ -3,6 +3,9 @@
 @section('content')
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
+<span class="toggle-button text-white text-4xl top-5 left-4 cursor-pointer xl:hidden">
+    <img src="{{ asset('images/tonggle_sidebar.svg') }}">
+</span>
 <div class="container mx-auto py-8">
     <div class="flex items-center justify-end">
         <div class="relative w-[124px] h-[25px] lg:w-[160px] lg:h-[30px]">
