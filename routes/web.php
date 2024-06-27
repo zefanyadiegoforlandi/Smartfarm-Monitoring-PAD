@@ -55,7 +55,6 @@ Route::middleware('jwt.auth')->group(function () {
 });
 
 Route::get('/components/table-daftar-lahan', [DashboardController::class, 'table_daftar_lahan'])->name('table-daftar-lahan');
-//Daftar Table//
 
 //Daftar Table//
 Route::get('/pages/add/daftar-farmer', [DaftarFarmerController::class, 'daftar_farmer'])->name('daftar-farmer');

@@ -22,7 +22,7 @@ class DaftarLahanController extends Controller
                 return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
             }
 
-            $response = Http::withToken($token)->get("http://localhost/smartfarm_jwt/");
+            $response = Http::withToken($token)->get(env('API_BASE_URL'));
 
             if ($response->successful()) {
                 $apiData = $response->json();
@@ -65,10 +65,9 @@ class DaftarLahanController extends Controller
                 return redirect()->back()->withErrors('Gagal mengambil data lahan dari server.');
             }
         } catch (\Exception $e) {
-                abort(404);
-            }
+            abort(404);
+        }
     }
-
 
     public function store_lahan(Request $request)
     {
@@ -77,34 +76,35 @@ class DaftarLahanController extends Controller
             if (!$token) {
                 return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
             }
-
-            $responseUsers = Http::withToken($token)->get("http://localhost/smartfarm_jwt/");
+    
+            $responseUsers = Http::withToken($token)->get(env('API_BASE_URL'));
             $apiData = $responseUsers->json();
-
+    
             // Validasi request
             $request->validate([
+                'id_user' => 'required',
                 'nama_lahan' => ['required', 'string', 'max:20', new MaxWordsRule(20)],
                 'alamat_lahan' => ['required', 'string', 'max:20', new MaxWordsRule(20)],
                 'luas_lahan' => 'required|numeric|min:0',
             ], [
-                'id_user.required' => 'Nama wajib di isi',
-                'id_user.exists' => 'ID User tidak tersedia dalam database.',
+                'id_user.required' => 'Nama farmer wajib diisi',
+                'id_user.exists' => 'nama farmer tidak tersedia dalam database.',
                 'alamat_lahan.required' => 'Alamat lahan harus diisi.',
                 'luas_lahan.required' => 'Luas lahan harus diisi.',
                 'luas_lahan.numeric' => 'Luas lahan harus berupa nilai numerik.',
                 'luas_lahan.min' => 'Luas lahan tidak boleh minus.',
             ]);
-
-            $url = "http://localhost/smartfarm_jwt/lahan/";
+    
+            $url = env('LAHAN_URL');
             $responseLahan = Http::withToken($token)->get($url);
             $lahanData = $responseLahan->json();
-
+    
             $lastIdFromAPI = !empty($lahanData) ? end($lahanData)['id_lahan'] : null;
             $nextNumber = $lastIdFromAPI ? intval(substr($lastIdFromAPI, 1)) + 1 : 1;
             $nextNumber = min($nextNumber, 1001);
             $formattedNumber = str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
             $newIdLahan = 'L' . $formattedNumber;
-
+    
             $response = Http::withToken($token)->asForm()->post($url, [
                 'id_lahan' => $newIdLahan,
                 'nama_lahan' => $request->nama_lahan,
@@ -112,16 +112,17 @@ class DaftarLahanController extends Controller
                 'alamat_lahan' => $request->alamat_lahan,
                 'luas_lahan' => $request->luas_lahan,
             ]);
-
+    
             if ($response->failed()) {
-                throw new \Exception('Gagal menyimpan data lahan: ' . $response->body());
+                throw new \Exception($response->body());
             }
-
+    
             return redirect('/pages/add/daftar-lahan')->with('tambah', 'Lahan berhasil ditambahkan');
         } catch (\Exception $e) {
-            abort(404);
+            return redirect()->back()->withErrors(['errors' => $e->getMessage()]);
         }
     }
+    
 
     public function read_lahan_edit(Request $request, $id_lahan)
     {
@@ -131,7 +132,7 @@ class DaftarLahanController extends Controller
                 return redirect('/login')->withErrors('Silakan login untuk melanjutkan.');
             }
 
-            $response = Http::withToken($token)->get("http://localhost/smartfarm_jwt/");
+            $response = Http::withToken($token)->get(env('API_BASE_URL'));
 
             if ($response->successful()) {
                 $apiData = $response->json();
@@ -169,7 +170,7 @@ class DaftarLahanController extends Controller
                 return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
             }
 
-            $response = Http::withToken($token)->get("http://localhost/smartfarm_jwt/");
+            $response = Http::withToken($token)->get(env('API_BASE_URL'));
 
             if ($response->successful()) {
                 $apiData = $response->json();
@@ -205,12 +206,19 @@ class DaftarLahanController extends Controller
 
             $request->validate([
                 'id_user' => 'required',
-                'nama_lahan' => 'required',
-                'alamat_lahan' => 'required',
+                'nama_lahan' => ['required', 'string', 'max:20', new MaxWordsRule(20)],
+                'alamat_lahan' => ['required', 'string', 'max:20', new MaxWordsRule(20)],
                 'luas_lahan' => 'required|numeric|min:0',
+            ], [
+                'id_user.required' => 'Nama farmer wajib diisi',
+                'id_user.exists' => 'nama farmer tidak tersedia dalam database.',
+                'alamat_lahan.required' => 'Alamat lahan harus diisi.',
+                'luas_lahan.required' => 'Luas lahan harus diisi.',
+                'luas_lahan.numeric' => 'Luas lahan harus berupa nilai numerik.',
+                'luas_lahan.min' => 'Luas lahan tidak boleh minus.',
             ]);
 
-            $url = "http://localhost/smartfarm_jwt/lahan/{$id_lahan}";
+            $url = env('LAHAN_URL') . $id_lahan;
 
             $response = Http::withToken($token)->asForm()->post($url, [
                 'id_user' => $request->id_user,
@@ -223,9 +231,9 @@ class DaftarLahanController extends Controller
                 throw new \Exception('Gagal memperbarui data lahan: ' . $response->body());
             }
 
-            return redirect('/pages/add/daftar-lahan')->with('success', 'Lahan berhasil diupdate');
+            return redirect('/pages/add/daftar-lahan')->with('tambah', 'Lahan berhasil diupdate');
         } catch (\Exception $e) {
-            abort(404);
+            return redirect()->back()->withErrors(['errors' => $e->getMessage()]);
         }
     }
 
@@ -237,7 +245,7 @@ class DaftarLahanController extends Controller
                 return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
             }
 
-            $response = Http::withToken($token)->delete("http://localhost/smartfarm_jwt/lahan/$id_lahan");
+            $response = Http::withToken($token)->delete(env('LAHAN_URL') . $id_lahan);
 
             if ($response->successful()) {
                 return redirect('/pages/add/daftar-lahan')->with('delete', 'Lahan berhasil dihapus');

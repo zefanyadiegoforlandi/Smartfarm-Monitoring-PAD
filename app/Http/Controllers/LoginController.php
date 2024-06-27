@@ -26,7 +26,7 @@ class LoginController extends Controller
             'password' => $request->password,
         ];
 
-        $response = Http::asForm()->post('http://localhost/smartfarm_jwt/login/', $postData);
+        $response = Http::asForm()->post(env('API_LOGIN_URL'), $postData);
 
         if ($response->successful()) {
             $data = $response->json();
@@ -39,7 +39,7 @@ class LoginController extends Controller
                 $id = $decoded->id;
 
                 // Menggunakan token untuk mendapatkan informasi lebih lanjut tentang pengguna
-                $userInfoResponse = Http::withToken($token)->get("http://localhost/smartfarm_jwt/");
+                $userInfoResponse = Http::withToken($token)->get(env('API_BASE_URL'));
                 if ($userInfoResponse->successful()) {
                     $userData = $userInfoResponse->json();
 
@@ -87,4 +87,3 @@ class LoginController extends Controller
         }
     }
 }
-

@@ -9,9 +9,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\Rule;
-
 use GuzzleHttp\Client;
-
 
 class DaftarAuthController extends Controller
 {
@@ -27,7 +25,7 @@ class DaftarAuthController extends Controller
             return redirect('/')->withErrors('ID Pengguna tidak ditemukan. Silakan login terlebih dahulu.');
         }
     
-        $response = Http::withToken($token)->get("http://localhost/smartfarm_jwt/users/$id");
+        $response = Http::withToken($token)->get(env('USERS_URL') . $id);
     
         if ($response->successful()) {
             $user = $response->json();
@@ -42,8 +40,6 @@ class DaftarAuthController extends Controller
             return redirect()->back()->withErrors('Gagal mengambil data dari API.');
         }
     }
-    
- 
 
     public function form_auth_update(Request $request, $id) {
         $token = session('jwt');
@@ -52,7 +48,7 @@ class DaftarAuthController extends Controller
         }
     
         // Ambil data pengguna dari API
-        $response = Http::withToken($token)->get("http://localhost/smartfarm_jwt/users/$id");
+        $response = Http::withToken($token)->get(env('USERS_URL') . $id);
     
         if ($response->successful()) {
             $user = $response->json();
@@ -70,7 +66,7 @@ class DaftarAuthController extends Controller
                     function ($attribute, $value, $fail) use ($user, $token) {
                         if ($value !== $user['email']) {
                             // Memeriksa di database apakah email sudah ada
-                            $existingUserResponse = Http::withToken($token)->get('http://localhost/smartfarm_jwt/users?email=' . $value);
+                            $existingUserResponse = Http::withToken($token)->get(env('USERS_URL') . '?email=' . $value);
                             $existingUsers = $existingUserResponse->json();
     
                             // Hanya melanjutkan jika ada pengguna yang ditemukan
@@ -110,7 +106,7 @@ class DaftarAuthController extends Controller
     
             // Proses update jika validasi berhasil
             $client = new \GuzzleHttp\Client();
-            $url = "http://localhost/smartfarm_jwt/users/$id";
+            $url = env('USERS_URL') . $id;
     
             try {
                 $response = $client->post($url, [
@@ -127,7 +123,7 @@ class DaftarAuthController extends Controller
                     }
     
                     // Cek hasil akhir yang disimpan
-                    $updatedUserResponse = Http::withToken($token)->get("http://localhost/smartfarm_jwt/users/$id");
+                    $updatedUserResponse = Http::withToken($token)->get(env('USERS_URL') . $id);
                     $updatedUser = $updatedUserResponse->json();
     
                     return redirect('/pages/add/daftar-farmer')->with('tambah', 'Data berhasil diupdate.');
@@ -141,14 +137,7 @@ class DaftarAuthController extends Controller
             return redirect()->back()->with('error', 'Gagal memeriksa database eksternal.');
         }
     }
-    
-       
 
-       
-    
-
-    
-    
     public function read_auth_edit() {
         $token = session('jwt');
         if (!$token) {
@@ -161,7 +150,7 @@ class DaftarAuthController extends Controller
             return redirect('/')->withErrors('ID Pengguna tidak ditemukan. Silakan login terlebih dahulu.');
         }
     
-        $response = Http::withToken($token)->get("http://localhost/smartfarm_jwt/users/$id");
+        $response = Http::withToken($token)->get(env('USERS_URL') . $id);
     
         if ($response->successful()) {
             $user = $response->json();
@@ -175,6 +164,4 @@ class DaftarAuthController extends Controller
             return redirect()->back()->withErrors('Gagal mengambil data dari API.');
         }
     }
-    
-    
 }

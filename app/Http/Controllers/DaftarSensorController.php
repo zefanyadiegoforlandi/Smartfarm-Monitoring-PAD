@@ -22,7 +22,7 @@ class DaftarSensorController extends Controller
                 return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
             }
 
-            $response = Http::withToken($token)->get("http://localhost/smartfarm_jwt/");
+            $response = Http::withToken($token)->get(env('API_BASE_URL'));
 
             if ($response->successful()) {
                 $apiData = $response->json();
@@ -67,47 +67,6 @@ class DaftarSensorController extends Controller
         }
     }
 
-    public function search_sensor(Request $request) {
-        try {
-            $token = session('jwt');
-
-            if (!$token) {
-                return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
-            }
-
-            $response = Http::withToken($token)->get("http://localhost/smartfarm_jwt/");
-
-            if ($response->successful()) {
-                $apiData = $response->json();
-                $lahan = collect(json_decode(json_encode($apiData['lahan']), false));
-                $sensors = collect(json_decode(json_encode($apiData['sensor']), false))
-                    ->sortByDesc('id_sensor'); 
-
-                $sensor = $sensors->map(function ($sensor) use ($lahan) {
-                    $matchedLahan = $lahan->firstWhere('id_lahan', $sensor->id_lahan);
-                    $sensor->alamat_lahan = $matchedLahan ? $matchedLahan->alamat_lahan : 'Tidak ada lahan';
-                    return $sensor;
-                });
-
-                $search = $request->search;
-
-                // Filter sensor based on search criteria
-                if (!empty($search)) {
-                    $sensor = $sensor->filter(function ($sensor) use ($search) {
-                        return stripos($sensor->id_sensor, $search) !== false || 
-                               stripos($sensor->id_lahan, $search) !== false ||
-                               stripos($sensor->alamat_lahan, $search) !== false;
-                    });
-                }
-
-                return view('pages/search/search-sensor', compact('search', 'sensor', 'lahan'));
-            } else {
-                throw new \Exception('Gagal mengambil data sensor dari server.');
-            }
-        } catch (\Exception $e) {
-            abort(404);
-        }
-    }
 
     public function store_sensor(Request $request)
     {
@@ -116,7 +75,7 @@ class DaftarSensorController extends Controller
             if (!$token) {
                 return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
             }
-
+    
             $request->validate([
                 'id_lahan' => 'required',
                 'tanggal_aktivasi' => 'required',
@@ -126,35 +85,36 @@ class DaftarSensorController extends Controller
                 'tanggal_aktivasi.required' => 'Tanggal aktivasi harus diisi.',
                 'nama_sensor.required' => 'Nama sensor harus diisi.',
             ]);
-
-            $url = "http://localhost/smartfarm_jwt/sensor/";
+    
+            $url = env('SENSOR_URL');
             $responseSensor = Http::withToken($token)->get($url);
             $sensorData = $responseSensor->json();
-
+    
             $lastIdFromAPI = !empty($sensorData) ? end($sensorData)['id_sensor'] : null;
-
+    
             // Menghitung ID berikutnya
             $nextNumber = $lastIdFromAPI ? intval(substr($lastIdFromAPI, 1)) + 1 : 1;
             $nextNumber = min($nextNumber, 1001);
             $formattedNumber = str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
             $newIdSensor = 'S' . $formattedNumber;
-
+    
             $response = Http::withToken($token)->asForm()->post($url, [
                 'id_sensor' => $newIdSensor,
                 'nama_sensor' => $request->nama_sensor,
                 'id_lahan' => $request->id_lahan,
                 'tanggal_aktivasi' => $request->tanggal_aktivasi,
             ]);
-
+    
             if ($response->failed()) {
                 throw new \Exception('Gagal menyimpan data sensor: ' . $response->body());
             }
-
+    
             return redirect('/pages/add/daftar-sensor')->with('tambah', 'Sensor berhasil ditambahkan');
         } catch (\Exception $e) {
-            abort(404);
+            return redirect()->back()->withErrors(['errors' => $e->getMessage()]);
         }
     }
+    
 
     public function read_sensor_edit($id_sensor)
     {
@@ -165,7 +125,7 @@ class DaftarSensorController extends Controller
                 return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
             }
 
-            $response = Http::withToken($token)->get("http://localhost/smartfarm_jwt/");
+            $response = Http::withToken($token)->get(env('API_BASE_URL'));
 
             if ($response->successful()) {
                 $apiData = $response->json();
@@ -202,7 +162,7 @@ class DaftarSensorController extends Controller
                 return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
             }
 
-            $response = Http::withToken($token)->get("http://localhost/smartfarm_jwt/");
+            $response = Http::withToken($token)->get(env('API_BASE_URL'));
 
             if ($response->successful()) {
                 $apiData = $response->json();
@@ -237,36 +197,46 @@ class DaftarSensorController extends Controller
             if (!$token) {
                 return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
             }
-
-            // Tidak perlu request data user dan lahan secara khusus kecuali dibutuhkan di view
-            $request->validate([
+    
+            // Validasi request di Laravel
+            $validated = $request->validate([
                 'id_lahan' => 'required',
                 'nama_sensor' => 'required',
                 'tanggal_aktivasi' => 'required',
             ], [
-                'id_lahan.required' => 'Lahan wajib di isi',
-                'nama_sensor.required' => 'Nama sensor wajib di isi',
+                'id_lahan.required' => 'Lahan wajib diisi',
+                'nama_sensor.required' => 'Nama sensor wajib diisi',
                 'tanggal_aktivasi.required' => 'Tanggal aktivasi harus diisi.',
             ]);
-
-            $url = "http://localhost/smartfarm_jwt/sensor/{$id_sensor}";
-
-            // Menggunakan Http facade untuk konsistensi dan kejelasan
-            $response = Http::withToken($token)->asForm()->post($url, [
-                'id_lahan' => $request->id_lahan,
-                'nama_sensor' => $request->nama_sensor,
-                'tanggal_aktivasi' => $request->tanggal_aktivasi,
-            ]);
-
+    
+            // Persiapan data untuk dikirim ke server eksternal
+            $data = [
+                'id_lahan' => $validated['id_lahan'],
+                'nama_sensor' => $validated['nama_sensor'],
+                'tanggal_aktivasi' => $validated['tanggal_aktivasi'],
+            ];
+    
+            $url = env('SENSOR_URL') . $id_sensor;
+    
+            // Mengirim data ke server eksternal untuk pembaruan
+            $response = Http::withToken($token)->asForm()->post($url, $data);
+    
             if ($response->failed()) {
-                throw new \Exception('Gagal memperbarui data sensor: ' . $response->body());
+                // Mengambil pesan kesalahan dari server eksternal
+                $errors = $response->json('errors');
+                return redirect()->back()->withErrors($errors);
             }
-
+    
             return redirect('/pages/add/daftar-sensor')->with('tambah', 'Sensor berhasil diperbarui');
         } catch (\Exception $e) {
-            abort(404);
+            return redirect()->back()->withErrors(['errors' => $e->getMessage()]);
         }
     }
+    
+
+    
+    
+    
 
     public function read_sensor_destroy($id_sensor)
     {
@@ -277,7 +247,7 @@ class DaftarSensorController extends Controller
                 return redirect('/')->withErrors('Token tidak ditemukan. Silakan login terlebih dahulu.');
             }
 
-            $response = Http::withToken($token)->delete("http://localhost/smartfarm_jwt/sensor/$id_sensor");
+            $response = Http::withToken($token)->delete(env('SENSOR_URL') . $id_sensor);
 
             if ($response->successful()) {
                 return redirect('/pages/add/daftar-sensor')->with('delete', 'Sensor berhasil dihapus');

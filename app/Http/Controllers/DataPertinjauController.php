@@ -14,7 +14,7 @@ class DataPertinjauController extends Controller
         $id_lahan = session('id_lahan');
         $token = session('jwt');
 
-        $response = Http::withToken($token)->get('http://localhost/smartfarm_jwt/');
+        $response = Http::withToken($token)->get(env('API_BASE_URL'));
 
         if ($response->successful()) {
             $data = $response->json();
@@ -33,12 +33,11 @@ class DataPertinjauController extends Controller
             $lahan = collect(json_decode(json_encode($data['lahan']), false))
                 ->where('id_user', $user_id);
 
-
             // Mengambil semua id_sensor dari sensor yang ditemukan
             $id_sensors = $sensors->pluck('id_sensor');
 
-            // Mengambil data_sensor dari endpoint http://localhost/smartfarm_jwt/data_sensor/
-            $sensorDataResponse = Http::get('http://localhost/smartfarm_jwt/data_sensor/');
+            // Mengambil data_sensor dari endpoint
+            $sensorDataResponse = Http::get(env('DATA_SENSOR_URL'));
 
             if ($sensorDataResponse->successful()) {
                 $sensorData = $sensorDataResponse->json();
@@ -63,7 +62,7 @@ class DataPertinjauController extends Controller
                 }
 
                 // Mengembalikan view dengan data
-                return view('/user/pertinjau', ['sensorData' => $results, 'lahan' => $lahan ]);
+                return view('/user/pertinjau', ['sensorData' => $results, 'lahan' => $lahan]);
             } else {
                 return response()->json(['error' => 'Gagal mengambil data dari server'], $response->status());
             }
@@ -77,7 +76,7 @@ class DataPertinjauController extends Controller
         $id_lahan = session('id_lahan');
         $token = session('jwt');
 
-        $response = Http::withToken($token)->get('http://localhost/smartfarm_jwt/');
+        $response = Http::withToken($token)->get(env('API_BASE_URL'));
 
         if ($response->successful()) {
             $data = $response->json();
@@ -92,7 +91,7 @@ class DataPertinjauController extends Controller
 
             $id_sensors = $sensors->pluck('id_sensor');
 
-            $sensorDataResponse = Http::get('http://localhost/smartfarm_jwt/data_sensor/');
+            $sensorDataResponse = Http::get(env('DATA_SENSOR_URL'));
 
             if ($sensorDataResponse->successful()) {
                 $sensorData = $sensorDataResponse->json();

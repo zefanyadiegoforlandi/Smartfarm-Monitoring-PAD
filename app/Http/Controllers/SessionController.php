@@ -20,7 +20,7 @@ class SessionController extends Controller
         $id_lahan = $request->id_lahan;
 
         // Mendapatkan data sensor yang dimiliki oleh id_lahan
-        $sensorResponse = Http::withToken($token)->get("http://localhost/smartfarm_jwt/sensor");
+        $sensorResponse = Http::withToken($token)->get(env('SENSOR_URL'));
 
         if ($sensorResponse->successful()) {
             $sensors = $sensorResponse->json();

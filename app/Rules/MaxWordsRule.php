@@ -20,6 +20,6 @@ class MaxWordsRule implements Rule
 
     public function message()
     {
-        return 'The :attribute must not be greater than ' . $this->maxWords . ' words.';
+        return ':attribute tidak boleh lebih dari ' . $this->maxWords . ' words.';
     }
 }

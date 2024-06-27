@@ -2,16 +2,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Collection;
-use Illuminate\Validation\Rule;
-
-use GuzzleHttp\Client;
-
 
 class InformationUserController extends Controller
 {
@@ -27,7 +19,7 @@ class InformationUserController extends Controller
             return redirect('/')->withErrors('ID Pengguna tidak ditemukan. Silakan login terlebih dahulu.');
         }
     
-        $response = Http::withToken($token)->get("http://localhost/smartfarm_jwt/users/$id");
+        $response = Http::withToken($token)->get(env('USERS_URL') . $id);
     
         if ($response->successful()) {
             $user = $response->json();
@@ -41,6 +33,4 @@ class InformationUserController extends Controller
             return redirect()->back()->withErrors('Gagal mengambil data dari API.');
         }
     }
-    
-    
 }

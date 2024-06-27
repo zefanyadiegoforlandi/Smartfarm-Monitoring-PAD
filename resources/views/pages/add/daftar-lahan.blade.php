@@ -271,18 +271,22 @@
         });
     </script>
 
-    @if(session('errors'))
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: "{{ $errors->first() }}", // Mengambil pesan kesalahan pertama dari laravel
-            });
+@if(session('errors'))
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: "{{ session('errors')->first() }}", // Mengambil pesan kesalahan pertama dari Laravel
+            background: '#ffffff', // Background warna putih
+            confirmButtonColor: '#416D14', // Warna tombol konfirmasi
+            confirmButtonText: 'Coba Lagi', // Teks tombol konfirmasi
         });
-    </script>
-    @endif
+    });
+</script>
+@endif
+
 
     <script>
         const openModalButton = document.getElementById('openModal');

@@ -15,7 +15,6 @@ class DownloadDataController extends Controller
             $token = session('jwt');
             $id_lahan = session('id_lahan');
 
-            
             if (!$token) {
                 return redirect('/')->withErrors('Token tidak ditemukan. Silakan login terlebih dahulu.');
             }
@@ -24,7 +23,7 @@ class DownloadDataController extends Controller
                 return redirect('/')->withErrors('ID Lahan tidak ditemukan. Silakan login ulang.');
             }
 
-            $response = Http::withToken($token)->get("http://localhost/smartfarm_jwt/sensor/");
+            $response = Http::withToken($token)->get(env('SENSOR_URL'));
             if ($response->successful()) {
                 $sensorData = $response->json();
 
@@ -34,7 +33,7 @@ class DownloadDataController extends Controller
 
                 return view('/user/download-data', compact('sensors'));
             } else {
-            return redirect('/')->withErrors('Terjadi kesalahan. Silakan coba lagi.');
+                return redirect('/')->withErrors('Terjadi kesalahan. Silakan coba lagi.');
             }
 
         } catch (\Exception $e) {
@@ -42,9 +41,4 @@ class DownloadDataController extends Controller
             return redirect('/')->withErrors('Terjadi kesalahan. Silakan coba lagi.');
         }
     }
-
-  
 }
-
-
-

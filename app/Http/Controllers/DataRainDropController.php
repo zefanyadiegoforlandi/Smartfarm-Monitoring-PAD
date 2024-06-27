@@ -29,7 +29,7 @@ class DataRainDropController extends Controller
             }
 
             // Mendapatkan semua data sensor
-            $sensorResponse = Http::withToken($token)->get("http://localhost/smartfarm_jwt/sensor");
+            $sensorResponse = Http::withToken($token)->get(env('SENSOR_URL'));
 
             if (!$sensorResponse->successful()) {
                 return response()->json(['error' => 'Failed to retrieve sensor data'], $sensorResponse->status());
@@ -42,7 +42,7 @@ class DataRainDropController extends Controller
             });
 
             // Mendapatkan data sensor tertentu
-            $response = Http::get("http://localhost/smartfarm_jwt/data_sensor/$id_sensor");
+            $response = Http::get(env('DATA_SENSOR_URL') . $id_sensor);
 
             if ($response->successful()) {
                 $dataSensors = $response->json();
@@ -63,9 +63,6 @@ class DataRainDropController extends Controller
                         'id_sensor' => $item['id_sensor']
                     ];
                 })->toArray();
-                
-
-                
 
                 $perPage = 5; 
                 $currentPage = request()->input('page', 1); 
@@ -98,7 +95,7 @@ class DataRainDropController extends Controller
                 return redirect('/')->withErrors('ID Sensor tidak ditemukan. Silakan login ulang.');
             }
 
-            $response = Http::get("http://localhost/smartfarm_jwt/data_sensor/$id_sensor");
+            $response = Http::get(env('DATA_SENSOR_URL') . $id_sensor);
 
             if ($response->successful()) {
                 $dataSensors = $response->json();
@@ -126,7 +123,7 @@ class DataRainDropController extends Controller
                 return redirect('/')->withErrors('ID Sensor tidak ditemukan. Silakan login ulang.');
             }
 
-            $response = Http::get("http://localhost/smartfarm_jwt/data_sensor/$id_sensor");
+            $response = Http::get(env('DATA_SENSOR_URL') . $id_sensor);
 
             if ($response->successful()) {
                 $dataSensors = $response->json();
@@ -140,7 +137,6 @@ class DataRainDropController extends Controller
                         'id_sensor' => $item['id_sensor']
                     ];
                 })->toArray();
-                
 
                 return response()->json(['dataSensor' => $dataTabel]);
             } else {
