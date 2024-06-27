@@ -322,19 +322,43 @@ class DaftarFarmerController extends Controller
     {
         try {
             $token = session('jwt');
+    
             if (!$token) {
                 return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
             }
-         
-            $response = Http::withToken($token)->delete(env('USERS_URL') . $id);
-         
-            if ($response->successful()) {
-                return redirect('/pages/add/daftar-farmer')->with('delete', 'Farmer berhasil dihapus');
+    
+            // Cek apakah id_user digunakan dalam tabel lain (misalnya: lahan)
+            $responseCheck = Http::withToken($token)->get(env('LAHAN_URL') . '?id_user=' . $id);
+    
+            if ($responseCheck->successful()) {
+                $dataLahan = $responseCheck->json();
+    
+                // Logging untuk melihat respons dari API
+                \Log::info('Response from LAHAN_URL:', ['data' => $dataLahan]);
+    
+                // Periksa apakah ada lahan yang terkait dengan id_user yang sedang dihapus
+                $relatedLahan = array_filter($dataLahan, function($lahan) use ($id) {
+                    return $lahan['id_user'] == $id;
+                });
+    
+                if (!empty($relatedLahan)) {
+                    return back()->with('error', 'Gagal menghapus farmer. Farmer memiliki data yang terkait pada lahan.');
+                }
             } else {
-                throw new \Exception('Gagal menghapus Farmer');
+                throw new \Exception('Gagal memeriksa data farmer');
+            }
+    
+            // Hapus farmer
+            $responseDelete = Http::withToken($token)->delete(env('USERS_URL') . $id);
+    
+            if ($responseDelete->successful()) {
+                return redirect('/pages/add/daftar-farmer')->with('tambah', 'Farmer berhasil dihapus');
+            } else {
+                throw new \Exception('Gagal menghapus farmer');
             }
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
+    
 }

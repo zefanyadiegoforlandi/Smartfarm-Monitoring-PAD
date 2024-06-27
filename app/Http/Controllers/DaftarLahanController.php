@@ -241,19 +241,41 @@ class DaftarLahanController extends Controller
     {
         try {
             $token = session('jwt');
+    
             if (!$token) {
                 return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
             }
+    
+            // Cek apakah id_lahan digunakan dalam tabel lain (misalnya: sensor)
+            $responseCheck = Http::withToken($token)->get(env('SENSOR_URL') . '?id_lahan=' . $id_lahan);
+    
+            if ($responseCheck->successful()) {
+                $dataSensor = $responseCheck->json();
+    
+    
+                  // Periksa apakah ada lahan yang terkait dengan id_user yang sedang dihapus
+                  $relatedSensor = array_filter($dataSensor, function($sensor) use ($id_lahan) {
+                    return $sensor['id_lahan'] == $id_lahan;
+                });
 
-            $response = Http::withToken($token)->delete(env('LAHAN_URL') . $id_lahan);
-
-            if ($response->successful()) {
-                return redirect('/pages/add/daftar-lahan')->with('delete', 'Lahan berhasil dihapus');
+                if (!empty($relatedSensor)) {
+                    return back()->with('error', 'Gagal menghapus lahan. lahan memiliki data yang terkait pada sensor.');
+                }
+    
+            } else {
+                throw new \Exception('Gagal memeriksa data sensor');
+            }
+    
+            // Hapus lahan
+            $responseDelete = Http::withToken($token)->delete(env('LAHAN_URL') . $id_lahan);
+    
+            if ($responseDelete->successful()) {
+                return redirect('/pages/add/daftar-lahan')->with('tambah', 'Lahan berhasil dihapus');
             } else {
                 throw new \Exception('Gagal menghapus lahan');
             }
         } catch (\Exception $e) {
-            abort(404);
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
 }

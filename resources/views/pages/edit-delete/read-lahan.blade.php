@@ -31,10 +31,10 @@
                 </div>
                 
                 <div class="flex justify-end space-x-4 mt-4">
-                    <form action="{{ route('read-lahan.destroy', ['id' => $lahan->id_lahan]) }}" method="POST">
+                    <button id="delete-button" class="px-4 py-2 text-white rounded" style="background-color: #C63838;">Delete</button>
+                    <form id="delete-form" action="{{ route('read-lahan.destroy', ['id' => $lahan->id_lahan]) }}" method="POST" class="hidden">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="px-4 py-2 text-white rounded" style="background-color: #C63838;">Delete</button>
                     </form>
                     <form action="{{ route('form-lahan.edit', $lahan->id_lahan) }}" method="GET">
                         @csrf
@@ -44,4 +44,39 @@
             </div>
         </div>
     </div>
+    @if(session('error'))
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: "{{ session('error') }}",
+                background: '#ffffff',
+                confirmButtonColor: '#416D14',
+                confirmButtonText: 'Coba Lagi',
+            });
+        });
+    </script>
+    @endif
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.getElementById('delete-button').addEventListener('click', function (event) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Apakah yakin menghapus lahan ini?',
+                text: "Tindakan ini tidak dapat dibatalkan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#416D14',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Tidak'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('delete-form').submit();
+                }
+            });
+        });
+    </script>
 </x-app-layout>

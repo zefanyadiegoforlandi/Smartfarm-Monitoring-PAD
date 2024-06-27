@@ -17,37 +17,38 @@ class DaftarSensorController extends Controller
     {
         try {
             $token = session('jwt');
-
+    
             if (!$token) {
                 return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
             }
-
+    
             $response = Http::withToken($token)->get(env('API_BASE_URL'));
-
+    
             if ($response->successful()) {
                 $apiData = $response->json();
                 $lahan = collect(json_decode(json_encode($apiData['lahan']), false));
                 $sensors = collect(json_decode(json_encode($apiData['sensor']), false))
                     ->sortByDesc('id_sensor');
-
+    
                 $sensor = $sensors->map(function ($sensor) use ($lahan) {
                     $matchedLahan = $lahan->firstWhere('id_lahan', $sensor->id_lahan);
+                    $sensor->nama_lahan = $matchedLahan ? $matchedLahan->nama_lahan : 'Tidak ada lahan';
                     $sensor->alamat_lahan = $matchedLahan ? $matchedLahan->alamat_lahan : 'Tidak ada lahan';
                     return $sensor;
                 });
-
+    
                 // Ambil parameter pencarian dari request
                 $search = $request->input('search');
-
+    
                 // Filter sensor berdasarkan kriteria pencarian
                 if (!empty($search)) {
                     $sensor = $sensor->filter(function ($sensor) use ($search) {
                         return stripos($sensor->id_sensor, $search) !== false || 
-                               stripos($sensor->id_lahan, $search) !== false ||
+                               stripos($sensor->nama_lahan, $search) !== false ||
                                stripos($sensor->alamat_lahan, $search) !== false;
                     });
                 }
-
+    
                 $perPage = 5;
                 $currentPage = $request->input('page', 1);
                 $paginator = new LengthAwarePaginator(
@@ -57,7 +58,7 @@ class DaftarSensorController extends Controller
                     $currentPage
                 );
                 $paginator->setPath(request()->url());
-
+    
                 return view('pages/add/daftar-sensor', compact('paginator', 'lahan', 'search'));
             } else {
                 return redirect()->back()->withErrors('Gagal mengambil data sensor dari server.');
@@ -66,7 +67,7 @@ class DaftarSensorController extends Controller
             abort(404);
         }
     }
-
+    
 
     public function store_sensor(Request $request)
     {
@@ -237,25 +238,46 @@ class DaftarSensorController extends Controller
     
     
     
-
     public function read_sensor_destroy($id_sensor)
     {
         try {
             $token = session('jwt');
-
+    
             if (!$token) {
-                return redirect('/')->withErrors('Token tidak ditemukan. Silakan login terlebih dahulu.');
+                return back()->withErrors('Token tidak ditemukan. Silakan login terlebih dahulu.');
             }
-
-            $response = Http::withToken($token)->delete(env('SENSOR_URL') . $id_sensor);
-
-            if ($response->successful()) {
-                return redirect('/pages/add/daftar-sensor')->with('delete', 'Sensor berhasil dihapus');
+    
+            // Cek apakah id_sensor digunakan dalam tabel data_sensor
+            $responseCheck = Http::withToken($token)->get(env('DATA_SENSOR_URL') . '?id_sensor=' . $id_sensor);
+    
+            if ($responseCheck->successful()) {
+                $dataDataSensor = $responseCheck->json();
+    
+                // Periksa apakah ada data sensor yang terkait dengan id_sensor yang sedang dihapus
+                $relatedDataSensor = array_filter($dataDataSensor, function($data_sensor) use ($id_sensor) {
+                    return $data_sensor['id_sensor'] == $id_sensor;
+                });
+    
+                if (!empty($relatedDataSensor)) {
+                    return back()->with('error', 'Gagal menghapus sensor. Sensor memiliki data yang terkait pada data sensor.');
+                }
             } else {
-                throw new \Exception('Gagal menghapus Sensor');
+                throw new \Exception('Gagal memeriksa data sensor');
+            }
+    
+            // Hapus sensor
+            $responseDelete = Http::withToken($token)->delete(env('SENSOR_URL') . $id_sensor);
+    
+            if ($responseDelete->successful()) {
+                return redirect('/pages/add/daftar-sensor')->with('tambah', 'Sensor berhasil dihapus');
+            } else {
+                throw new \Exception('Gagal menghapus sensor');
             }
         } catch (\Exception $e) {
-            abort(404);
+            return back()->with('error', 'Terjadi kesalahan saat menghapus sensor.');
         }
     }
+    
+
+    
 }

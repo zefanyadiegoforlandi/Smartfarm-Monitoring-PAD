@@ -55,6 +55,25 @@
                 margin-left: 18rem; /* Adjust main content margin to make space for the sidebar */
             }
         }
+
+        /* Add hover and active effect on menu text and images */
+        .menu-item:hover .menu-text,
+        .menu-item.active .menu-text {
+            color: #416D14;
+        }
+
+        .menu-item:hover img,
+        .menu-item.active img {
+            filter: brightness(0) saturate(100%) invert(22%) sepia(73%) saturate(1395%) hue-rotate(68deg) brightness(90%) contrast(88%);
+        }
+
+        .selected-icon {
+            display: inline;
+        }
+
+        .non-selected-icon {
+            display: none;
+        }
     </style>
 </head>
 
@@ -78,97 +97,95 @@
                     <div>
                         <ul class="space-y-5 text-xl">
                             <!-- Dashboard -->
-                            <li>
+                            <li class="menu-item">
                                 <a href="{{ route('user-dashboard') }}" class="flex dashboard" onclick="changeColor(this, 'dashboard')">
-                                    <img src="{{ asset('images/farmer-s/dashboard-selected.svg') }}" class="w-6 h-6" style="display: none;" alt="Dashboard Icon" id="selected">
-                                    <img src="{{ asset('images/farmer-s/dashboard.svg') }}" class="w-6 h-6" id="non-selected" alt="Dashboard Icon">
-                                    <span class="menu-text ms-6 text-[#818280] focus:text-[#416D14]" id="dashboard">Dashboard</span>
+                                    <img src="{{ asset('images/farmer-s/dashboard.svg') }}" class="w-6 h-6 selected-icon" alt="Dashboard Icon">
+                                    <span class="menu-text ms-6 text-[#818280]">Dashboard</span>
                                 </a>
                             </li>
 
-                            <!-- pertinjau -->
-                            <li>
+                            <!-- Pertinjau -->
+                            <li class="menu-item">
                                 <a href="{{ route('pertinjau.lihat') }}" class="flex pertinjau" onclick="changeColor(this, 'pertinjau')">
-                                    <img src="{{ asset('images/farmer-s/pertinjau-selected.svg') }}" style="display: none;" class="w-6 h-6" alt="Lahan Icon" id="selected">
-                                    <img src="{{ asset('images/farmer-s/pertinjau.svg') }}" class="w-6 h-6" id="non-selected" alt="Lahan Icon">
-                                    <span class="menu-text ms-6 text-[#818280] focus:text-[#416D14]" id="pertinjau">Pertinjau</span>
+                                    <img src="{{ asset('images/farmer-s/pertinjau.svg') }}" class="w-6 h-6 selected-icon" alt="Lahan Icon">
+                                    <span class="menu-text ms-6 text-[#818280]">Pertinjau</span>
                                 </a>
                             </li>
 
-                            <!-- Daftar Sensor -->
-                            <li>
-                                <a href="" class="flex" id="sensorLink" onclick="changeColor(this, 'pertinjau')">
-                                    <img src="{{ asset('images/farmer-s/sensor.svg') }}" class="w-6 h-6" alt="Sensor Icon">
-                                    <span class="menu-text ms-6 text-[#818280] focus:text-[#416D14]" id="sensor">Sensor</span>
+                            <!-- Sensor -->
+                            <li class="menu-item sensor-link">
+                                <a href="#" class="flex" id="sensorLink" onclick="toggleSensorItems(event, this)">
+                                    <img src="{{ asset('images/farmer-s/sensor.svg') }}" class="w-6 h-6 selected-icon" alt="Sensor Icon">
+                                    <span class="menu-text ms-6 text-[#818280]">Sensor</span>
                                 </a>
                             </li>
                         </ul>
                     </div>
 
                     <!-- Div for 8 items (initially hidden) -->
-                    <div id="sensorItems" class="hidden text-[#818280] ms-2 mt-4 space-x-2grow">
+                    <div id="sensorItems" class="hidden text-[#818280] ms-2 mt-4 space-y-2">
                         <ul class="space-y-2 text-lg">
                             <!-- Suhu -->
-                            <li>
+                            <li class="menu-item">
                                 <a href="{{ route('temperature') }}" class="flex group" onclick="changeColor(this, 'suhu')">
                                     <img src="{{ asset('images/farmer-s/suhu.svg') }}" class="w-6 h-6" alt="">
-                                    <span class="menu-text ms-6 text-[#818280] focus:text-[#416D14]" id="suhu">Suhu</span>
+                                    <span class="menu-text ms-6 text-[#818280]">Suhu</span>
                                 </a>
                             </li>
 
                             <!-- Kelembapan -->
-                            <li>
-                                <a href="{{ route('humidity') }}" class="flex group" onclick="changeColor(this, 'pertinjau')">
+                            <li class="menu-item">
+                                <a href="{{ route('humidity') }}" class="flex group" onclick="changeColor(this, 'kelembapan')">
                                     <img src="{{ asset('images/farmer-s/kelembapan.svg') }}" class="w-6 h-6" alt="">
-                                    <span class="menu-text ms-6 text-[#818280] focus:text-[#416D14]" id="kelembapan">Kelembapan</span>
+                                    <span class="menu-text ms-6 text-[#818280]">Kelembapan</span>
                                 </a>
                             </li>
 
-                            <li>
-                                <a href="{{ route('airquality') }}" class="flex group">
+                            <!-- Kualitas Udara -->
+                            <li class="menu-item">
+                                <a href="{{ route('airquality') }}" class="flex group" onclick="changeColor(this, 'kualitas-udara')">
                                     <img src="{{ asset('images/farmer-s/angin.svg') }}" class="w-6 h-6" alt="">
-                                    <span class="menu-text ms-6 text-[#818280] focus:text-[#416D14]" id="kualitas-udara">Kualitas Udara</span>
+                                    <span class="menu-text ms-6 text-[#818280]">Kualitas Udara</span>
                                 </a>
                             </li>
 
                             <!-- Curah Hujan -->
-                            <li>
-                                <a href="{{ route('raindrop') }}" class="flex group">
+                            <li class="menu-item">
+                                <a href="{{ route('raindrop') }}" class="flex group" onclick="changeColor(this, 'curah-hujan')">
                                     <img src="{{ asset('images/farmer-s/curah-hujan.svg') }}" class="w-6 h-6" alt="">
-                                    <span class="menu-text ms-6 text-[#818280] focus:text-[#416D14]" id="curah-hujan">Curah Hujan</span>
+                                    <span class="menu-text ms-6 text-[#818280]">Curah Hujan</span>
                                 </a>
                             </li>
 
                             <!-- Intensitas Cahaya -->
-                            <li>
-                                <a href="{{ route('light') }}" class="flex group">
+                            <li class="menu-item">
+                                <a href="{{ route('light') }}" class="flex group" onclick="changeColor(this, 'intensitas-cahaya')">
                                     <img src="{{ asset('images/farmer-s/intensitasC.svg') }}" class="w-6 h-6" alt="">
-                                    <span class="menu-text ms-6 text-[#818280] focus:text-[#416D14]" id="intensitas-cahaya">Intensitas Cahaya</span>
+                                    <span class="menu-text ms-6 text-[#818280]">Intensitas Cahaya</span>
                                 </a>
                             </li>
 
-                    
                             <!-- Kelembapan Tanah -->
-                            <li>
-                                <a href="{{ route('persentasekelembapantanah') }}" class="flex group">
+                            <li class="menu-item">
+                                <a href="{{ route('persentasekelembapantanah') }}" class="flex group" onclick="changeColor(this, 'kelembapan-tanah')">
                                     <img src="{{ asset('images/farmer-s/tanah.svg') }}" class="w-6 h-6" alt="">
-                                    <span class="menu-text ms-6 text-[#818280] focus:text-[#416D14]" id="kelembapan-tanah">Kelembapan Tanah</span>
+                                    <span class="menu-text ms-6 text-[#818280]">Kelembapan Tanah</span>
                                 </a>
                             </li>
 
                             <!-- Ketinggian -->
-                            <li>
-                                <a href="{{ route('approxaltitude') }}" class="flex group">
+                            <li class="menu-item">
+                                <a href="{{ route('approxaltitude') }}" class="flex group" onclick="changeColor(this, 'ketinggian')">
                                     <img src="{{ asset('images/farmer-s/ketinggian.svg') }}" class="w-6 h-6" alt="">
-                                    <span class="menu-text ms-6 text-[#818280] focus:text-[#416D14]" id="ketinggian">Ketinggian</span>
+                                    <span class="menu-text ms-6 text-[#818280]">Ketinggian</span>
                                 </a>
                             </li>
 
                             <!-- Tekanan Udara -->
-                            <li>
-                                <a href="{{ route('pressure') }}" class="flex group">
+                            <li class="menu-item">
+                                <a href="{{ route('pressure') }}" class="flex group" onclick="changeColor(this, 'tekanan-udara')">
                                     <img src="{{ asset('images/farmer-s/tekanan-udara.svg') }}" class="w-6 h-6" alt="">
-                                    <span class="menu-text ms-6 text-[#818280] focus:text-[#416D14]" id="tekanan-udara">Tekanan Udara</span>
+                                    <span class="menu-text ms-6 text-[#818280]">Tekanan Udara</span>
                                 </a>
                             </li>
                         </ul>
@@ -178,56 +195,125 @@
                 <div style="display: flex; flex-direction: column; align-items: center; height: 100vh; margin-top: 10px;">
                     <!-- Animated Rectangle -->
                     <div id="animatedRectangle" style="width: 206px; height: 86px; background-color: #ffffff; display: none; margin-bottom: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); border-radius: 5px;">
-                        <div class="mt-3">
-                            <!-- User Info -->
-                            <form action="">
-                                @csrf
-                                <button class="flex items-center justify-start ml-4" style="background-color: transparent; border: none;" onclick="this.style.backgroundColor='#b2f2bb'; setTimeout(function() { window.location.href='{{ route('read-user.information') }}'; }, 10);">
-                                    <div class="info flex items-center">
-                                        <img src="{{ asset('images/user_button_icon.svg') }}" alt="Gambar Pengguna" style="width: 21px; height: 21px; object-fit: cover;" class="mx-2">
-                                        <!-- Menggunakan span untuk menampilkan user_name -->
-                                        <span class="mx-2" style="font-size: 16px; color: #818280;">{{ session('user_name') }}</span>
-                                    </div>
-                                </button>
-                            </form>
-                            <!-- Logout Button -->
-                            <div class="logout flex items-center mx-4 mt-4">
-                                <img src="{{ asset('images/logout_icon.svg') }}" alt="Logout Icon" style="width: 21px; height: 21px; object-fit: cover;" class="mx-2">
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <a href="{{ route('logout') }}" class="mx-2" style="font-size: 16px; color: #818280;" onclick="event.preventDefault(); this.closest('form').submit();">Log Out</a>
-                                </form>
-                            </div>
-                        </div>
+                        <ul class=" ml-7 mt-4">
+                            @foreach ([
+                                ['route' => 'read-user.information', 'icon' => 'images/user_button_icon.svg', 'label' => session('user_name'), 'logout' => false],
+                                ['route' => 'logout', 'icon' => 'images/logout_icon.svg', 'label' => 'Log Out', 'logout' => true]
+                            ] as $item)
+                                <li class="menu-item" style="list-style-type: none; margin-bottom: 10px;">
+                                    @if($item['logout'])
+                                        <a href="{{ route($item['route']) }}" class="flex" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" style="text-decoration: none; color: #818280;">
+                                            <img src="{{ asset($item['icon']) }}" class="w-6 h-6 selected-icon" alt="{{ $item['label'] }} Icon" style="width: 24px; height: 24px;">
+                                            <span class="menu-text ms-6" style="margin-left: 10px;">{{ $item['label'] }}</span>
+                                        </a>
+                                        <form id="logout-form" action="{{ route($item['route']) }}" method="POST" class="d-none" style="display: none;">
+                                            @csrf
+                                        </form>
+                                    @else
+                                        <a href="{{ route($item['route']) }}" class="flex" style="text-decoration: none; color: #818280;">
+                                            <img src="{{ asset($item['icon']) }}" class="w-6 h-6 selected-icon" alt="{{ $item['label'] }} Icon" style="width: 24px; height: 24px;">
+                                            <span class="menu-text ms-6" style="margin-left: 10px;">{{ $item['label'] }}</span>
+                                        </a>
+                                    @endif
+                                </li>
+                            @endforeach
+                        </ul>
                     </div>
-                
+
                     <!-- Show Rectangle Button -->
-                    <button id="showRectangle" style="width: 247px; height: 84px; border-radius: 24px; padding: 8px; margin-bottom: 10px; background-color:#416D14;" class="border-none rounded-2xl p-8 flex items-center text-white font-sans text-left" href="{{ route('daftar-lahan') }}">
-                        <div class="flex items-center ml-4">
-                            <div class="img w-14 h-14 overflow-hidden rounded-full">
-                                <img src="{{ asset('images/user_besar_icon.svg') }}" alt="User Image" style="width: 100%; height: 100%; object-fit:cover;">
+                    <button id="showRectangle" style="width: 247px; height: 84px; border-radius: 24px; padding: 8px; margin-bottom: 10px; background-color:#416D14; border: none; display: flex; align-items: center; color: white; font-family: sans-serif; text-align: left;">
+                        <div class="flex items-center ml-4" style="display: flex; align-items: center; margin-left: 16px;">
+                            <div class="img w-14 h-14 overflow-hidden rounded-full" style="width: 56px; height: 56px; overflow: hidden; border-radius: 50%;">
+                                <img src="{{ asset('images/user_besar_icon.svg') }}" alt="User Image" style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
-                            <div class="text ml-4">
-                                <div class="text-xl">{{ session('user_level') }}</div>
+                            <div class="text ml-4" style="margin-left: 16px;">
+                                <div class="text-xl" style="font-size: 20px;">{{ session('user_level') }}</div>
                                 <!-- Menampilkan level pengguna dari sesi -->
                             </div>
-                        </div>  
+                        </div>
                     </button>
                 </div>
-                
+
                 <script>
                     // Script untuk menampilkan/menyembunyikan animatedRectangle saat tombol showRectangle diklik
                     document.getElementById('showRectangle').addEventListener('click', function() {
                         var container = document.getElementById('animatedRectangle');
+                        var sensorItems = document.getElementById('sensorItems');
                         container.style.display = (container.style.display === 'none') ? 'block' : 'none';
+                        // Menyembunyikan sensorItems saat animatedRectangle ditampilkan
+                        if (container.style.display === 'block') {
+                            sensorItems.classList.add('hidden');
+                        }
+                    });
+
+                    // Toggle active class
+                    function toggleSensorItems(event, element) {
+                        event.preventDefault();
+                        const sensorItems = document.getElementById('sensorItems');
+                        const menuItems = document.querySelectorAll('.menu-item');
+                        const sensorLink = document.getElementById('sensorLink');
+                        const animatedRectangle = document.getElementById('animatedRectangle');
+
+                        // Toggle the hidden class for sensor items
+                        sensorItems.classList.toggle('hidden');
+
+                        // Hide the animated rectangle if it is open
+                        animatedRectangle.style.display = 'none';
+
+                        // Remove active class from all menu items
+                        menuItems.forEach(item => item.classList.remove('active'));
+
+                        // If sensor items are visible, add active class to sensor link and change color
+                        if (!sensorItems.classList.contains('hidden')) {
+                            sensorLink.parentElement.classList.add('active');
+                            sensorLink.querySelector('.menu-text').style.color = '#416D14';
+                            sensorLink.querySelector('img').style.filter = 'brightness(0) saturate(100%) invert(22%) sepia(73%) saturate(1395%) hue-rotate(68deg) brightness(90%) contrast(88%)';
+                        } else {
+                            sensorLink.querySelector('.menu-text').style.color = '#818280';
+                            sensorLink.querySelector('img').style.filter = 'none';
+                        }
+                    }
+
+                    // Prevent closing sensor items on sub-item click
+                    function preventClose(event) {
+                        event.stopPropagation();
+                    }
+
+                    // Change color function
+                    function changeColor(element, linkId) {
+                        const allLinks = document.querySelectorAll('.menu-text');
+                        const allImages = document.querySelectorAll('.menu-item img');
+
+                        // Reset semua tautan ke warna default dan gambar ke non-selected
+                        allLinks.forEach(link => {
+                            link.style.color = '#818280';
+                        });
+                        allImages.forEach(img => {
+                            img.style.filter = 'none';
+                        });
+
+                        // Ubah warna tautan yang dipilih dan tampilkan ikon yang sesuai
+                        element.querySelector('.menu-text').style.color = '#416D14';
+                        element.querySelector('img').style.filter = 'brightness(0) saturate(100%) invert(22%) sepia(73%) saturate(1395%) hue-rotate(68deg) brightness(90%) contrast(88%)';
+
+                        // Simpan status ke localStorage
+                        localStorage.setItem('selectedColor', '#416D14');
+                        localStorage.setItem('selectedId', linkId);
+                    }
+
+                    // Periksa localStorage saat halaman dimuat
+                    document.addEventListener('DOMContentLoaded', () => {
+                        const selectedId = localStorage.getItem('selectedId');
+                        if (selectedId) {
+                            const selectedLink = document.querySelector(`a.${selectedId}`);
+                            selectedLink.querySelector('.menu-text').style.color = '#416D14';
+                            selectedLink.querySelector('img').style.filter = 'brightness(0) saturate(100%) invert(22%) sepia(73%) saturate(1395%) hue-rotate(68deg) brightness(90%) contrast(88%)';
+                        }
                     });
                 </script>
-                
+
             </nav>
-
-
         </aside>
-
 
         <!-- Main Content -->
         <main class="flex-1 p-4 xl:overflow-y-auto">
@@ -235,87 +321,8 @@
         </main>
     </div>
 
-
-    <!--sidebar-->
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const sidebar = document.querySelector('.sidebar');
-            const toggleButton = document.querySelector('.toggle-button');
-            const closeSidebarButton = document.querySelector('.close-sidebar-button');
-            const overlay = document.querySelector('.overlay');
-
-            toggleButton.addEventListener('click', function() {
-                sidebar.classList.toggle('hidden');
-                overlay.classList.toggle('active');
-            });
-
-            closeSidebarButton.addEventListener('click', function() {
-                sidebar.classList.add('hidden');
-                overlay.classList.remove('active');
-            });
-        });
-
-        // JavaScript to show the rectangle on button click
-        
-
-        document.getElementById('sensorLink').addEventListener('click', function(event) {
-            event.preventDefault();
-
-            // Toggle visibility of the 8 items div
-            const sensorItems = document.getElementById('sensorItems');
-            sensorItems.classList.toggle('hidden');
-        });
-
-        function changeColor(element, linkId) {
-    const allLinks = document.querySelectorAll('.menu-text');
-    const allSelectedIcons = document.querySelectorAll('img[id="selected"]');
-    const allNonSelectedIcons = document.querySelectorAll('img[id="non-selected"]');
-
-    // Reset semua tautan ke warna default dan ikon ke non-selected
-    allLinks.forEach(link => {
-        link.style.color = '#818280';
-    });
-    allSelectedIcons.forEach(icon => {
-        icon.style.display = 'none';
-    });
-    allNonSelectedIcons.forEach(icon => {
-        icon.style.display = 'inline';
-    });
-
-    // Ubah warna tautan yang dipilih dan tampilkan ikon yang sesuai
-    element.querySelector('.menu-text').style.color = '#416D14';
-    element.querySelector('img[id="selected"]').style.display = 'inline';
-    element.querySelector('img[id="non-selected"]').style.display = 'none';
-
-    // Simpan status ke localStorage
-    localStorage.setItem('selectedColor', '#416D14');
-    localStorage.setItem('selectedId', linkId);
-    localStorage.setItem('selectedIcon', element.querySelector('img[id="selected"]').src);
-    localStorage.setItem('nonSelectedIcon', element.querySelector('img[id="non-selected"]').src);
-}
-
-// Periksa localStorage saat halaman dimuat
-document.addEventListener('DOMContentLoaded', () => {
-    const selectedId = localStorage.getItem('selectedId');
-    const selectedIcon = localStorage.getItem('selectedIcon');
-    const nonSelectedIcon = localStorage.getItem('nonSelectedIcon');
-    
-    if (selectedId && selectedIcon && nonSelectedIcon) {
-        const selectedLink = document.querySelector(`a.${selectedId}`);
-        const selectedImg = selectedLink.querySelector('img[id="selected"]');
-        const nonSelectedImg = selectedLink.querySelector('img[id="non-selected"]');
-        
-        selectedLink.querySelector('.menu-text').style.color = '#416D14';
-        selectedImg.src = selectedIcon;
-        selectedImg.style.display = 'inline';
-        nonSelectedImg.src = nonSelectedIcon;
-        nonSelectedImg.style.display = 'none';
-    }
-});
-
-
-    </script>
-
+    <!-- Sidebar Toggle Button -->
+    <button class="toggle-button text-white xl:hidden fixed top-6 left-6">&#9776;</button>
 
     @livewireScripts
 </body>

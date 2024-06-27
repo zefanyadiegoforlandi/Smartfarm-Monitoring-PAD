@@ -192,7 +192,7 @@
                 </div>
                 <div class="flex justify-end mt-4">
                     <button class="btn bg-red-500 text-white mr-4" onclick="closeModal()" type="button">Cancel</button>
-                    <button type="submit" class="btn bg-green-500 text-white" onclick="closeModal()">OK</button>
+                    <button type="submit" class="btn bg-[#416D14] text-white" onclick="closeModal()">OK</button>
                 </div>
             </form>
         </div>

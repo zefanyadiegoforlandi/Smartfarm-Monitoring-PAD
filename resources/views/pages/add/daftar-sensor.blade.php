@@ -48,8 +48,8 @@
                     <thead style="height: 53px; background-color:#ECF0E8; color:#416D14">
                         <tr>
                             <th class="py-2 px-4 border-b">ID SENSOR</th>
-                            <th class="py-2 px-4 border-b">NAMA LAHAN</th>
-                            <th class="py-2 px-4 border-b">ID LAHAN</th>
+                            <th class="py-2 px-4 border-b">NAMA SENSOR</th>
+                            <th class="py-2 px-4 border-b">LAHAN</th>
                             <th class="py-2 px-4 border-b">LETAK SENSOR</th>
                             <th class="py-2 px-4 border-b">TANGGAL AKTIVASI</th>
                         </tr>
@@ -65,7 +65,7 @@
                                     </form>
                                 </td>
                                 <td class="py-2 px-4 border-b text-center">{{ $sensor->nama_sensor }}</td>
-                                <td class="py-2 px-4 border-b text-center">{{ $sensor->id_lahan }}</td>
+                                <td class="py-2 px-4 border-b text-center">{{ $sensor->nama_lahan }}</td>
                                 <td class="py-2 px-4 border-b text-center">{{ $sensor->alamat_lahan }}</td>
                                 <td class="py-2 px-4 border-b text-center">{{ $sensor->tanggal_aktivasi }}</td>
                             </tr>
@@ -174,11 +174,11 @@
             <form action="{{ route('sensor-store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-4">
-                    <label for="id_user" class="block text-gray-700 font-bold">ID FARMER</label>
+                    <label for="id_user" class="block text-gray-700 font-bold">NAMA LAHAN</label>
                     <select name="id_lahan" id="id_lahan" class="border border-gray-300 rounded px-3 py-2 w-full">
                         <option value="">Pilih Lahan</option>
                         @foreach($lahan as $l)
-                            <option value="{{ $l->id_lahan }}">{{ $l->id_lahan }}</option>
+                            <option value="{{ $l->id_lahan }}">{{ $l->nama_lahan }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -193,7 +193,7 @@
 
                 <div class="flex justify-end mt-4">
                     <button class="btn bg-red-500 text-white mr-4" onclick="closeModal()" type="button">Cancel</button>
-                    <button type="submit" class="btn bg-green-500 text-white" onclick="closeModal()">OK</button>
+                    <button type="submit" class="btn bg-[#416D14] text-white" onclick="closeModal()">OK</button>
                 </div>
             </form>
         </div>

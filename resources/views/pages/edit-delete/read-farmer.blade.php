@@ -11,7 +11,7 @@
             </div>
         </div>
     
-        <div class=" mt-7 md:flex md:shadow-2xl md:rounded">
+        <div class="mt-7 md:flex md:shadow-2xl md:rounded">
             <div class="flex-col justify-center items-center md:bg-[#C6D2B9] py-12 md:px-20 text-center">
                 <img src="{{ asset('images/user_besar_icon.svg') }}" class="w-162 h-162 overflow-hidden rounded-full mb-4 mx-auto">
                 <div>
@@ -19,12 +19,10 @@
                     <p class="text-black hidden md:block" style="font-size: 24px; margin: auto;">User</p>
                 </div>
                 <div class="flex justify-center space-x-4 mt-4 mx-auto">
-                    <form action="{{ route('read-farmer.destroy', ['id' => $user->id]) }}" method="POST">
+                    <button id="delete-button" class="px-4 py-2 text-white rounded" style="background-color: #C63838;">Delete</button>
+                    <form id="delete-form" action="{{ route('read-farmer.destroy', ['id' => $user->id]) }}" method="POST" class="hidden">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="px-4 py-2 text-white rounded" style="background-color: #C63838;"> 
-                            Delete
-                        </button>
                     </form>
                     <form action="{{ route('form-farmer.edit', $user->id) }}">
                         @csrf
@@ -32,22 +30,21 @@
                     </form>
                 </div>
             </div>
-            
     
             <div class="flex-col flex-1 md:p-9">
                 <table class="w-full">
                     <tbody class="bg-white">
                         <tr>
                             <th class="text-start pe-9">Nama</th>
-                            <td class=" py-4">{{ $user->name}}</td>
+                            <td class="py-4">{{ $user->name }}</td>
                         </tr>
                         <tr>
                             <th class="text-start pe-9">Email</th>
-                            <td class=" py-4">{{ $user->email}}</td>
+                            <td class="py-4">{{ $user->email }}</td>
                         </tr>
                         <tr>
                             <th class="text-start pe-9">Id Farmer</th>
-                            <td class=" py-4">{{ $user->id}}</td>
+                            <td class="py-4">{{ $user->id }}</td>
                         </tr>
                         <tr>
                             <th class="text-start pe-9">Password</th>
@@ -55,12 +52,12 @@
                         </tr>
                         <tr>
                             <th class="text-start pe-9">Alamat</th>
-                            <td class=" py-4">{{ $user->alamat_user}}</td>
+                            <td class="py-4">{{ $user->alamat_user }}</td>
                         </tr>
                     </tbody>
                 </table>
     
-                <div class="">
+                <div>
                     <h2 class="text-base font-bold mb-5">SENSOR YANG DIMILIKI :</h2>
                     <table style="width: 100%;">
                         <thead style="height: 53px; background-color:#ECF0E8; color:#416D14">
@@ -82,9 +79,6 @@
                                     </td>
                                 </tr>
                             @endforeach
-
-
-
                         </tbody>
                     </table>
                     <nav class="w-full flex justify-center mt-5" aria-label="Page navigation example">
@@ -129,13 +123,13 @@
                                     </li>
                                 @elseif ($page == $paginator->currentPage() - 3)
                                     <li>
-                                        <span class="relative block  text-sm text-neutral-600 transition-all duration-300 dark:text-white dark:hover:bg-[#CAE8AC] dark:hover:text-white">
+                                        <span class="relative block text-sm text-neutral-600 transition-all duration-300 dark:text-white dark:hover:bg-[#CAE8AC] dark:hover:text-white">
                                             ...
                                         </span>
                                     </li>
                                 @elseif ($page == $paginator->currentPage() + 3)
                                     <li>
-                                        <span class="relative block  text-sm text-neutral-600 transition-all duration-300 dark:text-white dark:hover:bg-[#CAE8AC] dark:hover:text-white">
+                                        <span class="relative block text-sm text-neutral-600 transition-all duration-300 dark:text-white dark:hover:bg-[#CAE8AC] dark:hover:text-white">
                                             ...
                                         </span>
                                     </li>
@@ -153,7 +147,7 @@
                                 </li>
                             @else
                                 <li>
-                                    <a class="flex items-center justify-center relative block rounded-full bg-gray-300  text-sm text-neutral-500 transition-all duration-300  hover:bg-[#CAE8AC] dark:hover:bg-gray-700 dark:hover:text-white"
+                                    <a class="flex items-center justify-center relative block rounded-full bg-gray-300 text-sm text-neutral-500 transition-all duration-300 hover:bg-[#CAE8AC] dark:hover:bg-gray-700 dark:hover:text-white"
                                        href="#!"
                                        style="width: 19px; height: 19px; line-height: 19px;">
                                         &gt;
@@ -162,8 +156,6 @@
                             @endif
                         </ul>
                     </nav>
-                    
-                    
                 </div>
             </div>
         </div>
@@ -176,7 +168,50 @@
         passwordCell.style.border = 'none';
         passwordInput.style.border = 'none';
         passwordCell.innerHTML = ''; 
-        passwordCell.appendChild(passwordInput); 
+        passwordCell.appendChild(passwordInput);
+
+        document.getElementById('delete-button').addEventListener('click', function (event) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Apakah yakin menghapus user ini?',
+                text: "Tindakan ini tidak dapat dibatalkan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#416D14',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Tidak'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('delete-form').submit();
+                }
+            });
+        });
+
+        @if(session('error'))
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: "{{ session('error') }}",
+                    background: '#ffffff',
+                    confirmButtonColor: '#416D14',
+                    confirmButtonText: 'Coba Lagi',
+                });
+            });
+        @endif
+
+        @if($errors->any())
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: "{{ $errors->first() }}",
+                    background: '#ffffff',
+                    confirmButtonColor: '#416D14',
+                    confirmButtonText: 'Coba Lagi',
+                });
+            });
+        @endif
     </script>
 </x-app-layout>
-    

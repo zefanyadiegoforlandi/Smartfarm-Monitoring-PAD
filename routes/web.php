@@ -47,7 +47,7 @@ Route::post('/', [LoginController::class, 'login']);
 
 Route::middleware('jwt.auth')->group(function () {
     Route::get('/pages/dashboard/admin-dashboard', [DashboardController::class, 'index'])
-        ->middleware('ensure_admin') // Tambahkan middleware ini untuk mengecek role admin
+        ->middleware('ensure_admin') 
         ->name('admin-dashboard');
 
     Route::get('/pages/dashboard/user-dashboard', [DashboardUserController::class, 'index'])
