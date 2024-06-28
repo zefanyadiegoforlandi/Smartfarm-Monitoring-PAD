@@ -105,14 +105,14 @@
                         @else
                             <li>
                                 <a class="flex items-center justify-center rounded-full bg-gray-300 text-sm text-neutral-600 transition-all duration-300 hover:bg-[#CAE8AC] dark:text-white dark:hover:bg-green-700 dark:hover:text-white circle-button"
-                                   href="{{ $paginator->previousPageUrl() }}"
+                                   href="{{ $paginator->previousPageUrl() . '&search=' . request('search') }}"
                                    style="width: 19px; height: 19px; line-height: 19px;">
                                     &lt;
                                 </a>
                             </li>
                         @endif
                 
-                        {{-- Paginator Halaman --}}
+                        {{-- Tautan Halaman --}}
                         @foreach ($paginator->getUrlRange(1, $paginator->lastPage()) as $page => $url)
                             @if ($page == 1 || $page == $paginator->lastPage() ||
                                 ($page >= $paginator->currentPage() - 2 && $page <= $paginator->currentPage() + 2))
@@ -125,7 +125,7 @@
                                             bg-transparent text-neutral-600 hover:bg-[#CAE8AC] dark:text-white dark:hover:bg-[#CAE8AC] dark:hover:text-white
                                             @endif
                                             mx-1 text-sm font-medium transition-all duration-300"
-                                       href="{{ ($page == $paginator->currentPage()) ? '#' : $url }}"
+                                       href="{{ ($page == $paginator->currentPage()) ? '#' : $url . '&search=' . request('search') }}"
                                        @if ($page == $paginator->currentPage())
                                        aria-disabled="true"
                                         @endif
@@ -134,13 +134,13 @@
                                 </li>
                             @elseif ($page == $paginator->currentPage() - 3)
                                 <li>
-                                    <span class="relative block  text-sm text-neutral-600 transition-all duration-300 dark:text-white dark:hover:bg-[#CAE8AC] dark:hover:text-white">
+                                    <span class="relative block text-sm text-neutral-600 transition-all duration-300 dark:text-white dark:hover:bg-[#CAE8AC] dark:hover:text-white">
                                         ...
                                     </span>
                                 </li>
                             @elseif ($page == $paginator->currentPage() + 3)
                                 <li>
-                                    <span class="relative block  text-sm text-neutral-600 transition-all duration-300 dark:text-white dark:hover:bg-[#CAE8AC] dark:hover:text-white">
+                                    <span class="relative block text-sm text-neutral-600 transition-all duration-300 dark:text-white dark:hover:bg-[#CAE8AC] dark:hover:text-white">
                                         ...
                                     </span>
                                 </li>
@@ -152,13 +152,13 @@
                             <li>
                                 <a class="flex items-center justify-center relative block rounded-full bg-gray-300 text-sm text-neutral-600 transition-all duration-300 hover:bg-[#CAE8AC] dark:text-white dark:hover:bg-green-700 dark:hover:text-white"
                                    style="width: 19px; height: 19px; line-height: 19px;"
-                                   href="{{ $paginator->nextPageUrl() }}">
+                                   href="{{ $paginator->nextPageUrl() . '&search=' . request('search') }}">
                                     &gt;
                                 </a>
                             </li>
                         @else
                             <li>
-                                <a class="flex items-center justify-center relative block rounded-full bg-gray-300  text-sm text-neutral-500 transition-all duration-300  hover:bg-[#CAE8AC] dark:hover:bg-gray-700 dark:hover:text-white"
+                                <a class="flex items-center justify-center relative block rounded-full bg-gray-300 text-sm text-neutral-500 transition-all duration-300 hover:bg-[#CAE8AC] dark:hover:bg-gray-700 dark:hover:text-white"
                                    href="#!"
                                    style="width: 19px; height: 19px; line-height: 19px;">
                                     &gt;
