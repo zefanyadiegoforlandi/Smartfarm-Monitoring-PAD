@@ -59,6 +59,7 @@ class LoginController extends Controller
                         'user_id' => $id,
                         'user_name' => $name,
                     ];
+                    
 
                     if ($level !== 'admin' && $lahan) {
                         $sessionData['id_lahan'] = $lahan['id_lahan'];
@@ -69,6 +70,7 @@ class LoginController extends Controller
                             $sessionData['id_sensor'] = $sensor['id_sensor'];
                         }
                     }
+
                     session($sessionData);
                     if ($level === 'admin') {
                         return redirect()->intended(route('admin-dashboard'));

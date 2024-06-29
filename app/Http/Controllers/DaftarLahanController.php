@@ -45,11 +45,13 @@ class DaftarLahanController extends Controller
                         return stripos($lahan->id_lahan, $search) !== false || 
                             stripos($lahan->nama_lahan, $search) !== false ||
                             stripos($lahan->user_name, $search) !== false ||
-                            stripos($lahan->alamat_lahan, $search) !== false;
+                            stripos($lahan->alamat_lahan, $search) !== false ||
+                            stripos($lahan->luas_lahan, $search) !== false;
+
                     });
                 }
 
-                $perPage = 5;
+                $perPage = 10;
                 $currentPage = $request->input('page', 1);
                 $paginator = new LengthAwarePaginator(
                     $lahan->forPage($currentPage, $perPage),

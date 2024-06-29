@@ -41,7 +41,9 @@ class DaftarFarmerController extends Controller
                     $users = $users->filter(function ($user) use ($search) {
                         return stripos($user->id, $search) !== false || 
                                stripos($user->name, $search) !== false || 
-                               stripos($user->email, $search) !== false;
+                               stripos($user->email, $search) !== false ||
+                               stripos($user->alamat_user, $search) !== false;
+
                     });
                 }
          

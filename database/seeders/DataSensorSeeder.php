@@ -10,6 +10,6 @@ class DataSensorSeeder extends Seeder
     public function run()
     {
         // Menggunakan model factory untuk membuat 50 data dummy
-        DataSensor::factory()->count(50)->create();
+        DataSensor::factory()->count(1000)->create();
     }
 }

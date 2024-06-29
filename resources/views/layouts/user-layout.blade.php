@@ -37,6 +37,15 @@
                 height: 100%;
                 z-index: 1000;
                 overflow: hidden; /* Prevent scrolling */
+                display: none; /* Initially hidden */
+            }
+
+            .sidebar.active {
+                display: block; /* Show sidebar when active */
+            }
+
+            main {
+                margin-left: 0; /* Adjust main content margin */
             }
         }
 
@@ -83,7 +92,7 @@
         <!-- Overlay for small screens -->
         <div class="overlay"></div>
         <!-- Sidebar -->
-        <aside class="bg-[#ECF0E8] text-white w-72 p-4 hidden xl:block sidebar xl:border xl:border-r-3 xl:bg-white ">
+        <aside class="bg-[#ECF0E8] text-white w-72 p-4 sidebar xl:border xl:border-r-3 xl:bg-white ">
             <!-- Close Sidebar Button -->
             <button class="close-sidebar-button text-white mb-4 xl:hidden absolute top-6 right-2">&#10006;</button>
 
@@ -125,69 +134,23 @@
                     <!-- Div for 8 items (initially hidden) -->
                     <div id="sensorItems" class="hidden text-[#818280] ms-2 mt-4 space-y-2">
                         <ul class="space-y-2 text-lg">
-                            <!-- Suhu -->
+                            @foreach ([
+                                ['route' => 'temperature', 'icon' => 'images/farmer-s/suhu.svg', 'label' => 'Suhu'],
+                                ['route' => 'humidity', 'icon' => 'images/farmer-s/kelembapan.svg', 'label' => 'Kelembapan'],
+                                ['route' => 'airquality', 'icon' => 'images/farmer-s/angin.svg', 'label' => 'Kualitas Udara'],
+                                ['route' => 'raindrop', 'icon' => 'images/farmer-s/curah-hujan.svg', 'label' => 'Curah Hujan'],
+                                ['route' => 'light', 'icon' => 'images/farmer-s/intensitasC.svg', 'label' => 'Intensitas Cahaya'],
+                                ['route' => 'persentasekelembapantanah', 'icon' => 'images/farmer-s/tanah.svg', 'label' => 'Kelembapan Tanah'],
+                                ['route' => 'approxaltitude', 'icon' => 'images/farmer-s/ketinggian.svg', 'label' => 'Ketinggian'],
+                                ['route' => 'pressure', 'icon' => 'images/farmer-s/tekanan-udara.svg', 'label' => 'Tekanan Udara'],
+                            ] as $item)
                             <li class="menu-item">
-                                <a href="{{ route('temperature') }}" class="flex group" onclick="changeColor(this, 'suhu')">
-                                    <img src="{{ asset('images/farmer-s/suhu.svg') }}" class="w-6 h-6" alt="">
-                                    <span class="menu-text ms-6 text-[#818280]">Suhu</span>
+                                <a href="{{ route($item['route']) }}" class="flex group" onclick="changeColor(this, '{{ $item['route'] }}')">
+                                    <img src="{{ asset($item['icon']) }}" class="w-6 h-6" alt="{{ $item['label'] }} Icon">
+                                    <span class="menu-text ms-6 text-[#818280]">{{ $item['label'] }}</span>
                                 </a>
                             </li>
-
-                            <!-- Kelembapan -->
-                            <li class="menu-item">
-                                <a href="{{ route('humidity') }}" class="flex group" onclick="changeColor(this, 'kelembapan')">
-                                    <img src="{{ asset('images/farmer-s/kelembapan.svg') }}" class="w-6 h-6" alt="">
-                                    <span class="menu-text ms-6 text-[#818280]">Kelembapan</span>
-                                </a>
-                            </li>
-
-                            <!-- Kualitas Udara -->
-                            <li class="menu-item">
-                                <a href="{{ route('airquality') }}" class="flex group" onclick="changeColor(this, 'kualitas-udara')">
-                                    <img src="{{ asset('images/farmer-s/angin.svg') }}" class="w-6 h-6" alt="">
-                                    <span class="menu-text ms-6 text-[#818280]">Kualitas Udara</span>
-                                </a>
-                            </li>
-
-                            <!-- Curah Hujan -->
-                            <li class="menu-item">
-                                <a href="{{ route('raindrop') }}" class="flex group" onclick="changeColor(this, 'curah-hujan')">
-                                    <img src="{{ asset('images/farmer-s/curah-hujan.svg') }}" class="w-6 h-6" alt="">
-                                    <span class="menu-text ms-6 text-[#818280]">Curah Hujan</span>
-                                </a>
-                            </li>
-
-                            <!-- Intensitas Cahaya -->
-                            <li class="menu-item">
-                                <a href="{{ route('light') }}" class="flex group" onclick="changeColor(this, 'intensitas-cahaya')">
-                                    <img src="{{ asset('images/farmer-s/intensitasC.svg') }}" class="w-6 h-6" alt="">
-                                    <span class="menu-text ms-6 text-[#818280]">Intensitas Cahaya</span>
-                                </a>
-                            </li>
-
-                            <!-- Kelembapan Tanah -->
-                            <li class="menu-item">
-                                <a href="{{ route('persentasekelembapantanah') }}" class="flex group" onclick="changeColor(this, 'kelembapan-tanah')">
-                                    <img src="{{ asset('images/farmer-s/tanah.svg') }}" class="w-6 h-6" alt="">
-                                    <span class="menu-text ms-6 text-[#818280]">Kelembapan Tanah</span>
-                                </a>
-                            </li>
-
-                            <!-- Ketinggian -->
-                            <li class="menu-item">
-                                <a href="{{ route('approxaltitude') }}" class="flex group" onclick="changeColor(this, 'ketinggian')">
-                                    <img src="{{ asset('images/farmer-s/ketinggian.svg') }}" class="w-6 h-6" alt="">
-                                    <span class="menu-text ms-6 text-[#818280]">Ketinggian</span>
-                                </a>
-                            </li>
-
-                            <!-- Tekanan Udara -->
-                            <li class="menu-item">
-                                <a href="{{ route('pressure') }}" class="flex group" onclick="changeColor(this, 'tekanan-udara')">
-                                    <img src="{{ asset('images/farmer-s/tekanan-udara.svg') }}" class="w-6 h-6" alt="">
-                                    <span class="menu-text ms-6 text-[#818280]">Tekanan Udara</span>
-                                </a>
-                            </li>
+                            @endforeach
                         </ul>
                     </div>
                 </div>
@@ -325,6 +288,31 @@
     <button class="toggle-button text-white xl:hidden fixed top-6 left-6">&#9776;</button>
 
     @livewireScripts
+
+    <script>
+        // Toggle Sidebar functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggleButton = document.querySelector('.toggle-button');
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.overlay');
+            const closeSidebarButton = document.querySelector('.close-sidebar-button');
+
+            toggleButton.addEventListener('click', function () {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+            });
+
+            closeSidebarButton.addEventListener('click', function () {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+
+            overlay.addEventListener('click', function () {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+        });
+    </script>
 </body>
 
 </html>

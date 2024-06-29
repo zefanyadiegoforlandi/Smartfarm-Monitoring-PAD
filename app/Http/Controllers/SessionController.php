@@ -33,7 +33,8 @@ class SessionController extends Controller
                 $firstSensor = reset($filteredSensors);
                 session(['id_sensor' => $firstSensor['id_sensor']]);
             } else {
-                return response()->json(['error' => 'No sensors found for the specified id_lahan'], 404);
+                // Mengosongkan id_sensor pada session jika tidak ada sensor yang ditemukan
+                session()->forget('id_sensor');
             }
         } else {
             return response()->json(['error' => 'Failed to retrieve sensor data'], $sensorResponse->status());
@@ -42,6 +43,7 @@ class SessionController extends Controller
         // Mengembalikan respon JSON dengan pesan sukses
         return response()->json(['message' => 'Session changed successfully']);
     }
+
 
     public function setSensor(Request $request)
     {

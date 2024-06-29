@@ -48,7 +48,7 @@ class DataAirQualityController extends Controller
             if ($response->successful()) {
                 $dataSensors = $response->json();
 
-                $sortedData = collect($dataSensors)->slice(-20)->values();
+                $sortedData = collect($dataSensors)->slice(-1000)->values();
                 $dataSensor = $sortedData->map(function ($item) {
                     return [
                         'AirQuality' => $item['AirQuality'],
@@ -101,7 +101,7 @@ class DataAirQualityController extends Controller
             if ($response->successful()) {
                 $dataSensors = $response->json();
 
-                $sortedData = collect($dataSensors)->slice(-20)->values();
+                $sortedData = collect($dataSensors)->slice(-1000)->values();
 
                 $AirQuality = $sortedData->pluck('AirQuality')->toArray();
                 $TimeAdded = $sortedData->pluck('TimeAdded')->toArray();

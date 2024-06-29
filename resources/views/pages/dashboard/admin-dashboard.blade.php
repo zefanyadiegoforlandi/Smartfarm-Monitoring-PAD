@@ -388,6 +388,7 @@
                     });
                 </script>
             
+               
                 @if(session('errors'))
                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                 <script>
@@ -396,6 +397,9 @@
                             icon: 'error',
                             title: 'Oops...',
                             text: "{{ $errors->first() }}", // Mengambil pesan kesalahan pertama dari laravel
+                            background: '#ffffff',
+                            confirmButtonColor: '#416D14',
+                            confirmButtonText: 'OK',
                         });
                     });
                 </script>

@@ -10,18 +10,21 @@ class DataSensor extends Model
     use HasFactory;
 
     protected $table = 'data_sensor';
+    public $timestamps = false; // Nonaktifkan timestamps
+
 
     protected $fillable = [
         'id_sensor',
-        'intensitas_cahaya',
-        'kelembaban_tanah',
-        'kualitas_udara',
-        'curah_hujan',
-        'kelembaban_udara',
-        'suhu',
-        'tekanan',
-        'ketinggian',
-        'waktu_perekaman',
+        'Light',
+        'PersentaseKelembapanTanah',
+        'AirQuality',
+        'RainDrop',
+        'H',
+        'T',
+        'Temperature',
+        'Pressure',
+        'ApproxAltitude',
+        'TimeAdded',
     ];
 
     public function sensor()

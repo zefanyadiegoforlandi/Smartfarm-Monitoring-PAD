@@ -117,6 +117,16 @@
     var labels = tableData.map(entry => entry.TimeAdded);
     var airQuality = tableData.map(entry => entry.AirQuality);
 
+    // Menghitung nilai maksimum dan minimum dari data airQuality
+    var maxDataValue = Math.max(...airQuality);
+    var minDataValue = Math.min(...airQuality);
+
+    // Menetapkan batas atas dan bawah untuk sumbu Y
+    var upperBound = maxDataValue + 20;
+    var lowerBound = minDataValue - 20;
+
+
+    // Membuat grafik dengan Chart.js
     var ctx = document.getElementById('airQualityChart').getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'line',
@@ -130,8 +140,8 @@
                 pointBackgroundColor: '#416D14',
                 pointBorderColor: '#fff',
                 pointBorderWidth: 1,
-                pointRadius: 2,
-                pointHoverRadius: 4,
+                pointRadius: 0,
+                pointHoverRadius: 1,
                 pointHoverBackgroundColor: '#fff',
                 pointHoverBorderColor: '#416D14',
                 pointHoverBorderWidth: 2,
@@ -149,11 +159,14 @@
                         },
                         color: '#416D14'
                     },
+                    min: lowerBound, // Menggunakan nilai lowerBound yang telah dihitung
+                    max: upperBound, // Menggunakan nilai upperBound yang telah dihitung
                     ticks: {
                         color: '#000000',
                         font: {
                             size: 12
-                        }
+                        },
+                        
                     },
                     grid: {
                         color: 'rgba(0, 0, 0, 0.05)'
@@ -186,6 +199,7 @@
         }
     });
 
+    // Fungsi untuk memperbarui grafik dengan data baru
     function fetchDataAndUpdateChart() {
         fetch('/update-data-grafik-AirQuality')
             .then(response => response.json())
@@ -195,11 +209,19 @@
 
                 myChart.data.datasets[0].data = newData;
                 myChart.data.labels = newLabels;
+
+                // Menghitung ulang batas atas dan bawah berdasarkan data baru
+                var newMaxDataValue = Math.max(...newData);
+                var newMinDataValue = Math.min(...newData);
+                myChart.options.scales.y.min = newMinDataValue - 20;
+                myChart.options.scales.y.max = newMaxDataValue + 20;
+
                 myChart.update();
             })
             .catch(error => console.error('Error:', error));
     }
     setInterval(fetchDataAndUpdateChart, 2000);
+
 
     function filterChanged() {
         console.log('Filter changed');

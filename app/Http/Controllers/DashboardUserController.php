@@ -20,10 +20,6 @@ class DashboardUserController extends Controller
                 return redirect('/')->withErrors('Token tidak ditemukan. Silakan login terlebih dahulu.');
             }
 
-            if (!$id_sensor) {
-                return redirect('/')->withErrors('ID Sensor tidak ditemukan. Silakan login ulang.');
-            }
-
             if (!$id_lahan) {
                 return redirect('/')->withErrors('ID Lahan tidak ditemukan. Silakan login ulang.');
             }
@@ -121,11 +117,12 @@ class DashboardUserController extends Controller
 
                         foreach ($parameters as $param) {
                             $values = array_column($filteredData, $param);
+
                             $results[$param] = [
-                                'current' => end($values),
-                                'max' => max($values),
-                                'min' => min($values),
-                                'average' => number_format(array_sum($values) / count($values), 2),
+                                'current' => end($values) !== false ? end($values) : 0,
+                                'max' => !empty($values) ? max($values) : 0,
+                                'min' => !empty($values) ? min($values) : 0,
+                                'average' => !empty($values) ? number_format(array_sum($values) / count($values), 2) : 0,
                             ];
                         }
 
@@ -145,4 +142,30 @@ class DashboardUserController extends Controller
             return redirect('/')->withErrors('Terjadi kesalahan. Silakan coba lagi.');
         }
     }
+
+    public function updateDataPertinjau()
+{
+    $token = session('jwt');
+    $id_sensor = session('id_sensor');
+
+    $response = Http::withToken($token)->get(env('DATA_SENSOR_URL') . $id_sensor);
+
+    if ($response->successful()) {
+        $dataSensors = $response->json();
+        
+        $filteredData = collect($dataSensors)->slice(-20)->values();
+        $averageTemperature = $filteredData->avg('Temperature');
+
+        return response()->json([
+            'sensorData' => [
+                'Temperature' => [
+                    'average' => $averageTemperature
+                ]
+            ]
+        ]);
+    } else {
+        return response()->json(['error' => 'Failed to retrieve data sensors'], $response->status());
+    }
+}
+
 }

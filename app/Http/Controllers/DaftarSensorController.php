@@ -45,11 +45,15 @@ class DaftarSensorController extends Controller
                     $sensor = $sensor->filter(function ($sensor) use ($search) {
                         return stripos($sensor->id_sensor, $search) !== false || 
                                stripos($sensor->nama_lahan, $search) !== false ||
-                               stripos($sensor->alamat_lahan, $search) !== false;
+                               stripos($sensor->nama_lahan, $search) !== false ||
+                               stripos($sensor->alamat_lahan, $search) !== false ||
+                               stripos($sensor->tanggal_aktivasi, $search) !== false;
+
+
                     });
                 }
     
-                $perPage = 5;
+                $perPage = 10;
                 $currentPage = $request->input('page', 1);
                 $paginator = new LengthAwarePaginator(
                     $sensor->forPage($currentPage, $perPage),

@@ -100,6 +100,8 @@ Route::middleware(['jwt.auth', 'ensure_user'])->group(function () {
     Route::get('/user/pertinjau', [DataPertinjauController::class, 'showPreview'])->name('pertinjau.lihat');
 
     Route::get('/update-data-pertinjau', [DataPertinjauController::class, 'getData'])->name('update-data-pertinjau');
+    Route::get('/update-data-pertinjau2', [DashboardUserController::class, 'updateDataPertinjau']);
+
 
     Route::get('/user/download', [DownloadDataController::class, 'index'])->name('download.data');
 
