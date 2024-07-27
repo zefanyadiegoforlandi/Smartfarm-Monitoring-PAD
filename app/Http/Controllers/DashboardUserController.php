@@ -17,7 +17,7 @@ class DashboardUserController extends Controller
             $id_lahan = session('id_lahan');
 
             if (!$token) {
-                return redirect('/')->withErrors('Token tidak ditemukan. Silakan login terlebih dahulu.');
+                return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
             }
 
             if (!$id_lahan) {

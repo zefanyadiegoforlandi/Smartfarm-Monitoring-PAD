@@ -5,7 +5,7 @@
     use App\Models\DataFeed;
     use Illuminate\Http\Request;
 
-    class DataFeedController extends ApiController
+    class DataFeedController extends Controller
     {
 
         /**

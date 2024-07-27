@@ -12,14 +12,11 @@ class SessionController extends Controller
             'id_lahan' => 'required',
         ]);
 
-        // Mengatur nilai session untuk id_lahan
         session(['id_lahan' => $request->id_lahan]);
 
-        // Mendapatkan data sensor yang terkait dengan id_lahan
-        $token = session('jwt'); // Menggunakan token dari session jika diperlukan
+        $token = session('jwt');
         $id_lahan = $request->id_lahan;
 
-        // Mendapatkan data sensor yang dimiliki oleh id_lahan
         $sensorResponse = Http::withToken($token)->get(env('SENSOR_URL'));
 
         if ($sensorResponse->successful()) {
@@ -44,17 +41,26 @@ class SessionController extends Controller
         return response()->json(['message' => 'Session changed successfully']);
     }
 
-
     public function setSensor(Request $request)
     {
         $request->validate([
             'id_sensor' => 'required',
         ]);
 
-        // Mengatur nilai session untuk id_sensor
         session(['id_sensor' => $request->id_sensor]);
-
         // Mengembalikan respon JSON dengan pesan sukses
         return response()->json(['message' => 'Sensor changed successfully']);
+    }
+
+    public function setTimeFrame(Request $request)
+    {
+        $request->validate([
+            'timeFrame' => 'required|string',
+        ]);
+
+        session(['timeFrame' => $request->input('timeFrame')]);
+        // Mengembalikan respon JSON dengan pesan sukses
+
+        return response()->json(['message' => 'Time Frame added successfully']);
     }
 }

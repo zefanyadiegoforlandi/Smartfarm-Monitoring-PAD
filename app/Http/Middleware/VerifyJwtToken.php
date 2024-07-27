@@ -11,7 +11,7 @@ class VerifyJwtToken
     {
         $token = session('jwt') ?? $request->cookie('jwt');
         if (!$token) {
-            return redirect('/')->withErrors('Authorization token not provided.');
+            return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
         }
 
         return $next($request);

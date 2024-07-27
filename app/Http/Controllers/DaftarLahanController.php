@@ -131,7 +131,7 @@ class DaftarLahanController extends Controller
         try {
             $token = session('jwt');
             if (!$token) {
-                return redirect('/login')->withErrors('Silakan login untuk melanjutkan.');
+                return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
             }
 
             $response = Http::withToken($token)->get(env('API_BASE_URL'));
@@ -154,7 +154,7 @@ class DaftarLahanController extends Controller
                     throw new \Exception('Lahan tidak ditemukan.');
                 }
 
-                return view('pages.edit-delete.read-lahan', compact('lahan'));
+                return view('pages.read-data.read-lahan', compact('lahan'));
             } else {
                 throw new \Exception('Gagal mengambil data dari server.');
             }
@@ -189,7 +189,7 @@ class DaftarLahanController extends Controller
                     throw new \Exception('Lahan dengan ID tersebut tidak ditemukan.');
                 }
 
-                return view('pages.edit-delete.form-lahan', compact('lahan', 'users'));
+                return view('pages.edit-data.form-lahan', compact('lahan', 'users'));
             } else {
                 throw new \Exception('Gagal mengambil data dari server.');
             }
@@ -203,7 +203,7 @@ class DaftarLahanController extends Controller
         try {
             $token = session('jwt');
             if (!$token) {
-                return redirect('/login')->withErrors('Anda perlu login untuk mengakses halaman ini.');
+                return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
             }
 
             $request->validate([

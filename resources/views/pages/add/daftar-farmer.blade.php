@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.admin-layout')
+
+@section('content')
     <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         <div class="flex mx-3">
             <!-- Hamburger button -->
@@ -63,6 +65,7 @@
                             @endphp
                             <tr class="{{ $userCount % 2 == 0 ? 'bg-[#ecf0e82e] ' : 'bg-white' }}">
                                 <td class="py-2 px-4 border-b text-center">{{ $user->id }}</td>
+
                                 <td class="py-2 px-4 border-b">
                                     <form action="{{ route('read-farmer.edit', $user->id) }}">
                                         @csrf
@@ -320,4 +323,4 @@
         </script>
     @endif
 
-</x-app-layout>
+@endsection

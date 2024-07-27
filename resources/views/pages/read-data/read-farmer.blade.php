@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.admin-layout')
+
+@section('content')
     <div class="min-w-full px-4 mb-5">
     
         <span class="toggle-button text-white text-4xl top-5 left-4 cursor-pointer xl:hidden">
@@ -214,4 +216,4 @@
             });
         @endif
     </script>
-</x-app-layout>
+@endsection

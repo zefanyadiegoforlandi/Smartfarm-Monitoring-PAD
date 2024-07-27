@@ -56,7 +56,7 @@ class InformationUserController extends Controller
                     );
                     $paginator->setPath($request->url());
          
-                    return view('pages.edit-delete.read-user', compact('user', 'paginator'));
+                    return view('pages.read-data.read-user', compact('user', 'paginator'));
                 } else {
                     return redirect()->back()->withErrors('User tidak ditemukan.');
                 }

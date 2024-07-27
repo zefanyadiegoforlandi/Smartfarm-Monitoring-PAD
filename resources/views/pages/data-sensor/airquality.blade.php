@@ -7,7 +7,7 @@
             <span class="toggle-button text-white text-4xl top-5 left-4 cursor-pointer xl:hidden">
                 <img src="{{ asset('images/tonggle_sidebar.svg') }}">
             </span>
-            <p class="font-semibold text-3xl md:text-4xl text-[#416D14]">Air Quality</p>
+            <p class="font-semibold text-3xl md:text-4xl text-[#416D14]">Kualitas Udara</p>
         </div>
         <div class="flex items-center justify-end">
             <div class="relative w-[124px] h-[25px] lg:w-[160px] lg:h-[30px]">
@@ -36,14 +36,20 @@
         </div>
     </div>
 
-    <div class="overflow-x-auto mt-5">
+    <div class="flex items-center justify-end group mt-5">
+        <a href="{{ route('history.Airquality') }}" class="font-medium text-[16px] md:text-[20px] text-[#416D14] me-1 group-hover:brightness-125 group-active:brightness-150">lihat selengkapnya</a>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-right-short text-[#416D14] transition duration-300 group-hover:brightness-125 group-active:brightness-150" viewBox="0 0 16 16">
+            <path fill="currentColor" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8" />
+        </svg>
+    </div>
+    <div class="overflow-x-auto mt-2">
         <table id="airQuality-table" class="w-full">
             <thead class="bg-[#ECF0E8]">
                 <tr>
                     <th class="p-2 text-[#416D14] uppercase">Time</th>
                     <th class="p-2 text-[#416D14] uppercase">Date</th>
                     <th class="p-2 text-[#416D14] uppercase">ID Sensor</th>
-                    <th class="p-2 text-[#416D14] uppercase">Air Quality</th>
+                    <th class="p-2 text-[#416D14] uppercase">Kualitas Udara</th>
                 </tr>
             </thead>
             
@@ -117,13 +123,11 @@
     var labels = tableData.map(entry => entry.TimeAdded);
     var airQuality = tableData.map(entry => entry.AirQuality);
 
-    // Menghitung nilai maksimum dan minimum dari data airQuality
     var maxDataValue = Math.max(...airQuality);
     var minDataValue = Math.min(...airQuality);
 
-    // Menetapkan batas atas dan bawah untuk sumbu Y
-    var upperBound = maxDataValue + 20;
-    var lowerBound = minDataValue - 20;
+    var upperBound = maxDataValue + 10;
+    var lowerBound = minDataValue - 10;
 
 
     // Membuat grafik dengan Chart.js
@@ -159,8 +163,8 @@
                         },
                         color: '#416D14'
                     },
-                    min: lowerBound, // Menggunakan nilai lowerBound yang telah dihitung
-                    max: upperBound, // Menggunakan nilai upperBound yang telah dihitung
+                    min: lowerBound, 
+                    max: upperBound, 
                     ticks: {
                         color: '#000000',
                         font: {
@@ -210,11 +214,10 @@
                 myChart.data.datasets[0].data = newData;
                 myChart.data.labels = newLabels;
 
-                // Menghitung ulang batas atas dan bawah berdasarkan data baru
                 var newMaxDataValue = Math.max(...newData);
                 var newMinDataValue = Math.min(...newData);
-                myChart.options.scales.y.min = newMinDataValue - 20;
-                myChart.options.scales.y.max = newMaxDataValue + 20;
+                myChart.options.scales.y.min = newMinDataValue - 10;
+                myChart.options.scales.y.max = newMaxDataValue + 10;
 
                 myChart.update();
             })

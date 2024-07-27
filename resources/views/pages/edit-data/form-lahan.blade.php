@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.admin-layout')
+
+@section('content')
     <div class=" flex items-center justify-center py-8">
 
         <div class="modal-content bg-white mx-4 md:mx-auto w-full max-w-lg rounded p-8 shadow-lg">
@@ -71,4 +73,4 @@
     @endif
 
     
-</x-app-layout>    
+@endsection

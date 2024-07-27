@@ -85,7 +85,7 @@ class LoginController extends Controller
                 return back()->withInput()->withErrors(['login' => 'Lahan and Sensor not found(invalid session).']);
             }
         } else {
-            return back()->withInput()->withErrors(['login' => 'Login failed, check email and password.']);
+            return back()->withInput()->withErrors(['login' => ' email atau password salah']);
         }
     }
 }

@@ -17,6 +17,9 @@ class DataAirQualityController extends Controller
             $id_lahan = session('id_lahan');
             $token = session('jwt'); // Menggunakan token untuk permintaan yang memerlukannya
 
+            if (!$token) {
+                return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
+            }
             if (!$id_sensor) {
                 return redirect('/')->withErrors('ID Sensor tidak ditemukan. Silakan login ulang.');
             }
@@ -25,9 +28,6 @@ class DataAirQualityController extends Controller
                 return redirect('/')->withErrors('ID Lahan tidak ditemukan. Silakan login ulang.');
             }
 
-            if (!$token) {
-                return redirect('/')->withErrors('Token tidak ditemukan. Silakan login ulang.');
-            }
 
             // Mendapatkan semua data sensor
             $sensorResponse = Http::withToken($token)->get(env('SENSOR_URL'));
@@ -147,4 +147,62 @@ class DataAirQualityController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
+    public function history_AirQuality()
+    {
+        try {
+            $id_sensor = session('id_sensor');
+            $id_lahan = session('id_lahan');
+            $token = session('jwt');
+
+            if (!$id_sensor) {
+                return redirect('/')->withErrors('ID Sensor tidak ditemukan. Silakan login ulang.');
+            }
+
+            if (!$id_lahan) {
+                return redirect('/')->withErrors('ID Lahan tidak ditemukan. Silakan login ulang.');
+            }
+
+            if (!$token) {
+                return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
+            }
+
+            $sensorResponse = Http::withToken($token)->get(env('SENSOR_URL'));
+
+            if (!$sensorResponse->successful()) {
+                return response()->json(['error' => 'Failed to retrieve sensor data'], $sensorResponse->status());
+            }
+            $sensorData = $sensorResponse->json();
+
+            $sensors = array_filter($sensorData, function ($sensor) use ($id_lahan) {
+                return $sensor['id_lahan'] == $id_lahan;
+            });
+
+            $response = Http::get(env('DATA_SENSOR_URL') . $id_sensor);
+
+            if ($response->successful()) {
+                $dataSensors = $response->json();
+
+              
+                $perPage = 10; 
+                $currentPage = request()->input('page', 1); 
+
+                $lengthAwarePaginator = new LengthAwarePaginator(
+                    collect(array_reverse($dataSensors))->forPage($currentPage, $perPage),
+                    count($dataSensors),
+                    $perPage,
+                    $currentPage
+                );
+                $lengthAwarePaginator->setPath(request()->url());
+                $paginator = $lengthAwarePaginator->toArray();
+
+                return view('pages.history.airquality', compact('paginator', 'sensors'));
+            } else {
+                return response()->json(['error' => 'Failed to retrieve data sensors'], $response->status());
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
 }

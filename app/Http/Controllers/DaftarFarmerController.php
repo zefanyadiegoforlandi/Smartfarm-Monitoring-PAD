@@ -114,7 +114,7 @@ class DaftarFarmerController extends Controller
             }
 
             // Lanjutkan proses simpan data jika email unik
-            $client = new \GuzzleHttp\Client();
+            $client = new Client();
             $url = env('USERS_URL');
 
             try {
@@ -179,7 +179,7 @@ class DaftarFarmerController extends Controller
                     );
                     $paginator->setPath(request()->url());
          
-                    return view('pages.edit-delete.read-farmer', compact('users', 'user', 'sensors', 'paginator'));
+                    return view('pages.read-data.read-farmer', compact('users', 'user', 'sensors', 'paginator'));
                 } else {
                     return redirect()->back()->withErrors('User tidak ditemukan.');
                 }
@@ -208,7 +208,7 @@ class DaftarFarmerController extends Controller
                 $user = $users->firstWhere('id', $id);
          
                 if ($user) {
-                    return view('pages.edit-delete.form-farmer', compact('users', 'user'));
+                    return view('pages.edit-data.form-farmer', compact('users', 'user'));
                 } else {
                     return redirect()->back()->withErrors('User tidak ditemukan.');
                 }
@@ -289,7 +289,7 @@ class DaftarFarmerController extends Controller
                 }
 
                 // Proses update jika validasi berhasil
-                $client = new \GuzzleHttp\Client();
+                $client = new Client();
                 $url = env('USERS_URL') . $id;
 
                 try {
@@ -307,10 +307,10 @@ class DaftarFarmerController extends Controller
 
                         return redirect('/pages/add/daftar-farmer')->with('tambah', 'Farmer berhasil diupdate.');
                     } else {
-                        return redirect()->back()->with('error', 'Gagal menyimpan data petani');
+                        return redirect()->back()->with('error', 'Gagal menyimpan data farmer');
                     }
                 } catch (\Exception $e) {
-                    return redirect()->back()->with('error', 'Gagal menyimpan data petani: ' . $e->getMessage());
+                    return redirect()->back()->with('error', 'Gagal menyimpan data farmer: ' . $e->getMessage());
                 }
             } else {
                 return redirect()->back()->with('error', 'Gagal memeriksa database eksternal.');
@@ -336,7 +336,6 @@ class DaftarFarmerController extends Controller
                 $dataLahan = $responseCheck->json();
     
                 // Logging untuk melihat respons dari API
-                \Log::info('Response from LAHAN_URL:', ['data' => $dataLahan]);
     
                 // Periksa apakah ada lahan yang terkait dengan id_user yang sedang dihapus
                 $relatedLahan = array_filter($dataLahan, function($lahan) use ($id) {

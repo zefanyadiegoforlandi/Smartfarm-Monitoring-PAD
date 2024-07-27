@@ -36,7 +36,14 @@
         </div>
     </div>
 
-    <div class="overflow-x-auto mt-5">
+    <div class="flex items-center justify-end group mt-5">
+        <a href="{{ route('history.Temperature') }}" class="font-medium text-[16px] md:text-[20px] text-[#416D14] me-1 group-hover:brightness-125 group-active:brightness-150">lihat selengkapnya</a>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-right-short text-[#416D14] transition duration-300 group-hover:brightness-125 group-active:brightness-150" viewBox="0 0 16 16">
+            <path fill="currentColor" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8" />
+        </svg>
+    </div>
+    <div class="overflow-x-auto mt-2">        
+        
         <table id="temperature-table" class="w-full">
             <thead class="bg-[#ECF0E8]">
                 <tr>
@@ -113,93 +120,115 @@
 
     setInterval(reloadData, 2000);
 
-    var tableData = {!! json_encode($dataSensor) !!};
-    var labels = tableData.map(entry => entry.TimeAdded);
-    var temperature = tableData.map(entry => entry.Temperature);
+  // Mengambil data sensor dari PHP ke JavaScript
+var tableData = {!! json_encode($dataSensor) !!};
 
-    var ctx = document.getElementById('temperatureChart').getContext('2d');
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Temperature',
-                data: temperature,
-                borderColor: '#416D14',
-                borderWidth: 1,
-                pointBackgroundColor: '#416D14',
-                pointBorderColor: '#fff',
-                pointBorderWidth: 1,
-                pointRadius: 2,
-                pointHoverRadius: 4,
-                pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: '#416D14',
-                pointHoverBorderWidth: 2,
-                fill: false
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Temperature',
-                        font: {
-                            size: 14 
-                        },
-                        color: '#416D14'
+// Memisahkan data label dan suhu dari data sensor
+var labels = tableData.map(entry => entry.TimeAdded);
+var temperature = tableData.map(entry => entry.Temperature);
+
+// Menentukan batas atas dan bawah untuk sumbu y
+var maxDataValue = Math.max(...temperature);
+var minDataValue = Math.min(...temperature);
+var upperBound = maxDataValue + 10;
+var lowerBound = minDataValue - 10;
+
+// Membuat grafik dengan Chart.js
+var ctx = document.getElementById('temperatureChart').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: 'Temperature',
+            data: temperature,
+            borderColor: '#416D14',
+            borderWidth: 1,
+            pointBackgroundColor: '#416D14',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 1,
+            pointRadius: 0,
+            pointHoverRadius: 1,
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: '#416D14',
+            pointHoverBorderWidth: 2,
+            fill: false
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                title: {
+                    display: true,
+                    text: 'Temperature',
+                    font: {
+                        size: 14 
                     },
-                    ticks: {
-                        color: '#000000',
-                        font: {
-                            size: 12
-                        }
-                    },
-                    grid: {
-                        color: 'rgba(0, 0, 0, 0.05)'
-                    }
+                    color: '#416D14'
                 },
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Time',
-                        font: {
-                            size: 14 
-                        },
-                        color: '#416D14'
+                min: lowerBound, 
+                max: upperBound, 
+                ticks: {
+                    color: '#000000',
+                    font: {
+                        size: 12
                     },
-                    ticks: {
-                        color: '#000000',
-                        font: {
-                            size: 10 
-                        }
-                    },
-                    grid: {
-                        color: 'rgba(0, 0, 0, 0.05)'
-                    }
+                },
+                grid: {
+                    color: 'rgba(0, 0, 0, 0.05)'
                 }
             },
-            animation: {
-                duration: 1000,
-                easing: 'easeInOutQuart'
+            x: {
+                title: {
+                    display: true,
+                    text: 'Time',
+                    font: {
+                        size: 14 
+                    },
+                    color: '#416D14'
+                },
+                ticks: {
+                    color: '#000000',
+                    font: {
+                        size: 10 
+                    }
+                },
+                grid: {
+                    color: 'rgba(0, 0, 0, 0.05)'
+                }
             }
+        },
+        animation: {
+            duration: 1000,
+            easing: 'easeInOutQuart'
         }
-    });
-
-    function fetchDataAndUpdateChart() {
-        fetch('/update-data-grafik-Temperature')
-            .then(response => response.json())
-            .then(data => {
-                var newData = data.Temperature;
-                var newLabels = data.TimeAdded;
-
-                myChart.data.datasets[0].data = newData;
-                myChart.data.labels = newLabels;
-                myChart.update();
-            })
-            .catch(error => console.error('Error:', error));
     }
-    setInterval(fetchDataAndUpdateChart, 2000);
+});
+
+// Fungsi untuk memperbarui grafik dengan data baru
+function fetchDataAndUpdateChart() {
+    fetch('/update-data-grafik-Temperature')
+        .then(response => response.json())
+        .then(data => {
+            var newData = data.Temperature;
+            var newLabels = data.TimeAdded;
+
+            myChart.data.datasets[0].data = newData;
+            myChart.data.labels = newLabels;
+
+            var newMaxDataValue = Math.max(...newData);
+            var newMinDataValue = Math.min(...newData);
+            myChart.options.scales.y.min = newMinDataValue - 10;
+            myChart.options.scales.y.max = newMaxDataValue + 10;
+
+            myChart.update();
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+// Memperbarui data grafik setiap 2 detik
+setInterval(fetchDataAndUpdateChart, 2000);
+
 
     function filterChanged() {
         console.log('Filter changed');

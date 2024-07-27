@@ -13,12 +13,13 @@ use GuzzleHttp\Client;
 
 class DashboardController extends Controller
 {
+    // Ini Controller untuk dashboard admin
     public function index()
     {
         $token = session('jwt');
         
         if (!$token) {
-            return redirect('/')->withErrors('Token tidak ditemukan. Silakan login terlebih dahulu.');
+            return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
         }
 
         $response = Http::withToken($token)->get(env('API_BASE_URL'));
@@ -65,7 +66,7 @@ class DashboardController extends Controller
         $token = session('jwt');
         
         if (!$token) {
-            return redirect('/')->withErrors('Token tidak ditemukan. Silakan login terlebih dahulu.');
+            return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
         }
     
         $response = Http::withToken($token)->get(env('API_BASE_URL'));

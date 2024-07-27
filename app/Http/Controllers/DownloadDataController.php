@@ -15,10 +15,10 @@ class DownloadDataController extends Controller
             $token = session('jwt');
             $id_lahan = session('id_lahan');
 
-            if (!$token) {
-                return redirect('/')->withErrors('Token tidak ditemukan. Silakan login terlebih dahulu.');
-            }
 
+            if (!$token) {
+                return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
+            }
             if (!$id_lahan) {
                 return redirect('/')->withErrors('ID Lahan tidak ditemukan. Silakan login ulang.');
             }

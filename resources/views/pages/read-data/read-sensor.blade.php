@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.admin-layout')
+
+@section('content')
     <div class="flex items-center justify-center py-8">
         <div class="modal-content bg-white mx-4 md:mx-auto w-full max-w-lg rounded p-8 shadow-lg">
             <div class="modal-header text-black text-center py-2 rounded-t" style="background-color: #C6D2B9;">
@@ -81,4 +83,4 @@
             });
         });
     </script>
-</x-app-layout>
+@endsection

@@ -25,7 +25,7 @@ class DataPressureController extends Controller
             }
 
             if (!$token) {
-                return redirect('/')->withErrors('Token tidak ditemukan. Silakan login ulang.');
+                return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
             }
 
             // Mendapatkan semua data sensor
@@ -47,7 +47,7 @@ class DataPressureController extends Controller
             if ($response->successful()) {
                 $dataSensors = $response->json();
 
-                $sortedData = collect($dataSensors)->slice(-20)->values();
+                $sortedData = collect($dataSensors)->slice(-1000)->values();
                 $dataSensor = $sortedData->map(function ($item) {
                     return [
                         'Pressure' => $item['Pressure'],
@@ -100,7 +100,7 @@ class DataPressureController extends Controller
             if ($response->successful()) {
                 $dataSensors = $response->json();
 
-                $sortedData = collect($dataSensors)->slice(-20)->values();
+                $sortedData = collect($dataSensors)->slice(-1000)->values();
 
                 $Pressure = $sortedData->pluck('Pressure')->toArray();
                 $TimeAdded = $sortedData->pluck('TimeAdded')->toArray();
@@ -139,6 +139,63 @@ class DataPressureController extends Controller
                 })->toArray();
 
                 return response()->json(['dataSensor' => $dataTabel]);
+            } else {
+                return response()->json(['error' => 'Failed to retrieve data sensors'], $response->status());
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function history_Pressure()
+    {
+        try {
+            $id_sensor = session('id_sensor');
+            $id_lahan = session('id_lahan');
+            $token = session('jwt');
+
+            if (!$id_sensor) {
+                return redirect('/')->withErrors('ID Sensor tidak ditemukan. Silakan login ulang.');
+            }
+
+            if (!$id_lahan) {
+                return redirect('/')->withErrors('ID Lahan tidak ditemukan. Silakan login ulang.');
+            }
+
+            if (!$token) {
+                return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
+            }
+
+            $sensorResponse = Http::withToken($token)->get(env('SENSOR_URL'));
+
+            if (!$sensorResponse->successful()) {
+                return response()->json(['error' => 'Failed to retrieve sensor data'], $sensorResponse->status());
+            }
+            $sensorData = $sensorResponse->json();
+
+            $sensors = array_filter($sensorData, function ($sensor) use ($id_lahan) {
+                return $sensor['id_lahan'] == $id_lahan;
+            });
+
+            $response = Http::get(env('DATA_SENSOR_URL') . $id_sensor);
+
+            if ($response->successful()) {
+                $dataSensors = $response->json();
+
+              
+                $perPage = 10; 
+                $currentPage = request()->input('page', 1); 
+
+                $lengthAwarePaginator = new LengthAwarePaginator(
+                    collect(array_reverse($dataSensors))->forPage($currentPage, $perPage),
+                    count($dataSensors),
+                    $perPage,
+                    $currentPage
+                );
+                $lengthAwarePaginator->setPath(request()->url());
+                $paginator = $lengthAwarePaginator->toArray();
+
+                return view('pages.history.pressure', compact('paginator', 'sensors'));
             } else {
                 return response()->json(['error' => 'Failed to retrieve data sensors'], $response->status());
             }

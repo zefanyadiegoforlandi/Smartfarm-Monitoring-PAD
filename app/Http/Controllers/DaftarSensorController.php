@@ -149,7 +149,7 @@ class DaftarSensorController extends Controller
                     throw new \Exception('Sensor tidak ditemukan.');
                 }
 
-                return view('pages.edit-delete.read-sensor', compact('sensor'));
+                return view('pages.read-data.read-sensor', compact('sensor'));
             } else {
                 throw new \Exception('Gagal mengambil data sensor dari server.');
             }
@@ -186,7 +186,7 @@ class DaftarSensorController extends Controller
                     throw new \Exception('Sensor tidak ditemukan.');
                 }
 
-                return view('pages.edit-delete.form-sensor', compact('sensor', 'lahan'));
+                return view('pages.edit-data.form-sensor', compact('sensor', 'lahan'));
             } else {
                 throw new \Exception('Gagal mengambil data sensor dari server.');
             }
@@ -248,7 +248,7 @@ class DaftarSensorController extends Controller
             $token = session('jwt');
     
             if (!$token) {
-                return back()->withErrors('Token tidak ditemukan. Silakan login terlebih dahulu.');
+                return redirect('/')->withErrors('Token tidak ditemukan. Sesi berakhir, silakan login terlebih dahulu.');
             }
     
             // Cek apakah id_sensor digunakan dalam tabel data_sensor

@@ -11,22 +11,57 @@
         <div class="flex items-center justify-start">
             <p class="font-semibold text-3xl md:text-[40px] text-[#416D14]">Pertinjau</p>
         </div>
-        <div class="flex items-center justify-end">
-            <div class="relative w-[97px] md:w-[124px] h-[27px] ">
-                <select id="filter" name="filter" onchange="saveAndSelectFilter(this.value)" class="block appearance-none w-full bg-[#416D14] border border-gray-300 text-white py-1 px-1 rounded-lg leading-tight text-center text-xs lg:text-sm font-semibold">
-                    @foreach ($lahan as $item)
-                        <option value="{{ $item->id_lahan }}" {{ session('id_lahan') == $item->id_lahan ? 'selected' : '' }}>
-                            {{ $item->nama_lahan }}
-                        </option>
-                    @endforeach
+        
+        <div class="flex items-center justify-end space-x-2">
+            <!-- Dropdown for time filter -->
+            <div class="relative w-[85px] h-[30px] lg:w-[100px] lg:h-[30px] group">
+                <select id="timeFrame" name="timeFrame" class="block appearance-none w-full bg-[#416D14] border border-gray-300 text-white py-1 px-1 rounded-lg leading-tight text-center text-xs lg:text-sm font-semibold group-hover:brightness-125 group-active:brightness-150" onchange="submitFilterForm()">
+                    <option value="all" {{ session('timeFrame') == 'all' ? 'selected' : '' }}>Semua</option>
+                    <option value="1day" {{ session('timeFrame') == '1day' ? 'selected' : '' }}>1 Hari</option>
+                    <option value="1week" {{ session('timeFrame') == '1week' ? 'selected' : '' }}>1 Minggu</option>
+                    <option value="1month" {{ session('timeFrame') == '1month' ? 'selected' : '' }}>1 Bulan</option>
                 </select>
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-white">
-                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                        <path d="M5 8l5 5 5-5z" />
-                    </svg>
+            </div>
+            
+            <script>
+                function submitFilterForm() {
+                    var timeFrame = document.getElementById('timeFrame').value;
+                    fetch('/save-time-frame', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            'timeFrame': timeFrame
+                        })
+                    }).then(response => response.json())
+                      .then(data => {
+                          console.log(data.message); // Optional: Handle success message
+                          location.reload(); // Refresh halaman jika sukses
+                      }).catch(error => {
+                          console.error('Error:', error);
+                      });
+                }
+            </script>
+            
+            
+            
+            <!-- Dropdown for selecting lahan -->
+            <div class="flex items-center justify-end">
+                <div class="relative w-[124px] h-[25px] lg:w-[160px] lg:h-[30px]">
+                    <select id="filter" name="filter" onchange="saveAndSelectFilter(this.value)" class="block appearance-none w-full bg-[#416D14] border border-gray-300 text-white py-1 px-1 rounded-lg leading-tight text-center text-xs lg:text-sm font-semibold hover:brightness-125 active:brightness-150">
+                        @foreach ($lahan as $item)
+                            <option value="{{ $item->id_lahan }}" {{ session('id_lahan') == $item->id_lahan ? 'selected' : '' }}>
+                                {{ $item->nama_lahan }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
         </div>
+        
+        
     </div>
 
     <script>
@@ -53,7 +88,7 @@
             .catch(error => console.error('Error:', error));
         }
     </script>
-
+ 
     <!--suhu-->
     <div class="flex items-center bg-[#ECF0E8] ps-[13px] pe-[15px] py-6 rounded-[20px] mt-7 md:mt-7 md:flex">
         <div class="flex-none me-[14px] w-[75px] h-[75px] md:w-[141px] md:h-[141px] lg:mx-16">
@@ -68,7 +103,7 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center">Suhu saat ini</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center"> <span id="Temperature-current">{{ $sensorData['Temperature']['current'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center"> <span id="Temperature-current">{{ $sensorData['Temperature']['current'] ?? '' }}</span>°C</p>
                 </div>
             </div>
 
@@ -77,7 +112,7 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center">Suhu Terendah</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center"> <span id="Temperature-min">{{ $sensorData['Temperature']['min'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center"> <span id="Temperature-min">{{ $sensorData['Temperature']['min'] ?? '' }}</span>°C</p>
                 </div>
             </div>
 
@@ -86,7 +121,7 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center">Suhu Tertinggi</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center"> <span id="Temperature-max">{{ $sensorData['Temperature']['max'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center"> <span id="Temperature-max">{{ $sensorData['Temperature']['max'] ?? '' }}</span>°C</p>
                 </div>
             </div>
 
@@ -95,7 +130,8 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center">Rata-rata Suhu</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center"> <span id="Temperature-average">{{ $sensorData['Temperature']['average'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center"> 
+                        <span id="Temperature-average">{{ $sensorData['Temperature']['average'] ?? '' }}</span>°C</p>
                 </div>
             </div>
         </div>
@@ -115,7 +151,9 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center">Kelembapan Udara saat ini</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="H-current">{{ $sensorData['H']['current'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  
+                        <span id="H-current">{{ $sensorData['H']['current'] ?? '' }}</span>%
+                    </p>
                 </div>
             </div>
 
@@ -124,7 +162,9 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center">Kelembapan Terendah</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">   <span id="H-min">{{ $sensorData['H']['min'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">   
+                        <span id="H-min">{{ $sensorData['H']['min'] ?? '' }}</span>%
+                    </p>
                 </div>
             </div>
 
@@ -133,7 +173,9 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center">Kelembapan  Tertinggi</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="H-max">{{ $sensorData['H']['max'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">
+                        <span id="H-max">{{ $sensorData['H']['max'] ?? '' }}</span>%
+                    </p>
                 </div>
             </div>
 
@@ -142,7 +184,9 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center">Rata-rata Kelembapan</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="H-average">{{ $sensorData['H']['average'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  
+                        <span id="H-average">{{ $sensorData['H']['average'] ?? '' }}</span>%
+                    </p>
                 </div>
             </div>
         </div>
@@ -169,7 +213,7 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center lg:w-36">Curah Hujan saat ini</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="RainDrop-current">{{ $sensorData['RainDrop']['current'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="RainDrop-current">{{ $sensorData['RainDrop']['current'] ?? '' }}</span>mm</p>
                 </div>
             </div>
 
@@ -178,7 +222,7 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center lg:w-36">Curah Hujan Terendah</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="RainDrop-min">{{ $sensorData['RainDrop']['min'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="RainDrop-min">{{ $sensorData['RainDrop']['min'] ?? '' }}</span>mm</p>
                 </div>
             </div>
 
@@ -187,7 +231,7 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center lg:w-36">Curah Hujan Tertinggi</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="RainDrop-max">{{ $sensorData['RainDrop']['max'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="RainDrop-max">{{ $sensorData['RainDrop']['max'] ?? '' }}</span>mm</p>
                 </div>
             </div>
 
@@ -196,7 +240,7 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center lg:w-36">Rata-rata Curah Hujan</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="RainDrop-average">{{ $sensorData['RainDrop']['average'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="RainDrop-average">{{ $sensorData['RainDrop']['average'] ?? '' }}</span>mm</p>
                 </div>
             </div>
         </div>
@@ -216,7 +260,7 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center lg:w-36">Intensitas Cahaya saat ini</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="Light-current">{{ $sensorData['Light']['current'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="Light-current">{{ $sensorData['Light']['current'] ?? '' }}</span>lx</p>
                 </div>
             </div>
 
@@ -225,7 +269,7 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center lg:w-36">Intensitas Cahaya Terendah</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="Light-min">{{ $sensorData['Light']['min'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="Light-min">{{ $sensorData['Light']['min'] ?? '' }}</span>lx</p>
                 </div>
             </div>
 
@@ -234,7 +278,7 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center lg:w-36">Intensitas Cahaya Tertinggi</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="Light-max">{{ $sensorData['Light']['max'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="Light-max">{{ $sensorData['Light']['max'] ?? '' }}</span>lx</p>
                 </div>
             </div>
 
@@ -243,7 +287,7 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center lg:w-36">Rata-rata Intensitas Cahaya</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="Light-average">{{ $sensorData['Light']['average'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="Light-average">{{ $sensorData['Light']['average'] ?? '' }}</span>lx</p>
                 </div>
             </div>
         </div>
@@ -263,7 +307,7 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center lg:w-36">Kualitas Udara saat ini</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center"> <span id="AirQuality-current">{{ $sensorData['AirQuality']['current'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center"> <span id="AirQuality-current">{{ $sensorData['AirQuality']['current'] ?? '' }}</span>AQI</p>
                 </div>
             </div>
 
@@ -272,7 +316,7 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center lg:w-36">Kualitas Udara Terendah</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="AirQuality-min">{{ $sensorData['AirQuality']['min'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="AirQuality-min">{{ $sensorData['AirQuality']['min'] ?? '' }}</span>AQI</p>
                 </div>
             </div>
 
@@ -281,7 +325,7 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center lg:w-36">Kualitas Udara Tertinggi</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="AirQuality-max">{{ $sensorData['AirQuality']['max'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="AirQuality-max">{{ $sensorData['AirQuality']['max'] ?? '' }}</span>AQI</p>
                 </div>
             </div>
 
@@ -290,7 +334,7 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center lg:w-36">Rata-rata Kualitas Udara</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center"> <span id="AirQuality-average">{{ $sensorData['RainDrop']['average'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center"> <span id="AirQuality-average">{{ $sensorData['AirQuality']['average'] ?? '' }}</span>AQI</p>
                 </div>
             </div>
         </div>
@@ -319,7 +363,7 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center lg:w-36">Kelembapan  Tanah saat ini</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="PersentaseKelembapanTanah-current">{{ $sensorData['PersentaseKelembapanTanah']['current'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="PersentaseKelembapanTanah-current">{{ $sensorData['PersentaseKelembapanTanah']['current'] ?? '' }}</span>%</p>
                 </div>
             </div>
 
@@ -328,7 +372,7 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center lg:w-36">Kelembapan  Tanah Terendah</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="PersentaseKelembapanTanah-min">{{ $sensorData['PersentaseKelembapanTanah']['min'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="PersentaseKelembapanTanah-min">{{ $sensorData['PersentaseKelembapanTanah']['min'] ?? '' }}</span>%</p>
                 </div>
             </div>
 
@@ -337,7 +381,7 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center lg:w-36">Kelembapan  Tanah Tertinggi</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="PersentaseKelembapanTanah-max">{{ $sensorData['PersentaseKelembapanTanah']['max'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="PersentaseKelembapanTanah-max">{{ $sensorData['PersentaseKelembapanTanah']['max'] ?? '' }}</span>%</p>
                 </div>
             </div>
 
@@ -346,7 +390,7 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center lg:w-36">Rata-rata  Kelembapan Tanah</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="PersentaseKelembapanTanah-average">{{ $sensorData['PersentaseKelembapanTanah']['average'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="PersentaseKelembapanTanah-average">{{ $sensorData['PersentaseKelembapanTanah']['average'] ?? '' }}</span>%</p>
                 </div>
             </div>
         </div>
@@ -366,7 +410,7 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center lg:w-36">Ketinggian saat ini</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="ApproxAltitude-current">{{ $sensorData['ApproxAltitude']['current'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="ApproxAltitude-current">{{ $sensorData['ApproxAltitude']['current'] ?? '' }}</span>m</p>
                 </div>
             </div>
 
@@ -375,7 +419,7 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center lg:w-36">Ketinggian Terendah</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="ApproxAltitude-min">{{ $sensorData['ApproxAltitude']['min'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="ApproxAltitude-min">{{ $sensorData['ApproxAltitude']['min'] ?? '' }}</span>m</p>
                 </div>
             </div>
 
@@ -384,7 +428,7 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center lg:w-36">Ketinggian Tertinggi</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="ApproxAltitude-max">{{ $sensorData['ApproxAltitude']['max'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="ApproxAltitude-max">{{ $sensorData['ApproxAltitude']['max'] ?? '' }}</span>m</p>
                 </div>
             </div>
 
@@ -393,7 +437,7 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center lg:w-36">Rata-rata Ketinggian</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="ApproxAltitude-average">{{ $sensorData['ApproxAltitude']['average'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="ApproxAltitude-average">{{ $sensorData['ApproxAltitude']['average'] ?? '' }}</span>m</p>
                 </div>
             </div>
         </div>
@@ -415,7 +459,7 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center lg:w-36">Tekanan Udara saat ini</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="Pressure-current">{{ $sensorData['Pressure']['current'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="Pressure-current">{{ $sensorData['Pressure']['current'] ?? '' }}</span>hPa</p>
                 </div>
             </div>
 
@@ -424,7 +468,7 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center lg:w-36">Tekanan Udara Terendah</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="Pressure-min">{{ $sensorData['Pressure']['min'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center">  <span id="Pressure-min">{{ $sensorData['Pressure']['min'] ?? '' }}</span>hPa</p>
                 </div>
             </div>
 
@@ -433,7 +477,7 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center lg:w-36">Tekanan Udara Tertinggi</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center"> <span id="Pressure-max">{{ $sensorData['Pressure']['max'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center"> <span id="Pressure-max">{{ $sensorData['Pressure']['max'] ?? '' }}</span>hPa</p>
                 </div>
             </div>
 
@@ -442,7 +486,7 @@
                     <p class="font-medium md:text-xl md:mb-6 text-center lg:w-36">Rata-rata Tekanan Udara</p>
                 </div>
                 <div class="flex items-center justify-end md:justify-center bg-white md:rounded-xl md:w-[108px] md:h-[52px]">
-                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center"> <span id="Pressure-average">{{ $sensorData['Pressure']['average'] ?? '' }}</span></p>
+                    <p class="font-medium text-[13px] md:text-[22px] text-[#416D14] text-center"> <span id="Pressure-average">{{ $sensorData['Pressure']['average'] ?? '' }}</span>hPa</p>
                 </div>
             </div>
         </div>

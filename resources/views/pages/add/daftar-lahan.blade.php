@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.admin-layout')
+
+@section('content')
     <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         <div class="flex mx-3">
             <!-- Hamburger button -->
@@ -305,4 +307,4 @@
             modal.classList.add('hidden');
         }
     </script>
-</x-app-layout>
+@endsection

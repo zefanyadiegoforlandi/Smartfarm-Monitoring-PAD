@@ -32,7 +32,7 @@ class DaftarAuthController extends Controller
     
             // Check if the user data exists in the response
             if (!empty($user)) {
-                return view('pages.edit-delete.form-auth', compact('user'));
+                return view('pages.edit-data.form-auth', compact('user'));
             } else {
                 return redirect()->back()->withErrors('User tidak ditemukan.');
             }
@@ -105,7 +105,7 @@ class DaftarAuthController extends Controller
             }
     
             // Proses update jika validasi berhasil
-            $client = new \GuzzleHttp\Client();
+            $client = new Client();
             $url = env('USERS_URL') . $id;
     
             try {
@@ -156,7 +156,7 @@ class DaftarAuthController extends Controller
             $user = $response->json();
     
             if (!empty($user)) {
-                return view('pages.edit-delete.read-auth', compact('user'));
+                return view('pages.read-data.read-auth', compact('user'));
             } else {
                 return redirect()->back()->withErrors('User tidak ditemukan.');
             }
